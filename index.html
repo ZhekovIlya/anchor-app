@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minimalist Spanish Anchor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .input-overlay {
+      color: transparent;
+      caret-color: #000;
+      background: transparent;
+      outline: none;
+    }
+    
+    .fake-input, .input-overlay {
+      font-family: inherit;
+      font-size: 3rem; 
+      line-height: 1.2;
+      padding: 0;
+      margin: 0;
+      border: none;
+      width: 100%;
+      text-align: center;
+    }
+
+    .fake-input { white-space: pre; }
+    body { transition: background-color 0.1s; }
+    .flash-error { animation: flash-red 0.5s ease-in-out; }
+
+    @keyframes flash-red {
+      0% { background-color: #fca5a5; } 
+      100% { background-color: #ffffff; }
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen w-screen flex flex-col items-center justify-start font-sans overflow-y-auto p-4 overflow-x-hidden">
+  
+  <!-- DASHBOARD VIEW (TOPICS) -->
+  <div id="dashboardView" class="w-full max-w-4xl flex flex-col items-center gap-8 py-12">
+    <h1 class="text-5xl font-extrabold text-blue-600 mb-8">Minimalist Spanish Anchor</h1>
+    <p class="text-xl font-medium text-gray-400 mb-4">Select a topic to begin</p>
+    
+    <div id="topicsContainer" class="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Injected via app.js -->
+    </div>
+  </div>
+
+  <!-- LESSONS VIEW -->
+  <div id="lessonsView" class="hidden w-full max-w-6xl flex-col items-center gap-8 py-12">
+    <button id="backToDashboardBtn" class="self-start px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      Back to Topics
+    </button>
+    
+    <div class="text-center">
+      <h2 id="lessonsViewTitle" class="text-4xl font-extrabold text-blue-600 mb-2">Topic Title</h2>
+      <p id="lessonsViewSubtitle" class="text-lg text-gray-400">Select a lesson to begin your streak</p>
+    </div>
+    
+    <div id="lessonsContainer" class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      <!-- Injected via app.js -->
+    </div>
+  </div>
+
+  <!-- DRILL VIEW -->
+  <div id="drillView" class="hidden w-full max-w-4xl flex-col items-center pt-24 gap-12 text-center transition-opacity duration-300 flex-grow">
+    
+    <!-- Streak -->
+    <div class="fixed top-8 right-8 flex flex-col items-end">
+      <div class="text-xl text-gray-400 font-semibold tracking-widest uppercase mb-1">Streak</div>
+      <div id="streakCounter" class="text-4xl font-bold text-gray-300">0 / 20</div>
+    </div>
+
+
+
+    <!-- Prompts -->
+    <div class="flex flex-col gap-6 w-full items-center">
+      <div id="russianPrompt" class="text-6xl font-bold tracking-tight text-gray-800"></div>
+      
+      <!-- Ghost Text (Fading Scaffolding) -->
+      <div id="ghostTextContainer" class="h-16 flex justify-center items-center w-full">
+        <div id="ghostText" class="text-5xl font-medium text-gray-200 pointer-events-none select-none"></div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="relative w-full max-w-3xl mt-8">
+      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none flex justify-center break-words"></div>
+      
+      <input 
+        type="text" 
+        id="strictInput" 
+        class="input-overlay relative z-10 block" 
+        autocomplete="off" 
+        spellcheck="false" 
+        autocorrect="off"
+        autocapitalize="off"
+      />
+    </div>
+
+    <button id="revealAnswerBtn" class="hidden mt-8 px-6 py-3 bg-red-100 text-red-600 border border-red-200 rounded-xl font-bold hover:bg-red-200 transition-colors uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+      Reveal Answer
+    </button>
+
+    <button id="quitDrillBtn" class="fixed top-8 left-8 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm">
+      Quit Drill
+    </button>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="endScreen" class="hidden w-full flex-col items-center justify-center min-h-[60vh] gap-6 flex-grow">
+    <h1 class="text-6xl font-extrabold text-green-500">Lesson Mastered!</h1>
+    <p class="text-3xl text-gray-600 font-semibold">Iron-Clad Grammar Complete</p>
+    <div class="flex gap-4 mt-8">
+      <button id="restartBtn" class="px-8 py-4 bg-gray-200 text-gray-800 rounded-xl text-xl font-bold hover:bg-gray-300 transition-colors">
+        Repeat Lesson
+      </button>
+      <button id="dashboardReturnBtn" class="px-8 py-4 bg-blue-600 text-white rounded-xl text-xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
+        Return to Lessons
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Inclusion: Add more topics here as you expand! -->
+  <script src="data/topic_1.js"></script>
+  <script src="data/topic_2.js"></script>
+  <script src="data/topics_core.js"></script>
+  
+  <script src="app.js"></script>
+</body>
+</html>

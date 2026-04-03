@@ -1,0 +1,34 @@
+# Data Format Rules for Minimalist Spanish Anchor App
+
+When creating or modifying curriculum data in the `data/` directory (like `topics_core.js`), always follow these strict structure and tokenization rules:
+
+## 1. Topic & Lesson Structure
+- All topic files must append their data to the global array: 
+  `window.AnchorData.push({ id: "...", title: "...", description: "...", lessons: [...] });`
+- Make sure `window.AnchorData = window.AnchorData || [];` is atop the file.
+- Each `lesson` must contain an `id`, a `title`, and an array of `phrases` (usually exactly 6 phrases per lesson to minimize cognitive overload).
+- **Curriculum Design:** Break lessons into halves per concept (Part 1 focuses on the "Yo" perspective; Part 2 focuses on "Tú/Él" perspectives). Alternate between affirmative and negative statements.
+
+## 2. Phrase Object Structure
+Each phrase inside a lesson must be an object containing exactly three keys: `ru`, `es`, and `tokens`.
+```javascript
+{
+  ru: "Я есть (описание)", // Native prompt
+  es: "Yo soy",              // Target answer
+  tokens: [                  // Array breaking down 'es'
+    { text: "Yo", type: "subject" },
+    { text: " ", type: "space" },
+    { text: "soy", type: "verb" }
+  ]
+}
+```
+
+## 3. Strict Tokenization Rules
+- **Exact Match:** The concatenated `text` of all tokens must *exactly* match the `es` string, including all spaces and punctuation. Do not miss any hidden spaces.
+- **Spaces are distinct:** Every space must be isolated into its own token: `{ text: " ", type: "space" }`.
+- **Supported Grammatical Types:**
+  - `subject` (Renders blue, e.g., "Yo", "Tú", "El chico")
+  - `verb` (Renders red, e.g., "soy", "tengo", "quiero")
+  - `negation` (Renders yellow, e.g., "no")
+  - `object` (Renders green, e.g., "una manzana", "dinero")
+  - `space` (Hidden formatting)

@@ -1,0 +1,272 @@
+// DOM Elements
+const dashboardView = document.getElementById('dashboardView');
+const topicsContainer = document.getElementById('topicsContainer');
+const lessonsView = document.getElementById('lessonsView');
+const lessonsContainer = document.getElementById('lessonsContainer');
+const lessonsViewTitle = document.getElementById('lessonsViewTitle');
+const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+const drillView = document.getElementById('drillView');
+const endScreen = document.getElementById('endScreen');
+
+const inputField = document.getElementById('strictInput');
+const fakeInput = document.getElementById('fakeInput');
+const streakCounter = document.getElementById('streakCounter');
+const russianPrompt = document.getElementById('russianPrompt');
+const ghostText = document.getElementById('ghostText');
+const revealAnswerBtn = document.getElementById('revealAnswerBtn');
+const quitDrillBtn = document.getElementById('quitDrillBtn');
+const restartBtn = document.getElementById('restartBtn');
+const dashboardReturnBtn = document.getElementById('dashboardReturnBtn');
+
+// State
+let topics = window.AnchorData || [];
+let activeTopic = null;
+let activeLesson = null;
+let currentPhrase = null;
+let phrases = [];
+let drawingDeck = [];
+let streak = 0;
+let targetStreak = 24;
+let failedPhrases = [];
+
+const colorMap = {
+  subject: "text-blue-500",
+  negation: "text-yellow-500",
+  verb: "text-red-500",
+  object: "text-green-500",
+  space: ""
+};
+
+// ========================
+// DASHBOARD LOGIC
+// ========================
+
+function initDashboard() {
+  dashboardView.classList.remove('hidden');
+  dashboardView.style.display = 'flex';
+  lessonsView.classList.add('hidden');
+  lessonsView.style.display = 'none';
+  drillView.classList.add('hidden');
+  drillView.style.display = 'none';
+  endScreen.classList.add('hidden');
+  endScreen.style.display = 'none';
+  
+  topicsContainer.innerHTML = '';
+
+  topics.forEach(topic => {
+    const topicBtn = document.createElement('button');
+    topicBtn.className = 'text-left bg-white border border-gray-200 hover:border-blue-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col gap-2 cursor-pointer';
+    
+    const titleEl = document.createElement('h2');
+    titleEl.className = 'text-2xl font-bold text-gray-800';
+    titleEl.textContent = topic.title;
+    topicBtn.appendChild(titleEl);
+
+    if (topic.description) {
+      const descEl = document.createElement('p');
+      descEl.className = 'text-gray-500';
+      descEl.textContent = topic.description;
+      topicBtn.appendChild(descEl);
+    }
+    
+    topicBtn.addEventListener('click', () => showLessonsView(topic));
+    topicsContainer.appendChild(topicBtn);
+  });
+}
+
+function showLessonsView(topic) {
+  activeTopic = topic;
+  dashboardView.classList.add('hidden');
+  dashboardView.style.display = 'none';
+  lessonsView.classList.remove('hidden');
+  lessonsView.style.display = 'flex';
+  drillView.classList.add('hidden');
+  drillView.style.display = 'none';
+  endScreen.classList.add('hidden');
+  endScreen.style.display = 'none';
+
+  lessonsViewTitle.textContent = topic.title;
+  lessonsContainer.innerHTML = '';
+
+  topic.lessons.forEach(lesson => {
+    const timesFinished = parseInt(localStorage.getItem(lesson.id) || "0", 10);
+
+    const lessonBtn = document.createElement('button');
+    lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+    
+    const lessonTitle = document.createElement('span');
+    lessonTitle.className = 'text-lg font-semibold text-gray-700';
+    lessonTitle.textContent = lesson.title;
+    lessonBtn.appendChild(lessonTitle);
+
+    const phraseCount = document.createElement('span');
+    phraseCount.className = 'text-sm text-gray-400';
+    
+    let subtitle = `${lesson.phrases.length} phrases`;
+    if (timesFinished > 0) {
+      subtitle += ` • Completed: ${timesFinished} times`;
+      lessonBtn.classList.add('border-green-100', 'bg-green-50/30');
+    }
+    phraseCount.textContent = subtitle;
+    
+    lessonBtn.appendChild(phraseCount);
+
+    lessonBtn.addEventListener('click', () => startLesson(lesson));
+    lessonsContainer.appendChild(lessonBtn);
+  });
+}
+
+// ========================
+// DRILL LOGIC
+// ========================
+
+function startLesson(lesson) {
+  activeLesson = lesson;
+  phrases = lesson.phrases;
+  lessonsView.classList.add('hidden');
+  lessonsView.style.display = 'none';
+  drillView.classList.remove('hidden');
+  drillView.style.display = 'flex';
+  endScreen.classList.add('hidden');
+  endScreen.style.display = 'none';
+
+  streak = 0;
+  targetStreak = 24;
+  failedPhrases = [];
+  drawingDeck = [];
+  updateStreakDisplay();
+
+  nextPhrase();
+  inputField.focus();
+}
+
+function updateStreakDisplay() {
+  streakCounter.textContent = `${streak} / ${targetStreak}`;
+}
+
+function nextPhrase() {
+  if (streak >= 24 && failedPhrases.length > 0) {
+    currentPhrase = failedPhrases.shift();
+  } else {
+    if (drawingDeck.length === 0) {
+      drawingDeck = [...phrases].sort(() => Math.random() - 0.5);
+    }
+    currentPhrase = drawingDeck.pop();
+  }
+  
+  russianPrompt.textContent = currentPhrase.ru;
+  ghostText.textContent = currentPhrase.es;
+  
+  if (streak < 12) {
+    ghostText.classList.remove('opacity-0');
+    ghostText.classList.add('opacity-100');
+    revealAnswerBtn.classList.add('hidden');
+  } else {
+    ghostText.classList.remove('opacity-100');
+    ghostText.classList.add('opacity-0');
+    revealAnswerBtn.classList.remove('hidden');
+  }
+  
+  resetInput();
+
+  if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(currentPhrase.ru);
+      utterance.lang = 'ru-RU';
+      window.speechSynthesis.speak(utterance);
+  }
+}
+
+function resetInput() {
+  inputField.value = '';
+  renderFakeInput('');
+}
+
+function renderFakeInput(userInput) {
+  let html = "";
+  let remainingInput = userInput;
+  
+  for (const token of currentPhrase.tokens) {
+    if (remainingInput.length === 0) break;
+
+    const lowerRemaining = remainingInput.toLowerCase();
+    const lowerToken = token.text.toLowerCase();
+
+    if (lowerRemaining.startsWith(lowerToken)) {
+        const typedPortion = remainingInput.substring(0, token.text.length);
+        const colorClass = colorMap[token.type] || "";
+        html += `<span class="${colorClass}">${typedPortion}</span>`;
+        remainingInput = remainingInput.substring(token.text.length);
+    } else {
+        html += `<span>${remainingInput}</span>`;
+        remainingInput = "";
+        break;
+    }
+  }
+
+  if (remainingInput.length > 0) {
+      html += `<span>${remainingInput}</span>`;
+  }
+
+  fakeInput.innerHTML = html;
+}
+
+inputField.addEventListener('input', (e) => {
+  renderFakeInput(inputField.value);
+  
+  // Auto-submit on exact match
+  if (inputField.value.trim().toLowerCase() === currentPhrase.es.toLowerCase()) {
+    setTimeout(handleSuccess, 100);
+  }
+});
+
+function handleSuccess() {
+  if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(currentPhrase.es);
+      utterance.lang = 'es-ES';
+      window.speechSynthesis.speak(utterance);
+  }
+
+  streak++;
+  updateStreakDisplay();
+  
+  if (streak >= targetStreak) {
+    showEndScreen();
+  } else {
+    nextPhrase();
+  }
+}
+
+revealAnswerBtn.addEventListener('click', () => {
+  targetStreak++;
+  failedPhrases.push(currentPhrase);
+  
+  ghostText.classList.remove('opacity-0');
+  ghostText.classList.add('opacity-100');
+  revealAnswerBtn.classList.add('hidden');
+  
+  updateStreakDisplay();
+  inputField.focus();
+});
+
+// ========================
+// COMPLETION LOGIC
+// ========================
+
+function showEndScreen() {
+  drillView.classList.add('hidden');
+  drillView.style.display = 'none';
+  endScreen.classList.remove('hidden');
+  endScreen.style.display = 'flex';
+
+  // Increment completion tally
+  let count = parseInt(localStorage.getItem(activeLesson.id) || "0", 10);
+  localStorage.setItem(activeLesson.id, count + 1);
+}
+
+restartBtn.addEventListener('click', () => startLesson(activeLesson));
+dashboardReturnBtn.addEventListener('click', () => showLessonsView(activeTopic));
+quitDrillBtn.addEventListener('click', () => showLessonsView(activeTopic));
+backToDashboardBtn.addEventListener('click', initDashboard);
+
+// Start
+initDashboard();
