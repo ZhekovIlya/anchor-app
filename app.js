@@ -92,20 +92,28 @@ function showLessonsView(topic) {
     const timesFinished = parseInt(localStorage.getItem(lesson.id) || "0", 10);
 
     const lessonBtn = document.createElement('button');
-    lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+    
+    if (lesson.exam) {
+      lessonBtn.className = 'text-left bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 p-4 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col gap-1 cursor-pointer col-span-1 md:col-span-3';
+    } else {
+      lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+    }
     
     const lessonTitle = document.createElement('span');
-    lessonTitle.className = 'text-lg font-semibold text-gray-700';
+    lessonTitle.className = lesson.exam ? 'text-lg font-bold text-yellow-700' : 'text-lg font-semibold text-gray-700';
     lessonTitle.textContent = lesson.title;
     lessonBtn.appendChild(lessonTitle);
 
     const phraseCount = document.createElement('span');
     phraseCount.className = 'text-sm text-gray-400';
     
-    let subtitle = `${lesson.phrases.length} phrases`;
+    let phraseTotal = lesson.exam
+      ? topic.lessons.filter(l => !l.exam).reduce((sum, l) => sum + l.phrases.length, 0)
+      : lesson.phrases.length;
+    let subtitle = `${phraseTotal} phrases` + (lesson.exam ? ' • Streak: 50' : '');
     if (timesFinished > 0) {
       subtitle += ` • Completed: ${timesFinished} times`;
-      lessonBtn.classList.add('border-green-100', 'bg-green-50/30');
+      if (!lesson.exam) lessonBtn.classList.add('border-green-100', 'bg-green-50/30');
     }
     phraseCount.textContent = subtitle;
     
@@ -122,7 +130,20 @@ function showLessonsView(topic) {
 
 function startLesson(lesson) {
   activeLesson = lesson;
-  phrases = lesson.phrases;
+
+  // Final Exam: auto-populate from sibling lessons
+  if (lesson.exam) {
+    const siblingPhrases = [];
+    activeTopic.lessons.forEach(l => {
+      if (!l.exam && l.phrases) {
+        siblingPhrases.push(...l.phrases);
+      }
+    });
+    phrases = siblingPhrases.sort(() => Math.random() - 0.5);
+  } else {
+    phrases = lesson.phrases;
+  }
+
   lessonsView.classList.add('hidden');
   lessonsView.style.display = 'none';
   drillView.classList.remove('hidden');
@@ -131,7 +152,7 @@ function startLesson(lesson) {
   endScreen.style.display = 'none';
 
   streak = 0;
-  targetStreak = 24;
+  targetStreak = lesson.exam ? 50 : 24;
   failedPhrases = [];
   drawingDeck = [];
   updateStreakDisplay();

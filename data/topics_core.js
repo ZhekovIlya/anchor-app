@@ -484,7 +484,8 @@ const lessons = [
 
 window.AnchorData.push({
   id: "verb_specialties",
-  title: "Verb Specialties",
+  title: "Verb Specialties (Legacy)",
   description: "Master all core irregular, stem-changing, and vital everyday verbs.",
+  legacy: true,
   lessons: lessons
 });
