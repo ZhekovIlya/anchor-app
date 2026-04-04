@@ -38,6 +38,100 @@ const colorMap = {
 };
 
 // ========================
+// SRS ENGINE (Leitner Buckets)
+// ========================
+
+const SRS_KEY = 'srs_data';
+const BUCKET_INTERVALS = [
+  12 * 60 * 60 * 1000,   // Bucket 0: 12 hours
+  24 * 60 * 60 * 1000,   // Bucket 1: 1 day
+  3 * 24 * 60 * 60 * 1000, // Bucket 2: 3 days
+  7 * 24 * 60 * 60 * 1000, // Bucket 3: 1 week
+  14 * 24 * 60 * 60 * 1000 // Bucket 4: 2 weeks
+];
+
+let globalPhraseBank = {}; // meta.id -> phrase object
+let isReviewMode = false;
+
+function buildGlobalPhraseBank() {
+  globalPhraseBank = {};
+  topics.forEach(topic => {
+    if (topic.legacy) return;
+    topic.lessons.forEach(lesson => {
+      if (lesson.exam) return;
+      lesson.phrases.forEach(phrase => {
+        if (phrase.meta && phrase.meta.id) {
+          globalPhraseBank[phrase.meta.id] = phrase;
+        }
+      });
+    });
+  });
+}
+
+function loadSrsData() {
+  try {
+    return JSON.parse(localStorage.getItem(SRS_KEY) || '{}');
+  } catch (e) { return {}; }
+}
+
+function saveSrsData(data) {
+  localStorage.setItem(SRS_KEY, JSON.stringify(data));
+}
+
+function srsPromote(phraseId) {
+  const data = loadSrsData();
+  const entry = data[phraseId] || { bucket: 0, dueDate: 0 };
+  const newBucket = Math.min(entry.bucket + 1, BUCKET_INTERVALS.length - 1);
+  data[phraseId] = {
+    bucket: newBucket,
+    dueDate: Date.now() + BUCKET_INTERVALS[newBucket]
+  };
+  saveSrsData(data);
+}
+
+function srsDemote(phraseId) {
+  const data = loadSrsData();
+  data[phraseId] = {
+    bucket: 0,
+    dueDate: Date.now() + BUCKET_INTERVALS[0]
+  };
+  saveSrsData(data);
+}
+
+function srsRegisterNew(phraseId) {
+  const data = loadSrsData();
+  if (!data[phraseId]) {
+    data[phraseId] = {
+      bucket: 0,
+      dueDate: Date.now() + BUCKET_INTERVALS[1] // due in 1 day
+    };
+    saveSrsData(data);
+  }
+}
+
+function getDueReviewPhrases() {
+  const data = loadSrsData();
+  const now = Date.now();
+  const due = [];
+  for (const [id, entry] of Object.entries(data)) {
+    if (entry.dueDate <= now && globalPhraseBank[id]) {
+      due.push(globalPhraseBank[id]);
+    }
+  }
+  return due.sort(() => Math.random() - 0.5);
+}
+
+function getDueCount() {
+  const data = loadSrsData();
+  const now = Date.now();
+  let count = 0;
+  for (const [id, entry] of Object.entries(data)) {
+    if (entry.dueDate <= now && globalPhraseBank[id]) count++;
+  }
+  return count;
+}
+
+// ========================
 // DASHBOARD LOGIC
 // ========================
 
@@ -50,8 +144,29 @@ function initDashboard() {
   drillView.style.display = 'none';
   endScreen.classList.add('hidden');
   endScreen.style.display = 'none';
+  isReviewMode = false;
   
   topicsContainer.innerHTML = '';
+
+  // Daily Review Card
+  const dueCount = getDueCount();
+  if (dueCount > 0) {
+    const reviewBtn = document.createElement('button');
+    reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer col-span-1 md:col-span-3';
+    
+    const reviewTitle = document.createElement('h2');
+    reviewTitle.className = 'text-2xl font-bold text-purple-700';
+    reviewTitle.textContent = '📖 Daily Review';
+    reviewBtn.appendChild(reviewTitle);
+
+    const reviewDesc = document.createElement('p');
+    reviewDesc.className = 'text-purple-500 font-medium';
+    reviewDesc.textContent = `${dueCount} phrases due for review`;
+    reviewBtn.appendChild(reviewDesc);
+
+    reviewBtn.addEventListener('click', startReviewDrill);
+    topicsContainer.appendChild(reviewBtn);
+  }
 
   topics.forEach(topic => {
     const topicBtn = document.createElement('button');
@@ -72,6 +187,34 @@ function initDashboard() {
     topicBtn.addEventListener('click', () => showLessonsView(topic));
     topicsContainer.appendChild(topicBtn);
   });
+}
+
+function startReviewDrill() {
+  const duePhrases = getDueReviewPhrases();
+  if (duePhrases.length === 0) return;
+
+  isReviewMode = true;
+  activeTopic = null;
+  activeLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
+  phrases = duePhrases;
+
+  dashboardView.classList.add('hidden');
+  dashboardView.style.display = 'none';
+  lessonsView.classList.add('hidden');
+  lessonsView.style.display = 'none';
+  drillView.classList.remove('hidden');
+  drillView.style.display = 'flex';
+  endScreen.classList.add('hidden');
+  endScreen.style.display = 'none';
+
+  streak = 0;
+  targetStreak = Math.min(duePhrases.length, 24);
+  failedPhrases = [];
+  drawingDeck = [];
+  updateStreakDisplay();
+
+  nextPhrase();
+  inputField.focus();
 }
 
 function showLessonsView(topic) {
@@ -247,6 +390,15 @@ function handleSuccess() {
       window.speechSynthesis.speak(utterance);
   }
 
+  // SRS: track progress
+  if (currentPhrase.meta && currentPhrase.meta.id) {
+    if (isReviewMode) {
+      srsPromote(currentPhrase.meta.id);
+    } else {
+      srsRegisterNew(currentPhrase.meta.id);
+    }
+  }
+
   streak++;
   updateStreakDisplay();
   
@@ -260,6 +412,11 @@ function handleSuccess() {
 revealAnswerBtn.addEventListener('click', () => {
   targetStreak++;
   failedPhrases.push(currentPhrase);
+  
+  // SRS: demote on reveal
+  if (currentPhrase.meta && currentPhrase.meta.id) {
+    srsDemote(currentPhrase.meta.id);
+  }
   
   ghostText.classList.remove('opacity-0');
   ghostText.classList.add('opacity-100');
@@ -284,10 +441,20 @@ function showEndScreen() {
   localStorage.setItem(activeLesson.id, count + 1);
 }
 
-restartBtn.addEventListener('click', () => startLesson(activeLesson));
-dashboardReturnBtn.addEventListener('click', () => showLessonsView(activeTopic));
-quitDrillBtn.addEventListener('click', () => showLessonsView(activeTopic));
+restartBtn.addEventListener('click', () => {
+  if (isReviewMode) startReviewDrill();
+  else startLesson(activeLesson);
+});
+dashboardReturnBtn.addEventListener('click', () => {
+  if (isReviewMode || !activeTopic) initDashboard();
+  else showLessonsView(activeTopic);
+});
+quitDrillBtn.addEventListener('click', () => {
+  if (isReviewMode || !activeTopic) initDashboard();
+  else showLessonsView(activeTopic);
+});
 backToDashboardBtn.addEventListener('click', initDashboard);
 
 // Start
+buildGlobalPhraseBank();
 initDashboard();

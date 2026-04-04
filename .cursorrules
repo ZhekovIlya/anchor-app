@@ -1,34 +1,65 @@
 # Data Format Rules for Minimalist Spanish Anchor App
 
-When creating or modifying curriculum data in the `data/` directory (like `topics_core.js`), always follow these strict structure and tokenization rules:
+When creating or modifying curriculum data in the `data/` directory, always follow these strict structure and tokenization rules.
 
 ## 1. Topic & Lesson Structure
 - All topic files must append their data to the global array: 
-  `window.AnchorData.push({ id: "...", title: "...", description: "...", lessons: [...] });`
+  `window.AnchorData.push({ id, title, description, legacy, lessons: [...] });`
 - Make sure `window.AnchorData = window.AnchorData || [];` is atop the file.
-- Each `lesson` must contain an `id`, a `title`, and an array of `phrases` (usually exactly 6 phrases per lesson to minimize cognitive overload).
-- **Curriculum Design:** Break lessons into halves per concept (Part 1 focuses on the "Yo" perspective; Part 2 focuses on "Tú/Él" perspectives). Alternate between affirmative and negative statements.
+- Set `legacy: false` for new topics, `legacy: true` for old format topics (like topics_core.js).
+- Each `lesson` must contain an `id`, a `title`, and an array of `phrases` (exactly 6 phrases per lesson).
+- **Exam Lessons**: Add `exam: true` and `phrases: []` — app.js auto-populates from sibling lessons at runtime.
+- **Curriculum Pacing**: 
+  - Part A = Yo (affirmative + negative)
+  - Part B = Tú / Él (person switching, no negatives)
+  - Part C = Nosotros (affirmative + negative)
 
 ## 2. Phrase Object Structure
-Each phrase inside a lesson must be an object containing exactly three keys: `ru`, `es`, and `tokens`.
+Each phrase must contain exactly three required keys (`ru`, `es`, `tokens`) plus an optional `meta` object:
 ```javascript
 {
-  ru: "Я есть (описание)", // Native prompt
-  es: "Yo soy",              // Target answer
-  tokens: [                  // Array breaking down 'es'
+  ru: "Я не плохой",
+  es: "Yo no soy malo",
+  tokens: [
     { text: "Yo", type: "subject" },
     { text: " ", type: "space" },
-    { text: "soy", type: "verb" }
-  ]
+    { text: "no", type: "negation" },
+    { text: " ", type: "space" },
+    { text: "soy", type: "verb" },
+    { text: " ", type: "space" },
+    { text: "malo", type: "object" }
+  ],
+  meta: {
+    id: "ser_pres_yo_neg_malo",
+    lemma: "ser",
+    person: "yo",
+    polarity: "negative",
+    tense: "present",
+    tags: ["identity", "adjective"],
+    confusable_with: "estar"
+  }
 }
 ```
 
 ## 3. Strict Tokenization Rules
-- **Exact Match:** The concatenated `text` of all tokens must *exactly* match the `es` string, including all spaces and punctuation. Do not miss any hidden spaces.
-- **Spaces are distinct:** Every space must be isolated into its own token: `{ text: " ", type: "space" }`.
+- **Exact Match:** The concatenated `text` of all tokens must *exactly* match the `es` string.
+- **Spaces are distinct:** Every space must be its own token: `{ text: " ", type: "space" }`.
 - **Supported Grammatical Types:**
-  - `subject` (Renders blue, e.g., "Yo", "Tú", "El chico")
-  - `verb` (Renders red, e.g., "soy", "tengo", "quiero")
-  - `negation` (Renders yellow, e.g., "no")
-  - `object` (Renders green, e.g., "una manzana", "dinero")
-  - `space` (Hidden formatting)
+  - `subject` (Blue — Yo, Tú, Él, Nosotros)
+  - `verb` (Red — soy, tengo, hago, etc.)
+  - `negation` (Yellow — no)
+  - `object` (Green — bueno, tiempo, a casa, etc.)
+  - `space` (Invisible spacer)
+
+## 4. Meta Object Schema
+- `id`: Unique string. Pattern: `{lemma}_{tense}_{person}_{polarity}` or `{lemma}_{tense}_{person}_{polarity}_{object}`
+- `lemma`: Base verb infinitive (e.g., "ser", "estar")
+- `person`: `"yo"` | `"tu"` | `"el"` | `"nosotros"`
+- `polarity`: `"affirmative"` | `"negative"`
+- `tense`: `"present"` | `"past"`
+- `tags`: Array of grouping strings (e.g., `["identity", "adjective"]`)
+- `confusable_with`: Lemma of a confusable verb, or `null`
+
+## 5. Streak Targets
+- Regular lessons: 24
+- Final Exam lessons: 50
