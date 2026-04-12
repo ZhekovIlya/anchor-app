@@ -17,11 +17,13 @@ const revealAnswerBtn = document.getElementById('revealAnswerBtn');
 const quitDrillBtn = document.getElementById('quitDrillBtn');
 const restartBtn = document.getElementById('restartBtn');
 const dashboardReturnBtn = document.getElementById('dashboardReturnBtn');
+const languageSelect = document.getElementById('languageSelect');
 
 // State
 let topics = window.AnchorData || [];
 let activeTopic = null;
 let activeLesson = null;
+let currentLanguage = languageSelect ? languageSelect.value : 'ru';
 let currentPhrase = null;
 let phrases = [];
 let drawingDeck = [];
@@ -325,7 +327,8 @@ function nextPhrase() {
     currentPhrase = drawingDeck.pop();
   }
 
-  russianPrompt.textContent = currentPhrase.ru;
+  const promptText = currentPhrase[currentLanguage] || currentPhrase['ru']; // Fallback to 'ru' if translation doesn't exist
+  russianPrompt.textContent = promptText;
   ghostText.textContent = currentPhrase.es;
 
   const isExam = activeLesson && activeLesson.exam;
@@ -344,8 +347,9 @@ function nextPhrase() {
   resetInput();
 
   if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(currentPhrase.ru);
-    utterance.lang = 'ru-RU';
+    const promptText = currentPhrase[currentLanguage] || currentPhrase['ru'];
+    const utterance = new SpeechSynthesisUtterance(promptText);
+    utterance.lang = currentLanguage === 'uk' ? 'uk-UA' : 'ru-RU';
     window.speechSynthesis.speak(utterance);
   }
 }
@@ -499,6 +503,12 @@ quitDrillBtn.addEventListener('click', () => {
   else showLessonsView(activeTopic);
 });
 backToDashboardBtn.addEventListener('click', initDashboard);
+
+if (languageSelect) {
+  languageSelect.addEventListener('change', (e) => {
+    currentLanguage = e.target.value;
+  });
+}
 
 // Start
 buildGlobalPhraseBank();
