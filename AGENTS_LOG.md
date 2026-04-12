@@ -75,3 +75,11 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[TEACH]**: Opened `LESSONS_LEARNED.md` to formally document that `&&` operators fail in standard Windows PowerShell, and explicitly logged a new rule to chain operations using `;`.
 - **[DEV]**: Changed `index.html` `topicsContainer` to a `w-full flex-col` design so all topics render strictly linearly (row view). Allowed `app.js` review buttons to naturally inherit full width. Left `lessonsContainer` configured properly to `grid-cols-5`.
 - **[AQA/QA]**: Display layouts function predictably under responsive viewport conditions. Wait logic unaffected. Passed.
+
+### Task 13: Parallel Feature Branches (Scripts, Terminology, Language Toggle) ✅
+- **[TEACH]**: Updated `LESSONS_LEARNED.md` enforcing the mandatory deletion of one-off scripts (e.g. Node/Python files). 
+- **[DEV]**: Executed the work via separate branches to ensure isolated reviewing conditions ("no single change stack"):
+  - `task/script-cleanup`: Deleted `split_w1.js / py` and formalized tracking.
+  - `task/grammar-terms`: Replaced `(м.р.)`/`(ж.р.)` with `(мужской род)`/`(женский род)` globally across `week_1.js`.
+  - `feature/language-toggle`: Built a `select` dropdown on `index.html` anchoring to the top-right. Rewrote logic in `app.js` to extract translation objects depending on the active locale. Bound `SpeechSynthesisUtterance.lang` to dynamically shift to `uk-UA` if triggered. 
+- **[AQA/QA]**: Branch management properly segmented. `data/week_1.js` schema remains strictly compliant to parsing logic. UI toggle handles undefined keys correctly by falling back to `ru`. Passed.
