@@ -18,6 +18,7 @@ const quitDrillBtn = document.getElementById('quitDrillBtn');
 const restartBtn = document.getElementById('restartBtn');
 const dashboardReturnBtn = document.getElementById('dashboardReturnBtn');
 const languageSelect = document.getElementById('languageSelect');
+const languageSelectContainer = document.getElementById('languageSelectContainer');
 
 // State
 let topics = window.AnchorData || [];
@@ -141,6 +142,9 @@ function getDueCount() {
 function initDashboard() {
   dashboardView.classList.remove('hidden');
   dashboardView.style.display = 'flex';
+  if (languageSelectContainer) {
+    languageSelectContainer.classList.remove('hidden');
+  }
   lessonsView.classList.add('hidden');
   lessonsView.style.display = 'none';
   drillView.classList.add('hidden');
@@ -225,6 +229,9 @@ function showLessonsView(topic) {
   activeTopic = topic;
   dashboardView.classList.add('hidden');
   dashboardView.style.display = 'none';
+  if (languageSelectContainer) {
+    languageSelectContainer.classList.add('hidden');
+  }
   lessonsView.classList.remove('hidden');
   lessonsView.style.display = 'flex';
   drillView.classList.add('hidden');
@@ -293,6 +300,9 @@ function startLesson(lesson) {
 
   lessonsView.classList.add('hidden');
   lessonsView.style.display = 'none';
+  if (languageSelectContainer) {
+    languageSelectContainer.classList.add('hidden');
+  }
   drillView.classList.remove('hidden');
   drillView.style.display = 'flex';
   endScreen.classList.add('hidden');
@@ -327,7 +337,7 @@ function nextPhrase() {
     currentPhrase = drawingDeck.pop();
   }
 
-  const promptText = currentPhrase[currentLanguage] || currentPhrase['ru']; // Fallback to 'ru' if translation doesn't exist
+  const promptText = currentPhrase[currentLanguage] || currentPhrase['ru'];
   russianPrompt.textContent = promptText;
   ghostText.textContent = currentPhrase.es;
 
@@ -349,7 +359,18 @@ function nextPhrase() {
   if ('speechSynthesis' in window) {
     const promptText = currentPhrase[currentLanguage] || currentPhrase['ru'];
     const utterance = new SpeechSynthesisUtterance(promptText);
-    utterance.lang = currentLanguage === 'uk' ? 'uk-UA' : 'ru-RU';
+    
+    // Voice fallback logic for Windows without native uk-UA
+    let voices = window.speechSynthesis.getVoices();
+    let targetLang = currentLanguage === 'uk' ? 'uk-UA' : 'ru-RU';
+    let voice = voices.find(v => v.lang === targetLang || v.lang.startsWith(currentLanguage)) 
+             || voices.find(v => v.lang.startsWith('ru')); // Fallback to Russian accent if UK is missing
+    
+    if (voice) {
+      utterance.voice = voice;
+    }
+    utterance.lang = targetLang;
+    
     window.speechSynthesis.speak(utterance);
   }
 }
@@ -508,6 +529,14 @@ if (languageSelect) {
   languageSelect.addEventListener('change', (e) => {
     currentLanguage = e.target.value;
   });
+}
+
+// Trigger voices load initially for compatibility
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
 }
 
 // Start
