@@ -26,6 +26,7 @@ let currentPhrase = null;
 let phrases = [];
 let drawingDeck = [];
 let streak = 0;
+let initialTargetStreak = 0;
 let targetStreak = 24;
 let failedPhrases = [];
 
@@ -145,7 +146,7 @@ function initDashboard() {
   endScreen.classList.add('hidden');
   endScreen.style.display = 'none';
   isReviewMode = false;
-  
+
   topicsContainer.innerHTML = '';
 
   // Daily Review Card
@@ -153,7 +154,7 @@ function initDashboard() {
   if (dueCount > 0) {
     const reviewBtn = document.createElement('button');
     reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer col-span-1 md:col-span-3';
-    
+
     const reviewTitle = document.createElement('h2');
     reviewTitle.className = 'text-2xl font-bold text-purple-700';
     reviewTitle.textContent = '📖 Daily Review';
@@ -171,7 +172,7 @@ function initDashboard() {
   topics.forEach(topic => {
     const topicBtn = document.createElement('button');
     topicBtn.className = 'text-left bg-white border border-gray-200 hover:border-blue-400 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col gap-2 cursor-pointer';
-    
+
     const titleEl = document.createElement('h2');
     titleEl.className = 'text-2xl font-bold text-gray-800';
     titleEl.textContent = topic.title;
@@ -183,7 +184,7 @@ function initDashboard() {
       descEl.textContent = topic.description;
       topicBtn.appendChild(descEl);
     }
-    
+
     topicBtn.addEventListener('click', () => showLessonsView(topic));
     topicsContainer.appendChild(topicBtn);
   });
@@ -209,6 +210,7 @@ function startReviewDrill() {
 
   streak = 0;
   targetStreak = Math.min(duePhrases.length, 24);
+  initialTargetStreak = targetStreak;
   failedPhrases = [];
   drawingDeck = [];
   updateStreakDisplay();
@@ -235,13 +237,13 @@ function showLessonsView(topic) {
     const timesFinished = parseInt(localStorage.getItem(lesson.id) || "0", 10);
 
     const lessonBtn = document.createElement('button');
-    
+
     if (lesson.exam) {
       lessonBtn.className = 'text-left bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 p-4 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col gap-1 cursor-pointer col-span-1 md:col-span-3';
     } else {
       lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
     }
-    
+
     const lessonTitle = document.createElement('span');
     lessonTitle.className = lesson.exam ? 'text-lg font-bold text-yellow-700' : 'text-lg font-semibold text-gray-700';
     lessonTitle.textContent = lesson.title;
@@ -249,7 +251,7 @@ function showLessonsView(topic) {
 
     const phraseCount = document.createElement('span');
     phraseCount.className = 'text-sm text-gray-400';
-    
+
     let phraseTotal = lesson.exam
       ? topic.lessons.filter(l => !l.exam).reduce((sum, l) => sum + l.phrases.length, 0)
       : lesson.phrases.length;
@@ -259,7 +261,7 @@ function showLessonsView(topic) {
       if (!lesson.exam) lessonBtn.classList.add('border-green-100', 'bg-green-50/30');
     }
     phraseCount.textContent = subtitle;
-    
+
     lessonBtn.appendChild(phraseCount);
 
     lessonBtn.addEventListener('click', () => startLesson(lesson));
@@ -296,6 +298,7 @@ function startLesson(lesson) {
 
   streak = 0;
   targetStreak = lesson.exam ? 50 : 24;
+  initialTargetStreak = targetStreak;
   failedPhrases = [];
   drawingDeck = [];
   updateStreakDisplay();
@@ -309,7 +312,7 @@ function updateStreakDisplay() {
 }
 
 function nextPhrase() {
-  if (streak >= 24 && failedPhrases.length > 0) {
+  if (streak >= initialTargetStreak && failedPhrases.length > 0) {
     currentPhrase = failedPhrases.shift();
   } else {
     if (drawingDeck.length === 0) {
@@ -317,11 +320,14 @@ function nextPhrase() {
     }
     currentPhrase = drawingDeck.pop();
   }
-  
+
   russianPrompt.textContent = currentPhrase.ru;
   ghostText.textContent = currentPhrase.es;
-  
-  if (streak < 12) {
+
+  const isExam = activeLesson && activeLesson.exam;
+  const isCopyStage = !isExam && streak < 12;
+
+  if (isCopyStage) {
     ghostText.classList.remove('opacity-0');
     ghostText.classList.add('opacity-100');
     revealAnswerBtn.classList.add('hidden');
@@ -330,13 +336,13 @@ function nextPhrase() {
     ghostText.classList.add('opacity-0');
     revealAnswerBtn.classList.remove('hidden');
   }
-  
+
   resetInput();
 
   if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(currentPhrase.ru);
-      utterance.lang = 'ru-RU';
-      window.speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(currentPhrase.ru);
+    utterance.lang = 'ru-RU';
+    window.speechSynthesis.speak(utterance);
   }
 }
 
@@ -348,7 +354,7 @@ function resetInput() {
 function renderFakeInput(userInput) {
   let html = "";
   let remainingInput = userInput;
-  
+
   for (const token of currentPhrase.tokens) {
     if (remainingInput.length === 0) break;
 
@@ -356,19 +362,19 @@ function renderFakeInput(userInput) {
     const lowerToken = token.text.toLowerCase();
 
     if (lowerRemaining.startsWith(lowerToken)) {
-        const typedPortion = remainingInput.substring(0, token.text.length);
-        const colorClass = colorMap[token.type] || "";
-        html += `<span class="${colorClass}">${typedPortion}</span>`;
-        remainingInput = remainingInput.substring(token.text.length);
+      const typedPortion = remainingInput.substring(0, token.text.length);
+      const colorClass = colorMap[token.type] || "";
+      html += `<span class="${colorClass}">${typedPortion}</span>`;
+      remainingInput = remainingInput.substring(token.text.length);
     } else {
-        html += `<span>${remainingInput}</span>`;
-        remainingInput = "";
-        break;
+      html += `<span>${remainingInput}</span>`;
+      remainingInput = "";
+      break;
     }
   }
 
   if (remainingInput.length > 0) {
-      html += `<span>${remainingInput}</span>`;
+    html += `<span>${remainingInput}</span>`;
   }
 
   fakeInput.innerHTML = html;
@@ -376,7 +382,7 @@ function renderFakeInput(userInput) {
 
 inputField.addEventListener('input', (e) => {
   renderFakeInput(inputField.value);
-  
+
   // Auto-submit on exact match
   if (inputField.value.trim().toLowerCase() === currentPhrase.es.toLowerCase()) {
     setTimeout(handleSuccess, 100);
@@ -385,9 +391,9 @@ inputField.addEventListener('input', (e) => {
 
 function handleSuccess() {
   if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(currentPhrase.es);
-      utterance.lang = 'es-ES';
-      window.speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(currentPhrase.es);
+    utterance.lang = 'es-ES';
+    window.speechSynthesis.speak(utterance);
   }
 
   // SRS: track progress
@@ -401,7 +407,7 @@ function handleSuccess() {
 
   streak++;
   updateStreakDisplay();
-  
+
   if (streak >= targetStreak) {
     showEndScreen();
   } else {
@@ -412,16 +418,16 @@ function handleSuccess() {
 revealAnswerBtn.addEventListener('click', () => {
   targetStreak++;
   failedPhrases.push(currentPhrase);
-  
+
   // SRS: demote on reveal
   if (currentPhrase.meta && currentPhrase.meta.id) {
     srsDemote(currentPhrase.meta.id);
   }
-  
+
   ghostText.classList.remove('opacity-0');
   ghostText.classList.add('opacity-100');
   revealAnswerBtn.classList.add('hidden');
-  
+
   updateStreakDisplay();
   inputField.focus();
 });

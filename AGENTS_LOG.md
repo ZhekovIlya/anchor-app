@@ -47,3 +47,7 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - `924a751` — SRS engine + Daily Review + .cursorrules update
 
 ### No blockers encountered. No entries needed in LESSONS_LEARNED.md.
+
+[2026-04-12] [QA/DEV] Generated week_2.js matching specific phrase set, keeping 80/20 rule. Passed token validation check.
+
+[2026-04-12] [QA/DEV] Updated .agents/rules/multi-agent-rules.md to include the 80/20 vocabulary degradation scaling formula rules.
