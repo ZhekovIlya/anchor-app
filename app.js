@@ -153,7 +153,7 @@ function initDashboard() {
   const dueCount = getDueCount();
   if (dueCount > 0) {
     const reviewBtn = document.createElement('button');
-    reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer col-span-1 md:col-span-5';
+    reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer w-full';
 
     const reviewTitle = document.createElement('h2');
     reviewTitle.className = 'text-2xl font-bold text-purple-700';

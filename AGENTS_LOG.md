@@ -70,3 +70,8 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[DEV]**: Checked out `feature/5-lessons-layout`. Updated `index.html` and `app.js` grid definitions to strictly apply `md:grid-cols-5`. Updated `AGENTS_LOG.md` and `.cursorrules` to define the 5 progression buckets (Yo, Tu/Usted, El/Ella, Nosotros, Ellos/Ellas/Ustedes). Rewrote `data/week_1.js` enforcing the new curriculum standard, including dropping '(вежливо)' string descriptors from 'Usted/Ustedes' blocks.
 - **[AQA]**: Verified the `grid-cols-5` Tailwind classes render without syntax conflicts in UI cards. Verified arrays are preserved identically in `week_1.js`.
 - **[QA]**: Confirmed exactly 6 phrases per sub-lesson were constructed, effectively normalizing lesson density globally to ensure the `targetStreak_base` logic completes symmetrically with 4 loops over 6 iterations. Passed.
+
+### Task 12: Row Layout for Topics and Documentation Updates ✅
+- **[TEACH]**: Opened `LESSONS_LEARNED.md` to formally document that `&&` operators fail in standard Windows PowerShell, and explicitly logged a new rule to chain operations using `;`.
+- **[DEV]**: Changed `index.html` `topicsContainer` to a `w-full flex-col` design so all topics render strictly linearly (row view). Allowed `app.js` review buttons to naturally inherit full width. Left `lessonsContainer` configured properly to `grid-cols-5`.
+- **[AQA/QA]**: Display layouts function predictably under responsive viewport conditions. Wait logic unaffected. Passed.
