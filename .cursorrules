@@ -2,20 +2,47 @@
 
 When creating or modifying curriculum data in the `data/` directory, always follow these strict structure and tokenization rules.
 
+## 0. Project Structure
+
+```
+src/
+├── core/                  # SHARED — pure logic, no DOM, no browser APIs
+│   ├── constants.js       # Color map, streak targets, SRS intervals
+│   ├── srs.js             # Leitner bucket engine (injectable storage)
+│   ├── engine.js          # Drill state machine (callback-based)
+│   └── data-loader.js     # Topic/phrase bank assembly
+└── web/                   # BROWSER ONLY — DOM, speech, localStorage
+    ├── main.js            # Entry point (orchestrator)
+    ├── storage.js         # localStorage adapter
+    ├── speech.js          # Web Speech API wrapper
+    ├── dashboard.js       # Dashboard + lessons view rendering
+    ├── drill-ui.js        # Drill DOM + input + end screen
+    └── styles.css         # Tailwind CSS entry
+data/                      # Curriculum data (ES modules)
+tests/                     # Node test runner validation
+```
+
+### Hard Rules
+- **Nothing in `core/` may reference `document`, `window`, `localStorage`, or any browser API.**
+- All new logic goes into `src/core/` (DOM-free) or `src/web/` (DOM-dependent).
+- Use ES module `import`/`export` — never `window.AnchorData` globals.
+- Storage must go through the adapter interface (`{ load(key), save(key, data) }`).
+- Dev workflow: `npm run dev` → localhost:3000. Build: `npm run build`.
+- Test data: `npm test` before committing data changes.
+
 ## 1. Topic & Lesson Structure
-- All topic files must append their data to the global array: 
-  `window.AnchorData.push({ id, title, description, legacy, lessons: [...] });`
-- Make sure `window.AnchorData = window.AnchorData || [];` is atop the file.
-- Set `legacy: false` for new topics, `legacy: true` for old format topics (like topics_core.js).
+- Data files use ES module default exports:
+  `export default { id, title, description, legacy, lessons: [...] };`
+- Set `legacy: false` for new topics, `legacy: true` for old format topics.
 - Each `lesson` must contain an `id`, a `title`, and an array of `phrases` (exactly 6 phrases per lesson).
-- **Exam Lessons**: Add `exam: true` and `phrases: []` — app.js auto-populates from sibling lessons at runtime.
-- **Curriculum Pacing (5 Lessons per Group)**: 
+- **Exam Lessons**: Add `exam: true` and `phrases: []` — engine auto-populates from sibling lessons at runtime.
+- **Curriculum Pacing (5 Lessons per Group)**:
   - Part A = Yo
   - Part B = Tú / Usted
   - Part C = Él / Ella
   - Part D = Nosotros
   - Part E = Ellos / Ellas / Ustedes
-- **Layout Standards**: 
+- **Layout Standards**:
   - Ensure topic and lesson cards in the UI use a 5-column layout on desktop: `grid-cols-1 md:grid-cols-5`.
   - Do NOT use extra descriptors in Russian for "Вы" (e.g. no "вежливо"), simply use "Вы", "Вам", "У вас".
 
@@ -52,6 +79,7 @@ Each phrase must contain exactly three required keys (`ru`, `es`, `tokens`) plus
 - **Supported Grammatical Types:**
   - `subject` (Blue — Yo, Tú, Él, Nosotros)
   - `verb` (Red — soy, tengo, hago, etc.)
+  - `verb_infinitive` (Light Red — infinitives in compound structures)
   - `negation` (Yellow — no)
   - `object` (Green — bueno, tiempo, a casa, etc.)
   - `space` (Invisible spacer)

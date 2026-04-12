@@ -1,5 +1,3 @@
-window.AnchorData = window.AnchorData || [];
-
 const week1Lessons = [
   // ========================================================
   // PHASE 1: PURE CONJUGATION (Subject + Verb / Subject + no + Verb)
@@ -302,10 +300,10 @@ const week1Lessons = [
   }
 ];
 
-window.AnchorData.push({
+export default {
   id: "week_1",
   title: "Week 1: Identity & Core Verbs",
   description: "Ser, Estar, Ir, Tener, Hacer, Decir (Yo, Tú/Usted, Él/Ella, Nosotros, Ellos/Ellas/Ustedes)",
   legacy: false,
-  lessons: week1Lessons
-});
+  lessons: week1Lessons,
+};

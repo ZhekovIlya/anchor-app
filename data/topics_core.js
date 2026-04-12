@@ -1,4 +1,3 @@
-window.AnchorData = window.AnchorData || [];
 const lessons = [
     {
       id: "lesson_c3_1",
@@ -482,10 +481,10 @@ const lessons = [
     }
 ];
 
-window.AnchorData.push({
+export default {
   id: "verb_specialties",
   title: "Verb Specialties (Legacy)",
   description: "Master all core irregular, stem-changing, and vital everyday verbs.",
   legacy: true,
-  lessons: lessons
-});
+  lessons: lessons,
+};

@@ -371,10 +371,10 @@ const week2Lessons = [
   }
 ];
 
-window.AnchorData.push({
+export default {
   id: "week_2",
   title: "Week 2: Survival Scenarios",
   description: "Apartments, Banks, and Next Steps using Core Verbs.",
   legacy: false,
-  lessons: week2Lessons
-});
+  lessons: week2Lessons,
+};
