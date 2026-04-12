@@ -51,3 +51,22 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 [2026-04-12] [QA/DEV] Generated week_2.js matching specific phrase set, keeping 80/20 rule. Passed token validation check.
 
 [2026-04-12] [QA/DEV] Updated .agents/rules/multi-agent-rules.md to include the 80/20 vocabulary degradation scaling formula rules.
+
+### Task 8: Fix Missing Week 2 in Dashboard ✅
+- **[TEACH]** Noted that adding new `week_X.js` files requires updating `index.html`. Added this to `LESSONS_LEARNED.md`.
+- **[DEV]** Injected `<script src="data/week_2.js"></script>` into `index.html`. 
+- **[AQA/QA]** Verified HTML validity and product logic. Week 2 now appears on the dashboard.
+
+### Task 9: Audio Synchronization & Loader UI ✅
+- **[DEV]**: Added `#successLoader` spinner to `index.html`. Refactored `handleSuccess` and `nextPhrase` in `app.js` to wait for TTS completion (`utterance.onend`) before advancing to the next phrase. 
+- **[AQA/QA]**: Verified that the screen visualizer strictly syncs with the pronunciation, preventing cognitive overload and overlap.
+
+### Task 10: Split 'Tú / Él' into 'Tú / Usted' and 'Él / Ella' ✅
+- **[DEV]**: Refactored `data/week_1.js` to logically separate all 'Tú / Él' lesson types into dedicated 'Tú / Usted' and 'Él / Ella' pairings. Assigned proper gendered adjectives (e.g. `pequeña`, `buena`, `lista`) and pronoun formats across both ES and RU translation matrices.
+- **[AQA]**: Performed token verification. All newly generated tokens accurately mirror the target schema.
+- **[QA]**: Verified streak target consistency (`24`). Balances lesson size without increasing base duration artificially. Passed.
+
+### Task 11: Implement 5-Column Navigation and Ellos/Ellas/Ustedes Curriculum ✅
+- **[DEV]**: Checked out `feature/5-lessons-layout`. Updated `index.html` and `app.js` grid definitions to strictly apply `md:grid-cols-5`. Updated `AGENTS_LOG.md` and `.cursorrules` to define the 5 progression buckets (Yo, Tu/Usted, El/Ella, Nosotros, Ellos/Ellas/Ustedes). Rewrote `data/week_1.js` enforcing the new curriculum standard, including dropping '(вежливо)' string descriptors from 'Usted/Ustedes' blocks.
+- **[AQA]**: Verified the `grid-cols-5` Tailwind classes render without syntax conflicts in UI cards. Verified arrays are preserved identically in `week_1.js`.
+- **[QA]**: Confirmed exactly 6 phrases per sub-lesson were constructed, effectively normalizing lesson density globally to ensure the `targetStreak_base` logic completes symmetrically with 4 loops over 6 iterations. Passed.

@@ -153,7 +153,7 @@ function initDashboard() {
   const dueCount = getDueCount();
   if (dueCount > 0) {
     const reviewBtn = document.createElement('button');
-    reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer col-span-1 md:col-span-3';
+    reviewBtn.className = 'text-left bg-purple-50 border-2 border-purple-400 hover:border-purple-500 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex flex-col gap-2 cursor-pointer col-span-1 md:col-span-5';
 
     const reviewTitle = document.createElement('h2');
     reviewTitle.className = 'text-2xl font-bold text-purple-700';
@@ -239,7 +239,7 @@ function showLessonsView(topic) {
     const lessonBtn = document.createElement('button');
 
     if (lesson.exam) {
-      lessonBtn.className = 'text-left bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 p-4 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col gap-1 cursor-pointer col-span-1 md:col-span-3';
+      lessonBtn.className = 'text-left bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 p-4 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col gap-1 cursor-pointer col-span-1 md:col-span-5';
     } else {
       lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
     }
@@ -312,6 +312,10 @@ function updateStreakDisplay() {
 }
 
 function nextPhrase() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
   if (streak >= initialTargetStreak && failedPhrases.length > 0) {
     currentPhrase = failedPhrases.shift();
   } else {
@@ -390,11 +394,46 @@ inputField.addEventListener('input', (e) => {
 });
 
 function handleSuccess() {
+  inputField.disabled = true;
+  const successLoader = document.getElementById('successLoader');
+  if (successLoader) {
+    successLoader.classList.remove('hidden');
+    successLoader.style.display = 'flex';
+  }
+
   if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(currentPhrase.es);
     utterance.lang = 'es-ES';
+    
+    let isFired = false;
+    const finish = () => {
+      if(!isFired) {
+        isFired = true;
+        completeSuccess();
+      }
+    };
+    
+    utterance.onend = finish;
+    utterance.onerror = finish;
+    
+    // Fallback if events don't fire
+    setTimeout(finish, Math.max(2000, currentPhrase.es.length * 100));
+
     window.speechSynthesis.speak(utterance);
+  } else {
+    setTimeout(completeSuccess, 1500);
   }
+}
+
+function completeSuccess() {
+  const successLoader = document.getElementById('successLoader');
+  if (successLoader) {
+    successLoader.classList.add('hidden');
+    successLoader.style.display = 'none';
+  }
+  inputField.disabled = false;
+  inputField.focus();
 
   // SRS: track progress
   if (currentPhrase.meta && currentPhrase.meta.id) {
