@@ -11,5 +11,6 @@
 - **ES Module Imports:** Use `import`/`export` — never `window.AnchorData` or other globals. Data files use `export default { ... }`.
 - **Storage Adapter Pattern:** Storage must go through the adapter interface `{ load(key), save(key, data) }`. Never call `localStorage` directly from core modules.
 - **Test Before Commit:** Run `npm test` to validate data integrity before committing data changes.
+- **NPM Flag Passing (Reported by USER):** When passing flags like `--host` to an npm script (e.g., `npm run dev`), you MUST use the double-dash syntax: `npm run dev -- --host`. Otherwise, the flag is consumed by npm and never reaches the underlying tool (Vite).
 
 ---

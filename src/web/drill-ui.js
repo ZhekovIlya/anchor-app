@@ -97,10 +97,17 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
   inputField.oninput = () => {
     renderFakeInput(fakeInput, inputField.value, activeEngine.getState().currentPhrase);
 
+    // Ensure scroll positions match after render
+    fakeInput.scrollLeft = inputField.scrollLeft;
+
     const { correct } = activeEngine.checkAnswer(inputField.value);
     if (correct) {
       setTimeout(() => activeEngine.handleCorrect(), 100);
     }
+  };
+
+  inputField.onscroll = () => {
+    fakeInput.scrollLeft = inputField.scrollLeft;
   };
 
   // Reveal answer

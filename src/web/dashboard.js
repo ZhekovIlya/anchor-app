@@ -79,32 +79,43 @@ export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
 
   topic.lessons.forEach(lesson => {
     const timesFinished = getCompletionCount(lesson.id);
-
     const lessonBtn = document.createElement('button');
 
-    if (lesson.exam) {
-      lessonBtn.className = 'text-left bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 p-4 rounded-xl shadow-md hover:shadow-lg transition-all flex flex-col gap-1 cursor-pointer col-span-1 md:col-span-5';
+    const baseClasses = 'text-left p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+    
+    if (timesFinished > 0) {
+      lessonBtn.className = `${baseClasses} bg-green-100 border-2 border-green-300 hover:border-green-400`;
+      if (lesson.exam) lessonBtn.classList.add('col-span-1', 'md:col-span-5');
+    } else if (lesson.exam) {
+      lessonBtn.className = `${baseClasses} bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 col-span-1 md:col-span-5`;
     } else {
-      lessonBtn.className = 'text-left bg-white border border-gray-100 hover:border-blue-400 p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+      lessonBtn.className = `${baseClasses} bg-white border border-gray-100 hover:border-blue-400`;
     }
 
     const lessonTitle = document.createElement('span');
-    lessonTitle.className = lesson.exam ? 'text-lg font-bold text-yellow-700' : 'text-lg font-semibold text-gray-700';
+    if (timesFinished > 0) {
+      lessonTitle.className = 'text-xl font-bold text-green-800';
+    } else if (lesson.exam) {
+      lessonTitle.className = 'text-lg font-bold text-yellow-700';
+    } else {
+      lessonTitle.className = 'text-lg font-semibold text-gray-700';
+    }
     lessonTitle.textContent = lesson.title;
     lessonBtn.appendChild(lessonTitle);
 
     const phraseCount = document.createElement('span');
-    phraseCount.className = 'text-sm text-gray-400';
+    phraseCount.className = timesFinished > 0 ? 'text-sm text-green-700 flex items-center gap-2 mt-1' : 'text-sm text-gray-400';
 
     let phraseTotal = lesson.exam
       ? topic.lessons.filter(l => !l.exam).reduce((sum, l) => sum + l.phrases.length, 0)
       : lesson.phrases.length;
     let subtitle = `${phraseTotal} phrases` + (lesson.exam ? ' • Streak: 50' : '');
+    
     if (timesFinished > 0) {
-      subtitle += ` • Completed: ${timesFinished} times`;
-      if (!lesson.exam) lessonBtn.classList.add('border-green-100', 'bg-green-50/30');
+      phraseCount.innerHTML = `<span>${subtitle}</span> <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full border border-blue-200">✓ Completed ${timesFinished} time${timesFinished > 1 ? 's' : ''}</span>`;
+    } else {
+      phraseCount.textContent = subtitle;
     }
-    phraseCount.textContent = subtitle;
 
     lessonBtn.appendChild(phraseCount);
     lessonBtn.addEventListener('click', () => onLessonClick(lesson));

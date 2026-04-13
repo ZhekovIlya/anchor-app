@@ -21,9 +21,13 @@
       border: none;
       width: 100%;
       text-align: center;
+      white-space: pre;
     }
 
-    .fake-input { white-space: pre; }
+    .fake-input {
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
     body { transition: background-color 0.1s; }
     .flash-error { animation: flash-red 0.5s ease-in-out; }
 
@@ -91,7 +95,7 @@
         <span>Repeat aloud</span>
       </div>
       
-      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none flex justify-center break-words"></div>
+      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none"></div>
       
       <input 
         type="text" 

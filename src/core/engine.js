@@ -93,11 +93,11 @@ export function createDrillEngine(options) {
       streak++;
       callbacks.onStreakUpdate(streak, targetStreak);
 
-      if (streak >= targetStreak) {
-        callbacks.onComplete();
-      } else {
-        // UI adapter plays TTS and calls done() when ready
-        callbacks.onCorrectAnswer(currentPhrase, () => {
+      // UI adapter plays TTS and calls done() when ready
+      callbacks.onCorrectAnswer(currentPhrase, () => {
+        if (streak >= targetStreak) {
+          callbacks.onComplete();
+        } else {
           pickNextPhrase();
           callbacks.onNextPhrase({
             phrase: currentPhrase,
@@ -105,8 +105,8 @@ export function createDrillEngine(options) {
             streak,
             targetStreak,
           });
-        });
-      }
+        }
+      });
     },
 
     /**

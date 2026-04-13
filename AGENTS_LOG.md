@@ -75,3 +75,19 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[TEACH]**: Opened `LESSONS_LEARNED.md` to formally document that `&&` operators fail in standard Windows PowerShell, and explicitly logged a new rule to chain operations using `;`.
 - **[DEV]**: Changed `index.html` `topicsContainer` to a `w-full flex-col` design so all topics render strictly linearly (row view). Allowed `app.js` review buttons to naturally inherit full width. Left `lessonsContainer` configured properly to `grid-cols-5`.
 - **[AQA/QA]**: Display layouts function predictably under responsive viewport conditions. Wait logic unaffected. Passed.
+
+### Task 13: Local Network Access Instructions ✅
+- **[DEV]**: Analyzed Vite configuration and current running processes. Confirmed that the `--host` flag is active and the server is listening on port 3000.
+- **[AQA/QA]**: Verified that providing the user with IP identification steps and connection instructions is the correct approach to enable multi-device testing without code changes.
+- **[TEACH]**: No code error was found; this was an operational guidance task.
+
+### Task 14: Fix Network Flag Passing ✅
+- **[DEV]**: Identified that `npm run dev --host` fails to pass the flag to Vite.
+- **[AQA]**: Verified that the correct syntax is `npm run dev -- --host`. 
+- **[QA]**: Added a dedicated `"network": "vite --host"` script to `package.json` to simplify the user experience.
+- **[TEACH]**: Updated `LESSONS_LEARNED.md` with the double-dash rule for npm flag passing.
+
+### Task 15: Pre-Master Merge UI and Drill Fixes ✅
+- **[DEV]**: Modified `src/core/engine.js` so that `onComplete` is checked *inside* the `onCorrectAnswer` done-callback, guaranteeing the Spanish TTS snippet finishes playing on the final successful phrase before ending the drill. Refactored `src/web/dashboard.js` to render completed lesson buttons with prominent `bg-green-100` and `border-green-300` styling, and added a specific blue badge for the number of completions for optimal contrast without breaking the minimalist theme. Updated `index.html` to allow native HTML horizontal scrolling behavior inside the input layer (`overflow-x: auto`), removed centering flex-wrap constraints, and bound `inputField.onscroll` in `src/web/drill-ui.js` to perfectly sync the `scrollLeft` property of the `fakeInput` overlay.
+- **[AQA]**: Verified correct `style.css`/Tailwind layout behavior. Ensured JS modifications have zero impact on token-matching schemas.
+- **[QA]**: Speech alignment logic respects pedagogical feedback loop. Green success states and contrast counters improve navigational feedback without confusing streaks. Passed.
