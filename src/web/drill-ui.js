@@ -5,7 +5,7 @@
 
 import { COLOR_MAP } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
-import { cancelSpeech, speakPrompt, speakAnswer } from './speech.js';
+import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
 import { showOnly } from './dashboard.js';
 import { incrementCompletion } from './storage.js';
 
@@ -43,7 +43,9 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
       onNextPhrase({ phrase, isCopyStage }) {
         cancelSpeech();
 
-        russianPrompt.textContent = phrase.ru;
+        const lang = getPromptLang();
+        const promptText = phrase[lang] || phrase.ru;
+        russianPrompt.textContent = promptText;
         ghostText.textContent = phrase.es;
 
         if (isCopyStage) {
@@ -57,7 +59,7 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
         }
 
         resetInput(elements);
-        speakPrompt(phrase.ru, 'ru-RU');
+        speakPrompt(promptText);
       },
 
       onStreakUpdate(streak, target) {
