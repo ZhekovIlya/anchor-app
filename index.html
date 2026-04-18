@@ -37,8 +37,15 @@
     }
   </style>
 </head>
-<body class="bg-white text-gray-900 min-h-screen w-screen flex flex-col items-center justify-start font-sans overflow-y-auto p-4 overflow-x-hidden">
-  
+<body class="bg-white text-gray-900 min-h-screen w-screen flex flex-col items-center justify-start font-sans overflow-y-auto p-4 overflow-x-hidden relative">
+  <!-- Language Selector -->
+  <div id="languageSelectContainer" class="fixed top-4 right-4 z-50">
+    <select id="languageSelect" class="bg-white border-2 border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm font-semibold focus:outline-none focus:border-blue-500 shadow-sm transition-colors cursor-pointer">
+      <option value="ru">🇷🇺 Русский</option>
+      <option value="uk">🇺🇦 Українська</option>
+    </select>
+  </div>
+
   <!-- DASHBOARD VIEW (TOPICS) -->
   <div id="dashboardView" class="w-full max-w-4xl flex flex-col items-center gap-8 py-12">
     <h1 class="text-5xl font-extrabold text-blue-600 mb-2">Minimalist Spanish Anchor</h1>
@@ -50,8 +57,15 @@
         <span class="text-sm font-bold text-gray-600 uppercase tracking-tight">Audio Settings</span>
       </div>
       <div class="flex gap-2 items-center">
+        <span class="text-xs text-gray-400 w-20 shrink-0">🇪🇸 Answer</span>
         <select id="spanishVoiceSelect" class="flex-grow bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
           <option value="">Default Spanish Voice</option>
+        </select>
+      </div>
+      <div class="flex gap-2 items-center">
+        <span class="text-xs text-gray-400 w-20 shrink-0">🇷🇺🇺🇦 Prompt</span>
+        <select id="promptVoiceSelect" class="flex-grow bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
+          <option value="">Default Russian Voice (ru-RU)</option>
         </select>
       </div>
     </div>
