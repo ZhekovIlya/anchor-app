@@ -109,10 +109,11 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[QA]**: Ensured no deployment secrets are hardcoded. Only static frontend logic is currently present. Hobby Plan audit confirms 24/7 stability for static assets.
 
 ### Task 19: Audio Settings & Voice Selection 🏆
-- **Commit**: `d285de1` (main)
-- **[DEV]**: Refactored `src/web/speech.js` to support dynamic voice listing and `localStorage` persistence. Moved the "Audio Settings" panel to the top of the dashboard for prominence. Shrunk the UI to a compact row view.
-- **[AQA]**: Balanced the layout with Tailwind classes (`max-w-md`, `text-sm`) to keep the dashboard minimalist while keeping settings accessible.
-- **[QA]**: Updated the test snippet to *"Hola, un placer saludarte."* to ensure a gender-neutral, professional greeting for all users.
+- **Commit**: `34ecd37` (main)
+- **[DEV]**: Refactored `src/web/speech.js` to support dynamic voice listing and `localStorage` persistence. Moved settings to the top and optimized UI size for mobile dashboard.
+- **[AQA]**: Balanced the layout with Tailwind classes. Fixed voice loading race conditions for Chrome/Android.
+- **[QA]**: Implemented the "Truman Show" greeting as the voice test snippet: *"Buenos días, y por si no nos vemos, buenas tardes y buenas noches."* This provides a fun, distinctive, and completely gender-neutral way to verify audio quality.
+
 
 
 
