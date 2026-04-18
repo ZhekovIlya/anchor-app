@@ -98,7 +98,7 @@ export function initVoiceSelector(selectElement) {
 
   selectElement.addEventListener('change', (e) => {
     localStorage.setItem(SELECTED_VOICE_KEY, e.target.value);
-    // Play a neutral test snippet
-    speakAnswer("Hola, un placer saludarte.", () => {});
+    // The Truman Show greeting: "Buenos días, y por si no nos vemos, buenas tardes y buenas noches."
+    speakAnswer("Buenos días, y por si no nos vemos, buenas tardes y buenas noches.", () => {});
   });
 }
