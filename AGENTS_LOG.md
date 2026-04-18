@@ -124,6 +124,8 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
   5. **Data**: Injected `uk` field into **all 330 phrases** (150 in `week_1.js`, 90 in `week_2.js`, 90 in `week_3.js`). Translations authored per pedagogical context.
 - **[AQA]**: Validated `npm test` — 570/570 phrases pass, 330 unique meta IDs, 6-phrase symmetry intact. No schema violations introduced. Scratch scripts deleted post-execution.
 - **[QA]**: Confirmed default behavior is unchanged (Russian) for all existing users. Ukrainian mode activates only when a `uk-UA` voice is explicitly selected. The `phrase[lang] || phrase.ru` fallback guarantees zero runtime errors even if a phrase is missing a `uk` field.
+- **[AQA/Hotfix]**: Removed old duplicate language toggle from merge resolution. Refined dropsdowns in the audio settings to use `w-fit`, removing flag emojis and preventing container overflows on long voice names.
+
 
 
 
