@@ -1,0 +1,21 @@
+{
+  "name": "anchor-app",
+  "version": "1.0.0",
+  "description": "Minimalist Spanish grammar drilling app with SRS",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "network": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": ["spanish", "language-learning", "srs"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.8"
+  }
+}

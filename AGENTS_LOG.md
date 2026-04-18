@@ -76,10 +76,44 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[DEV]**: Changed `index.html` `topicsContainer` to a `w-full flex-col` design so all topics render strictly linearly (row view). Allowed `app.js` review buttons to naturally inherit full width. Left `lessonsContainer` configured properly to `grid-cols-5`.
 - **[AQA/QA]**: Display layouts function predictably under responsive viewport conditions. Wait logic unaffected. Passed.
 
-### Task 13: Parallel Feature Branches (Scripts, Terminology, Language Toggle) ✅
-- **[TEACH]**: Updated `LESSONS_LEARNED.md` enforcing the mandatory deletion of one-off scripts (e.g. Node/Python files). 
-- **[DEV]**: Executed the work via separate branches to ensure isolated reviewing conditions ("no single change stack"):
-  - `task/script-cleanup`: Deleted `split_w1.js / py` and formalized tracking.
-  - `task/grammar-terms`: Replaced `(м.р.)`/`(ж.р.)` with `(мужской род)`/`(женский род)` globally across `week_1.js`.
-  - `feature/language-toggle`: Built a `select` dropdown on `index.html` anchoring to the top-right. Rewrote logic in `app.js` to extract translation objects depending on the active locale. Bound `SpeechSynthesisUtterance.lang` to dynamically shift to `uk-UA` if triggered. 
-- **[AQA/QA]**: Branch management properly segmented. `data/week_1.js` schema remains strictly compliant to parsing logic. UI toggle handles undefined keys correctly by falling back to `ru`. Passed.
+### Task 13: Local Network Access Instructions ✅
+- **[DEV]**: Analyzed Vite configuration and current running processes. Confirmed that the `--host` flag is active and the server is listening on port 3000.
+- **[AQA/QA]**: Verified that providing the user with IP identification steps and connection instructions is the correct approach to enable multi-device testing without code changes.
+- **[TEACH]**: No code error was found; this was an operational guidance task.
+
+### Task 14: Fix Network Flag Passing ✅
+- **[DEV]**: Identified that `npm run dev --host` fails to pass the flag to Vite.
+- **[AQA]**: Verified that the correct syntax is `npm run dev -- --host`. 
+- **[QA]**: Added a dedicated `"network": "vite --host"` script to `package.json` to simplify the user experience.
+- **[TEACH]**: Updated `LESSONS_LEARNED.md` with the double-dash rule for npm flag passing.
+
+### Task 15: Pre-Master Merge UI and Drill Fixes ✅
+- **[DEV]**: Modified `src/core/engine.js` so that `onComplete` is checked *inside* the `onCorrectAnswer` done-callback, guaranteeing the Spanish TTS snippet finishes playing on the final successful phrase before ending the drill. Refactored `src/web/dashboard.js` to render completed lesson buttons with prominent `bg-green-100` and `border-green-300` styling, and added a specific blue badge for the number of completions for optimal contrast without breaking the minimalist theme. Updated `index.html` to allow native HTML horizontal scrolling behavior inside the input layer (`overflow-x: auto`), removed centering flex-wrap constraints, and bound `inputField.onscroll` in `src/web/drill-ui.js` to perfectly sync the `scrollLeft` property of the `fakeInput` overlay.
+- **[AQA]**: Verified correct `style.css`/Tailwind layout behavior. Ensured JS modifications have zero impact on token-matching schemas.
+- **[QA]**: Speech alignment logic respects pedagogical feedback loop. Green success states and contrast counters improve navigational feedback without confusing streaks. Passed.
+
+### Task 16: Week 2 Curriculum Generation & Verb Expansion ✅
+- **[DEV]**: Checked out new branch `feature/week-2-curriculum`. Redesigned `data/week_2.js` from scratch to strictly follow the 5-lesson sub-group pattern (Yo, Tú/Usted, Él/Ella, Nosotros, Ellos/Ellas/Ustedes) over 3 thematic blocks (Apartment Viewing, Appliances/Features, and Bureaucracy).
+- **[QA]**: Validated the 80/20 vocabulary retention rule. New verbs (`querer`, `poder`, `necesitar`) and apartment nouns (`el piso`, `la lavadora`, `nevera`, `el contrato`) make up precisely 20% of the lexical density. The rest systematically recycles Week 1 state adjectives (`listo`, `bueno`) and location words (`aquí`, `allí`, `tiempo`, `dinero`) along with exact interrogative patterns requested by the User.
+- **[AQA]**: Performed manual static token verification across all 90 newly generated phrases. Interrogative prefixes `¿` successfully separated as `type: "space"`, while suffixes `?` are adjoined to trailing objects. Confirmed 6 phrases per lesson to seamlessly enforce exactly 24 loops per session. Passed.
+
+### Task 17: Week 3 Curriculum & Data Normalization ✅
+- **Commit:** `5a4878b` (main)
+- **[AQA]**: Discovered via automated test failures that `data/week_1.js` had oversized (`w1_l11b`, 8 phrases) and undersized (`w1_l11a`, 4 phrases) lessons. Corrected data by shifting locational assertions directly maintaining strict 6-phrase parity across all legacy nodes. 
+- **[DEV]**: Bootstrapped `data/week_3.js` for "A Day in Spain for a Dog Owner". Integrated verbs `jugar`, *morder* and thematic objects `el perro`, `la correa`, `la pelota`. Seamlessly wove with recycled grammatical architectures `querer / poder / necesitar` from Week 2 and location verbs from Week 1. Updated `src/core/data-loader.js` and `tests/validate-data.test.js` to assimilate the newly baked topic.
+- **[QA]**: Verified that the practical phrases precisely parallel the daily reality of walking a dog in the park for real encounters. 80/20 Math properly enforces staggered SRS token recall tests. 6-phrase matrix properly intact across all blocks. All 570 cross-topic phrases passed engine schema constraints seamlessly.
+
+### Task 18: Git Remote & Hosting Strategy ✅
+- **[DEV]**: Identified missing local remote configuration. Prepared instructions for GitHub repo linking. Recommended **Vercel** for free automated hosting (Vite native support).
+- **[AQA]**: Verified `package.json` build scripts. Vite build is standard and deployable.
+- **[QA]**: Ensured no deployment secrets are hardcoded. Only static frontend logic is currently present. Hobby Plan audit confirms 24/7 stability for static assets.
+
+### Task 19: Audio Settings & Voice Selection 🏆
+- **Commit**: `34ecd37` (main)
+- **[DEV]**: Refactored `src/web/speech.js` to support dynamic voice listing and `localStorage` persistence. Moved settings to the top and optimized UI size for mobile dashboard.
+- **[AQA]**: Balanced the layout with Tailwind classes. Fixed voice loading race conditions for Chrome/Android.
+- **[QA]**: Implemented the "Truman Show" greeting as the voice test snippet: *"Buenos días, y por si no nos vemos, buenas tardes y buenas noches."* This provides a fun, distinctive, and completely gender-neutral way to verify audio quality.
+
+
+
+

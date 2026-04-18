@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Minimalist Spanish Anchor</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .input-overlay {
       color: transparent;
@@ -22,9 +21,13 @@
       border: none;
       width: 100%;
       text-align: center;
+      white-space: pre;
     }
 
-    .fake-input { white-space: pre; }
+    .fake-input {
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
     body { transition: background-color 0.1s; }
     .flash-error { animation: flash-red 0.5s ease-in-out; }
 
@@ -45,11 +48,25 @@
 
   <!-- DASHBOARD VIEW (TOPICS) -->
   <div id="dashboardView" class="w-full max-w-4xl flex flex-col items-center gap-8 py-12">
-    <h1 class="text-5xl font-extrabold text-blue-600 mb-8">Minimalist Spanish Anchor</h1>
-    <p class="text-xl font-medium text-gray-400 mb-4">Select a topic to begin</p>
+    <h1 class="text-5xl font-extrabold text-blue-600 mb-2">Minimalist Spanish Anchor</h1>
+    
+    <!-- VOICE SETTINGS (SHRUNK & AT TOP) -->
+    <div class="w-full max-w-md bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+        <span class="text-sm font-bold text-gray-600 uppercase tracking-tight">Audio Settings</span>
+      </div>
+      <div class="flex gap-2 items-center">
+        <select id="spanishVoiceSelect" class="flex-grow bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
+          <option value="">Default Spanish Voice</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="text-xl font-medium text-gray-400">Select a topic to begin</p>
     
     <div id="topicsContainer" class="w-full flex flex-col gap-4">
-      <!-- Injected via app.js -->
+      <!-- Injected via dashboard.js -->
     </div>
   </div>
 
@@ -66,7 +83,7 @@
     </div>
     
     <div id="lessonsContainer" class="w-full grid grid-cols-1 md:grid-cols-5 gap-6 mt-4">
-      <!-- Injected via app.js -->
+      <!-- Injected via dashboard.js -->
     </div>
   </div>
 
@@ -78,8 +95,6 @@
       <div class="text-xl text-gray-400 font-semibold tracking-widest uppercase mb-1">Streak</div>
       <div id="streakCounter" class="text-4xl font-bold text-gray-300">0 / 20</div>
     </div>
-
-
 
     <!-- Prompts -->
     <div class="flex flex-col gap-6 w-full items-center">
@@ -101,7 +116,7 @@
         <span>Repeat aloud</span>
       </div>
       
-      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none flex justify-center break-words"></div>
+      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none"></div>
       
       <input 
         type="text" 
@@ -138,11 +153,6 @@
     </div>
   </div>
 
-  <!-- Data Inclusion: Add more weeks here as you expand! -->
-  <script src="data/week_1.js"></script>
-  <script src="data/week_2.js"></script>
-  <script src="data/topics_core.js"></script>
-  
-  <script src="app.js"></script>
+  <script type="module" src="src/web/main.js"></script>
 </body>
 </html>

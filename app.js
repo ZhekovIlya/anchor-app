@@ -430,18 +430,18 @@ function handleSuccess() {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(currentPhrase.es);
     utterance.lang = 'es-ES';
-    
+
     let isFired = false;
     const finish = () => {
-      if(!isFired) {
+      if (!isFired) {
         isFired = true;
         completeSuccess();
       }
     };
-    
+
     utterance.onend = finish;
     utterance.onerror = finish;
-    
+
     // Fallback if events don't fire
     setTimeout(finish, Math.max(2000, currentPhrase.es.length * 100));
 
