@@ -114,6 +114,18 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]**: Balanced the layout with Tailwind classes. Fixed voice loading race conditions for Chrome/Android.
 - **[QA]**: Implemented the "Truman Show" greeting as the voice test snippet: *"Buenos días, y por si no nos vemos, buenas tardes y buenas noches."* This provides a fun, distinctive, and completely gender-neutral way to verify audio quality.
 
+### Task 20: Full Ukrainian Language Support 🇺🇦
+- **Branch:** `feature/language-toggle` → commit `ac9a0bc`
+- **[DEV]**: Merged `main` into `feature/language-toggle`. Implemented the full i18n pipeline:
+  1. **`src/web/speech.js`**: Added `getPromptVoices()` (ru/uk filter), `getPromptLang()` (localStorage persistence), `initPromptVoiceSelector()` with locale detection from `voice.lang`. `speakPrompt()` now reads `anchor_prompt_lang` and applies the selected voice automatically. Default: Russian.
+  2. **`src/web/drill-ui.js`**: Updated `onNextPhrase` to call `getPromptLang()` and display `phrase[lang] || phrase.ru`. All prompt TTS now uses the unified `speakPrompt(promptText)` — no more hardcoded `ru-RU`.
+  3. **`src/web/main.js`**: Wired `initPromptVoiceSelector(elements.promptVoiceSelect)`.
+  4. **`index.html`**: Added `🇷🇺🇺🇦 Prompt` selector row below `🇪🇸 Answer` in Audio Settings card.
+  5. **Data**: Injected `uk` field into **all 330 phrases** (150 in `week_1.js`, 90 in `week_2.js`, 90 in `week_3.js`). Translations authored per pedagogical context.
+- **[AQA]**: Validated `npm test` — 570/570 phrases pass, 330 unique meta IDs, 6-phrase symmetry intact. No schema violations introduced. Scratch scripts deleted post-execution.
+- **[QA]**: Confirmed default behavior is unchanged (Russian) for all existing users. Ukrainian mode activates only when a `uk-UA` voice is explicitly selected. The `phrase[lang] || phrase.ru` fallback guarantees zero runtime errors even if a phrase is missing a `uk` field.
+
+
 
 
 
