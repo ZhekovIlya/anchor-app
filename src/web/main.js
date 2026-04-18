@@ -9,6 +9,7 @@ import { loadAllTopics, buildPhraseBank } from '../core/data-loader.js';
 import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView } from './dashboard.js';
 import { startDrill } from './drill-ui.js';
+import { initVoiceSelector } from './speech.js';
 
 // ========================
 // INITIALIZE
@@ -41,6 +42,7 @@ const elements = {
   restartBtn: document.getElementById('restartBtn'),
   dashboardReturnBtn: document.getElementById('dashboardReturnBtn'),
   successLoader: document.getElementById('successLoader'),
+  spanishVoiceSelect: document.getElementById('spanishVoiceSelect'),
 };
 
 // ========================
@@ -100,8 +102,8 @@ function onReviewClick() {
   startDrill(elements, duePhrases, reviewLesson, false, true, srs, initDashboard);
 }
 
-// ========================
 // START
 // ========================
 
+initVoiceSelector(elements.spanishVoiceSelect);
 initDashboard();

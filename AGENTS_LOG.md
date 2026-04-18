@@ -100,5 +100,11 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 ### Task 17: Week 3 Curriculum & Data Normalization ✅
 - **Commit:** `5a4878b` (main)
 - **[AQA]**: Discovered via automated test failures that `data/week_1.js` had oversized (`w1_l11b`, 8 phrases) and undersized (`w1_l11a`, 4 phrases) lessons. Corrected data by shifting locational assertions directly maintaining strict 6-phrase parity across all legacy nodes. 
-- **[DEV]**: Bootstrapped `data/week_3.js` for "A Day in Spain for a Dog Owner". Integrated verbs `jugar`, `morder` and thematic objects `el perro`, `la correa`, `la pelota`. Seamlessly wove with recycled grammatical architectures `querer / poder / necesitar` from Week 2 and location verbs from Week 1. Updated `src/core/data-loader.js` and `tests/validate-data.test.js` to assimilate the newly baked topic.
+- **[DEV]**: Bootstrapped `data/week_3.js` for "A Day in Spain for a Dog Owner". Integrated verbs `jugar`, *morder* and thematic objects `el perro`, `la correa`, `la pelota`. Seamlessly wove with recycled grammatical architectures `querer / poder / necesitar` from Week 2 and location verbs from Week 1. Updated `src/core/data-loader.js` and `tests/validate-data.test.js` to assimilate the newly baked topic.
 - **[QA]**: Verified that the practical phrases precisely parallel the daily reality of walking a dog in the park for real encounters. 80/20 Math properly enforces staggered SRS token recall tests. 6-phrase matrix properly intact across all blocks. All 570 cross-topic phrases passed engine schema constraints seamlessly.
+
+### Task 18: Git Remote & Hosting Strategy (Pending USER) ⏳
+- **[DEV]**: Identified missing local remote configuration. Prepared instructions for GitHub repo linking. Recommended **Vercel** for free automated hosting (Vite native support).
+- **[AQA]**: Verified `package.json` build scripts. Vite build is standard and deployable.
+- **[QA]**: Ensured no deployment secrets are hardcoded. Only static frontend logic is currently present.
+
