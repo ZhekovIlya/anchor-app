@@ -41,25 +41,25 @@
   
   <!-- DASHBOARD VIEW (TOPICS) -->
   <div id="dashboardView" class="w-full max-w-4xl flex flex-col items-center gap-8 py-12">
-    <h1 class="text-5xl font-extrabold text-blue-600 mb-8">Minimalist Spanish Anchor</h1>
-    <p class="text-xl font-medium text-gray-400 mb-4">Select a topic to begin</p>
+    <h1 class="text-5xl font-extrabold text-blue-600 mb-2">Minimalist Spanish Anchor</h1>
     
-    <div id="topicsContainer" class="w-full flex flex-col gap-4">
-      <!-- Injected via dashboard.js -->
-    </div>
-
-    <!-- VOICE SETTINGS -->
-    <div class="w-full max-w-xl bg-gray-50 border border-gray-100 rounded-2xl p-6 mt-12 flex flex-col gap-4">
-      <div class="flex items-center gap-3">
-        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        <span class="text-lg font-bold text-gray-700">Audio Settings</span>
+    <!-- VOICE SETTINGS (SHRUNK & AT TOP) -->
+    <div class="w-full max-w-md bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+        <span class="text-sm font-bold text-gray-600 uppercase tracking-tight">Audio Settings</span>
       </div>
-      <div class="flex flex-col gap-1">
-        <label for="spanishVoiceSelect" class="text-sm font-medium text-gray-400 uppercase tracking-wider">Spanish Voice (Answer)</label>
-        <select id="spanishVoiceSelect" class="w-full bg-white border border-gray-200 rounded-lg p-3 text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
+      <div class="flex gap-2 items-center">
+        <select id="spanishVoiceSelect" class="flex-grow bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
           <option value="">Default Spanish Voice</option>
         </select>
       </div>
+    </div>
+
+    <p class="text-xl font-medium text-gray-400">Select a topic to begin</p>
+    
+    <div id="topicsContainer" class="w-full flex flex-col gap-4">
+      <!-- Injected via dashboard.js -->
     </div>
   </div>
 

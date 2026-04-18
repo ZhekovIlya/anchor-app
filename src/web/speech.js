@@ -98,7 +98,7 @@ export function initVoiceSelector(selectElement) {
 
   selectElement.addEventListener('change', (e) => {
     localStorage.setItem(SELECTED_VOICE_KEY, e.target.value);
-    // Play a test snippet
-    speakAnswer("Hola", () => {});
+    // Play a neutral test snippet
+    speakAnswer("Hola, un placer saludarte.", () => {});
   });
 }
