@@ -4,9 +4,10 @@ import assert from 'node:assert/strict';
 // Import data modules
 import week1 from '../data/week_1.js';
 import week2 from '../data/week_2.js';
+import week3 from '../data/week_3.js';
 import topicsCore from '../data/topics_core.js';
 
-const allTopics = [week1, week2, topicsCore];
+const allTopics = [week1, week2, week3, topicsCore];
 
 describe('Data file structure', () => {
   test('each topic has required fields', () => {

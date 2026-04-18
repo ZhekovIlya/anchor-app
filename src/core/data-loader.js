@@ -7,6 +7,7 @@
 
 import week1Data from '../../data/week_1.js';
 import week2Data from '../../data/week_2.js';
+import week3Data from '../../data/week_3.js';
 import topicsCoreData from '../../data/topics_core.js';
 
 /**
@@ -14,7 +15,7 @@ import topicsCoreData from '../../data/topics_core.js';
  * @returns {Array} topics
  */
 export function loadAllTopics() {
-  return [week1Data, week2Data, topicsCoreData];
+  return [week1Data, week2Data, week3Data, topicsCoreData];
 }
 
 /**
