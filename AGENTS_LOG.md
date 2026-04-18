@@ -109,9 +109,10 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[QA]**: Ensured no deployment secrets are hardcoded. Only static frontend logic is currently present. Hobby Plan audit confirms 24/7 stability for static assets.
 
 ### Task 19: Audio Settings & Voice Selection 🏆
-- **Commit**: `9cd666d` (main)
-- **[DEV]**: Refactored `src/web/speech.js` to support dynamic voice listing and `localStorage` persistence. Added `Audio Settings` UI to the dashboard with a dropdown to select specific Spanish voices.
-- **[AQA]**: Implemented `voiceschanged` listener to handle asynchronous Speech API initialization on Chrome/Mobile Safari. Verified `utterance.voice` assignment logic.
-- **[QA]**: Verified that selecting a voice triggers a "Hola" test snippet and persists across sessions, allowing users to bypass system-default voices that may sound "broken" on specific devices.
+- **Commit**: `d285de1` (main)
+- **[DEV]**: Refactored `src/web/speech.js` to support dynamic voice listing and `localStorage` persistence. Moved the "Audio Settings" panel to the top of the dashboard for prominence. Shrunk the UI to a compact row view.
+- **[AQA]**: Balanced the layout with Tailwind classes (`max-w-md`, `text-sm`) to keep the dashboard minimalist while keeping settings accessible.
+- **[QA]**: Updated the test snippet to *"Hola, un placer saludarte."* to ensure a gender-neutral, professional greeting for all users.
+
 
 
