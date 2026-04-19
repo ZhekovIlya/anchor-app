@@ -10,32 +10,25 @@ import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView } from './dashboard.js';
 import { startDrill } from './drill-ui.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
+import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 
 // ========================
-// INITIALIZE
+// SEED (dev preview only)
 // ========================
 
-if (localStorage.getItem('MOCKED_V3') !== 'true') {
-  localStorage.setItem('MOCKED_V3', 'true');
-  
-  // Mastered week 1 (Exam >= 5)
-  localStorage.setItem('completion_count_w1_l1', '3');
-  localStorage.setItem('completion_count_w1_l2a', '3');
-  localStorage.setItem('completion_count_w1_l2b', '3');
-  localStorage.setItem('completion_count_w1_l3', '3');
-  localStorage.setItem('completion_count_w1_l3b', '3');
-  localStorage.setItem('completion_count_w1_l4', '3');
-  localStorage.setItem('completion_count_w1_l7', '3');
-  localStorage.setItem('completion_count_w1_exam', '5');
-
-  // Completed week 2 (All lessons >= 1)
-  const w2_lessons = ['w2_l1', 'w2_l2', 'w2_l3', 'w2_l4', 'w2_l5', 'w2_l6', 'w2_l7', 'w2_l8', 'w2_l9', 'w2_l10', 'w2_l11', 'w2_l12', 'w2_l13', 'w2_l14', 'w2_l15', 'w2_exam'];
-  w2_lessons.forEach(l => localStorage.setItem(`completion_count_${l}`, '1'));
+if (import.meta.env.DEV) {
+  seedDemoDataOnce();
 }
+
+// ========================
+// APP STATE
+// ========================
 
 const topics = loadAllTopics();
 const phraseBank = buildPhraseBank(topics);
 const srs = createSRS(localStorageAdapter);
+
+let activeTopic = null;
 
 // ========================
 // DOM ELEMENT REFS
@@ -62,7 +55,7 @@ const elements = {
   successLoader: document.getElementById('successLoader'),
   spanishVoiceSelect: document.getElementById('spanishVoiceSelect'),
   promptVoiceSelect: document.getElementById('promptVoiceSelect'),
-  
+
   // Audio Modal
   audioSettingsBtn: document.getElementById('audioSettingsBtn'),
   audioSettingsModal: document.getElementById('audioSettingsModal'),
@@ -71,12 +64,6 @@ const elements = {
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
 };
-
-// ========================
-// STATE
-// ========================
-
-let activeTopic = null;
 
 // ========================
 // NAVIGATION
@@ -92,32 +79,26 @@ function onTopicClick(topic) {
   renderLessonsView(elements, topic, onLessonClick, initDashboard);
 }
 
-function onLessonClick(lesson) {
-  let drillPhrases;
-  const isExam = !!lesson.exam;
-
-  if (isExam) {
-    // Final Exam: auto-populate from sibling lessons
-    const siblingPhrases = [];
-    activeTopic.lessons.forEach(l => {
-      if (!l.exam && l.phrases) {
-        siblingPhrases.push(...l.phrases);
-      }
-    });
-    drillPhrases = siblingPhrases.sort(() => Math.random() - 0.5);
+function returnToActiveTopic() {
+  if (activeTopic) {
+    onTopicClick(activeTopic);
   } else {
-    drillPhrases = lesson.phrases;
+    initDashboard();
   }
+}
 
-  const onQuit = () => {
-    if (activeTopic) {
-      onTopicClick(activeTopic);
-    } else {
-      initDashboard();
-    }
-  };
+function buildExamPhrases(topic) {
+  return topic.lessons
+    .filter(l => !l.exam && l.phrases)
+    .flatMap(l => l.phrases)
+    .sort(() => Math.random() - 0.5);
+}
 
-  startDrill(elements, drillPhrases, lesson, isExam, false, srs, onQuit);
+function onLessonClick(lesson) {
+  const isExam = !!lesson.exam;
+  const drillPhrases = isExam ? buildExamPhrases(activeTopic) : lesson.phrases;
+
+  startDrill(elements, drillPhrases, lesson, isExam, false, srs, returnToActiveTopic);
 }
 
 function onReviewClick() {
@@ -125,18 +106,16 @@ function onReviewClick() {
   if (duePhrases.length === 0) return;
 
   const reviewLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
-
   startDrill(elements, duePhrases, reviewLesson, false, true, srs, initDashboard);
 }
 
 // ========================
-// MODAL LOGIC
+// AUDIO MODAL
 // ========================
 
 function openAudioModal() {
   elements.audioSettingsModal.style.display = 'flex';
   elements.audioSettingsModal.classList.remove('hidden');
-  // requestAnimationFrame ensures display:flex is painted before the opacity transition starts
   requestAnimationFrame(() => {
     elements.audioSettingsModal.classList.remove('opacity-0');
     elements.audioSettingsModal.classList.add('opacity-100');
@@ -144,27 +123,25 @@ function openAudioModal() {
 }
 
 function closeAudioModal() {
-  elements.audioSettingsModal.classList.remove('opacity-100');
-  elements.audioSettingsModal.classList.add('opacity-0');
-  setTimeout(() => {
-     elements.audioSettingsModal.style.display = 'none';
-     elements.audioSettingsModal.classList.add('hidden');
-  }, 200);
+  const modal = elements.audioSettingsModal;
+  modal.classList.remove('opacity-100');
+  modal.classList.add('opacity-0');
+
+  modal.addEventListener('transitionend', () => {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }, { once: true });
 }
 
 elements.audioSettingsBtn.addEventListener('click', openAudioModal);
 elements.closeAudioModalBtn.addEventListener('click', closeAudioModal);
 elements.saveAudioModalBtn.addEventListener('click', closeAudioModal);
-
-// Close on backdrop click
 elements.audioSettingsModal.addEventListener('click', (e) => {
-  if (e.target === elements.audioSettingsModal) {
-    closeAudioModal();
-  }
+  if (e.target === elements.audioSettingsModal) closeAudioModal();
 });
 
-
-// START
+// ========================
+// BOOT
 // ========================
 
 initVoiceSelector(elements.spanishVoiceSelect);
