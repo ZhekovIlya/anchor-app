@@ -1,128 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minimalist Spanish Anchor</title>
+  <title>Spanish Anchor</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#dfe3e8",
+            "on-tertiary-fixed-variant": "#524600",
+            "on-primary-container": "#e7ebff",
+            "surface-container-high": "#e9e8e9",
+            "error": "#ba1a1a",
+            "on-tertiary-container": "#4a3f00",
+            "inverse-primary": "#b1c5ff",
+            "outline-variant": "#c3c6d5",
+            "primary-container": "#3366cc",
+            "on-secondary-fixed-variant": "#42474b",
+            "tertiary-container": "#bfab49",
+            "on-secondary-fixed": "#171c20",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#f9e37a",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "primary-fixed-dim": "#b1c5ff",
+            "secondary-fixed": "#dfe3e8",
+            "surface-container-low": "#f5f3f4",
+            "surface-dim": "#dbdadb",
+            "primary-fixed": "#d9e2ff",
+            "on-background": "#1b1c1d",
+            "surface-bright": "#faf9fa",
+            "surface-tint": "#2259bf",
+            "inverse-on-surface": "#f2f0f1",
+            "background": "#faf9fa",
+            "on-surface": "#1b1c1d",
+            "outline": "#737784",
+            "secondary-fixed-dim": "#c2c7cc",
+            "error-container": "#ffdad6",
+            "tertiary-fixed-dim": "#dcc661",
+            "surface-container": "#efedee",
+            "on-primary-fixed": "#001946",
+            "tertiary": "#6d5e00",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#606569",
+            "primary": "#094cb2",
+            "inverse-surface": "#303031",
+            "on-tertiary": "#ffffff",
+            "surface": "#faf9fa",
+            "secondary": "#5a5f63",
+            "surface-variant": "#e3e2e3",
+            "on-tertiary-fixed": "#211b00",
+            "on-error-container": "#93000a",
+            "on-surface-variant": "#434653",
+            "on-primary-fixed-variant": "#00419d",
+            "surface-container-highest": "#e3e2e3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif", "serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Public Sans", "sans-serif"],
+            "mono": ["IBM Plex Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <style>
-    .input-overlay {
-      color: transparent;
-      caret-color: #000;
-      background: transparent;
-      outline: none;
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
     }
     
-    .fake-input, .input-overlay {
-      font-family: inherit;
-      font-size: 3rem; 
-      line-height: 1.2;
-      padding: 0;
-      margin: 0;
-      border: none;
-      width: 100%;
-      text-align: center;
-      white-space: pre;
-    }
-
-    .fake-input {
-      overflow-x: hidden;
-      overflow-y: hidden;
-    }
-    body { transition: background-color 0.1s; }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Noto Serif', serif; }
+    .font-label { font-family: 'Public Sans', sans-serif; }
+    
+    /* Legacy drill inputs */
+    .input-overlay { color: transparent; caret-color: #000; background: transparent !important; outline: none !important; border: none !important; box-shadow: none !important; }
+    .fake-input, .input-overlay { font-family: inherit; font-size: 3rem; line-height: 1.2; padding: 0; margin: 0; border: none !important; width: 100%; text-align: center; white-space: pre; }
+    .fake-input { overflow-x: hidden; overflow-y: hidden; }
     .flash-error { animation: flash-red 0.5s ease-in-out; }
-
-    @keyframes flash-red {
-      0% { background-color: #fca5a5; } 
-      100% { background-color: #ffffff; }
-    }
+    @keyframes flash-red { 0% { background-color: #ffdad6; } 100% { background-color: transparent; } }
   </style>
 </head>
-<body class="bg-white text-gray-900 min-h-screen w-screen flex flex-col items-center justify-start font-sans overflow-y-auto p-4 overflow-x-hidden relative">
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container relative">
 
-
-  <!-- DASHBOARD VIEW (TOPICS) -->
-  <div id="dashboardView" class="w-full max-w-4xl flex flex-col items-center gap-8 py-12">
-    <h1 class="text-5xl font-extrabold text-blue-600 mb-2">Minimalist Spanish Anchor</h1>
-    
-    <!-- VOICE SETTINGS (SHRUNK & AT TOP) -->
-    <div class="w-fit min-w-[320px] bg-gray-50 border border-gray-100 rounded-xl p-3 flex flex-col gap-2">
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-        <span class="text-sm font-bold text-gray-600 uppercase tracking-tight">Audio Settings</span>
+  <!-- TopAppBar -->
+  <header class="bg-surface/80 backdrop-blur-md sticky w-full top-0 z-40">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+      <div class="font-headline text-2xl font-bold tracking-tight text-on-surface">
+        Spanish Anchor
       </div>
-      <div class="flex gap-2 items-center">
-        <span class="text-xs font-semibold text-gray-400 w-16 shrink-0 text-right">Answer</span>
-        <select id="spanishVoiceSelect" class="w-full max-w-xs bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
-          <option value="">Default Spanish Voice</option>
-        </select>
-      </div>
-      <div class="flex gap-2 items-center">
-        <span class="text-xs font-semibold text-gray-400 w-16 shrink-0 text-right">Prompt</span>
-        <select id="promptVoiceSelect" class="w-full max-w-xs bg-white border border-gray-200 rounded-lg p-2 text-sm text-gray-700 focus:outline-none focus:border-blue-400 transition-colors">
-          <option value="">Default Russian Voice (ru-RU)</option>
-        </select>
+      <div class="flex items-center gap-4">
+        <button id="audioSettingsBtn" class="text-primary font-bold hover:bg-surface-variant p-2 rounded-lg transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined" data-icon="volume_up" style="font-variation-settings: 'FILL' 0;">volume_up</span>
+        </button>
       </div>
     </div>
+    <div class="h-[1px] w-full bg-outline-variant/20"></div>
+  </header>
 
-    <p class="text-xl font-medium text-gray-400">Select a topic to begin</p>
-    
-    <div id="topicsContainer" class="w-full flex flex-col gap-4">
-      <!-- Injected via dashboard.js -->
-    </div>
-  </div>
+  <!-- DASHBOARD VIEW -->
+  <main id="dashboardView" class="flex-grow w-full max-w-5xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24 mb-24 md:mb-0">
+    <!-- Active Recall Hero Card -->
+    <section id="reviewSection" class="w-full">
+      <div class="bg-surface-container-low rounded-xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div class="absolute -right-24 -top-24 w-64 h-64 bg-primary-container rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+        <div class="flex flex-col items-start max-w-xl z-10">
+          <div class="font-label text-sm tracking-widest text-on-surface-variant uppercase mb-4">Repeat Drill</div>
+          <h1 class="font-headline text-4xl md:text-5xl font-bold text-on-surface leading-tight mb-4">Active Recall</h1>
+          <p class="font-body text-lg text-on-surface-variant mb-8 border-l-2 border-primary/30 pl-4" id="dueCountText">Ready for review. Consistent practice builds lasting fluency.</p>
+          <button id="startReviewBtn" class="bg-primary text-on-primary font-label px-8 py-4 rounded-xl hover:opacity-90 transition-opacity flex items-center gap-2 font-medium tracking-wide shadow-sm">
+            <span class="material-symbols-outlined text-lg">play_arrow</span>
+            Start Session
+          </button>
+        </div>
+        <div class="w-48 h-48 md:w-64 md:h-64 rounded-xl overflow-hidden shadow-sm flex-shrink-0 z-10 hidden md:block border border-surface-container-highest">
+          <div class="w-full h-full bg-surface-container flex items-center justify-center text-primary-container">
+            <span class="material-symbols-outlined" style="font-size: 8rem; opacity: 0.5;">menu_book</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Topics List -->
+    <section class="w-full">
+      <h2 class="font-headline text-3xl font-bold text-on-surface mb-10 pb-4 border-b border-surface-variant">Select a topic to begin</h2>
+      <div id="topicsContainer" class="flex flex-col gap-6">
+        <!-- Injected via dashboard.js -->
+      </div>
+    </section>
+  </main>
 
   <!-- LESSONS VIEW -->
-  <div id="lessonsView" class="hidden w-full max-w-6xl flex-col items-center gap-8 py-12">
-    <button id="backToDashboardBtn" class="self-start px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-      Back to Topics
-    </button>
-    
-    <div class="text-center">
-      <h2 id="lessonsViewTitle" class="text-4xl font-extrabold text-blue-600 mb-2">Topic Title</h2>
-      <p id="lessonsViewSubtitle" class="text-lg text-gray-400">Select a lesson to begin your streak</p>
+  <main id="lessonsView" class="hidden flex-grow w-full max-w-3xl mx-auto px-6 py-12 flex-col gap-10">
+    <div class="flex items-center gap-4 border-b border-surface-container-highest pb-4">
+      <button id="backToDashboardBtn" class="p-2 hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center text-on-surface-variant">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h2 id="lessonsViewTitle" class="font-headline text-2xl font-bold text-on-surface">Topic Title</h2>
     </div>
     
-    <div id="lessonsContainer" class="w-full grid grid-cols-1 md:grid-cols-5 gap-6 mt-4">
-      <!-- Injected via dashboard.js -->
-    </div>
-  </div>
+    <nav id="personTabsContainer" class="flex gap-4 md:justify-center border-b border-surface-container-highest pb-4 px-2 overflow-x-auto no-scrollbar whitespace-nowrap">
+      <!-- Tabs injected via dashboard.js -->
+    </nav>
+    
+    <section id="lessonsContainer" class="flex flex-col gap-4">
+      <!-- Cards injected via dashboard.js -->
+    </section>
+  </main>
 
   <!-- DRILL VIEW -->
-  <div id="drillView" class="hidden w-full max-w-4xl flex-col items-center pt-24 gap-12 text-center transition-opacity duration-300 flex-grow">
+  <main id="drillView" class="hidden w-full max-w-4xl mx-auto flex-col items-center pt-24 gap-12 text-center transition-opacity duration-300 flex-grow px-4 relative">
     
-    <!-- Streak -->
-    <div class="fixed top-8 right-8 flex flex-col items-end">
-      <div class="text-xl text-gray-400 font-semibold tracking-widest uppercase mb-1">Streak</div>
-      <div id="streakCounter" class="text-4xl font-bold text-gray-300">0 / 20</div>
+    <div class="absolute top-24 right-8 flex flex-col items-end z-30">
+      <div class="text-xl text-on-surface-variant font-label tracking-widest uppercase mb-1">Streak</div>
+      <div id="streakCounter" class="text-4xl font-mono font-bold text-primary">0 / 20</div>
     </div>
 
-    <!-- Prompts -->
-    <div class="flex flex-col gap-6 w-full items-center">
-      <div id="russianPrompt" class="text-6xl font-bold tracking-tight text-gray-800"></div>
+    <div class="flex flex-col gap-6 w-full items-center mt-12">
+      <div id="russianPrompt" class="text-3xl md:text-5xl font-headline font-bold tracking-tight text-on-surface px-4 mt-6"></div>
       
-      <!-- Ghost Text (Fading Scaffolding) -->
-      <div id="ghostTextContainer" class="h-16 flex justify-center items-center w-full">
-        <div id="ghostText" class="text-5xl font-medium text-gray-200 pointer-events-none select-none"></div>
+      <div id="ghostTextContainer" class="min-h-[4rem] flex justify-center items-center w-full mt-4">
+        <div id="ghostText" class="text-2xl md:text-4xl font-body font-medium text-outline opacity-0 transition-opacity duration-300 pointer-events-none select-none px-4"></div>
       </div>
     </div>
 
-    <!-- Input Area -->
-    <div class="relative w-full max-w-3xl mt-8">
-      <div id="successLoader" class="hidden absolute -top-12 left-1/2 transform -translate-x-1/2 items-center gap-2 text-green-500 font-bold bg-green-50 px-4 py-2 rounded-full shadow-sm z-20 transition-opacity duration-300">
-        <svg class="animate-spin h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
+    <div class="relative w-[90%] md:w-full max-w-3xl mt-6 rounded-2xl md:rounded-none bg-surface-variant/50 md:bg-transparent py-4 md:py-0 transition-colors h-20 md:h-24">
+      <div id="successLoader" class="hidden absolute -top-12 inset-x-0 mx-auto w-max flex items-center justify-center gap-2 text-[#15803d] font-label font-bold bg-[#f0fdf4] border border-[#dcfce7] px-4 py-2 rounded-full shadow-sm z-20 transition-opacity duration-300">
+        <span class="material-symbols-outlined animate-spin text-[#15803d]">sync</span>
         <span>Repeat aloud</span>
       </div>
       
-      <div id="fakeInput" class="fake-input absolute inset-0 text-gray-800 pointer-events-none"></div>
+      <div id="fakeInput" class="absolute inset-0 flex items-center justify-center px-4 w-full text-center text-2xl md:text-4xl font-body text-on-surface whitespace-pre overflow-hidden pointer-events-none"></div>
       
       <input 
         type="text" 
         id="strictInput" 
-        class="input-overlay relative z-10 block" 
+        class="absolute inset-0 z-10 w-full h-full flex items-center justify-center px-4 text-center text-2xl md:text-4xl font-body bg-transparent border-0 ring-0 focus:ring-0 focus:border-0 shadow-none text-transparent caret-primary outline-none" 
         autocomplete="off" 
         spellcheck="false" 
         autocorrect="off"
@@ -130,29 +210,123 @@
       />
     </div>
 
-    <button id="revealAnswerBtn" class="hidden mt-8 px-6 py-3 bg-red-100 text-red-600 border border-red-200 rounded-xl font-bold hover:bg-red-200 transition-colors uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+    <button id="revealAnswerBtn" class="hidden mt-8 px-6 py-3 bg-error-container text-on-error-container rounded-xl font-label font-bold hover:opacity-90 transition-opacity uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined">visibility</span>
       Reveal Answer
     </button>
 
-    <button id="quitDrillBtn" class="fixed top-8 left-8 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-colors uppercase tracking-wider text-sm">
+    <button id="quitDrillBtn" class="absolute top-24 left-8 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg font-label font-bold hover:bg-surface-variant transition-colors uppercase tracking-wider text-sm z-30 flex items-center gap-2">
+      <span class="material-symbols-outlined text-sm">close</span>
       Quit Drill
     </button>
-  </div>
+  </main>
 
   <!-- END SCREEN -->
-  <div id="endScreen" class="hidden w-full flex-col items-center justify-center min-h-[60vh] gap-6 flex-grow">
-    <h1 class="text-6xl font-extrabold text-green-500">Lesson Mastered!</h1>
-    <p class="text-3xl text-gray-600 font-semibold">Iron-Clad Grammar Complete</p>
-    <div class="flex gap-4 mt-8">
-      <button id="restartBtn" class="px-8 py-4 bg-gray-200 text-gray-800 rounded-xl text-xl font-bold hover:bg-gray-300 transition-colors">
+  <main id="endScreen" class="hidden w-full flex-col items-center justify-center min-h-[60vh] gap-6 flex-grow">
+    <div class="w-20 h-20 bg-tertiary-fixed text-tertiary flex items-center justify-center rounded-full mb-4 shadow-sm border border-tertiary-fixed-dim">
+      <span class="material-symbols-outlined text-4xl">workspace_premium</span>
+    </div>
+    <h1 class="text-5xl md:text-6xl font-headline font-extrabold text-on-surface text-center">Lesson Mastered!</h1>
+    <p class="text-xl md:text-2xl font-body text-on-surface-variant font-medium text-center">Iron-Clad Grammar Complete</p>
+    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+      <button id="restartBtn" class="px-8 py-4 bg-surface-container-high text-on-surface rounded-xl text-xl font-label font-bold hover:bg-surface-variant transition-colors">
         Repeat Lesson
       </button>
-      <button id="dashboardReturnBtn" class="px-8 py-4 bg-blue-600 text-white rounded-xl text-xl font-bold hover:bg-blue-700 transition-colors shadow-lg">
+      <button id="dashboardReturnBtn" class="px-8 py-4 bg-primary text-on-primary rounded-xl text-xl font-label font-bold hover:bg-primary/90 transition-colors shadow-md">
         Return to Lessons
       </button>
     </div>
+  </main>
+
+  <!-- Audio Settings Modal -->
+  <div id="audioSettingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-inverse-surface/40 backdrop-blur-sm opacity-0 transition-opacity duration-200" style="display: none;">
+    <div class="relative z-50 w-full max-w-xl bg-surface-container-lowest rounded-xl shadow-[0_24px_40px_-12px_rgba(0,0,0,0.06)] border border-outline-variant/15 flex flex-col overflow-hidden max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-8 py-6 bg-surface border-b border-surface-variant flex justify-between items-center shrink-0">
+        <h2 class="font-headline text-xl font-semibold text-on-surface">Audio Settings</h2>
+        <button id="closeAudioModalBtn" class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-2 -mr-2 cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="p-8 flex flex-col gap-8 bg-surface-container-lowest overflow-y-auto">
+        <!-- Prompt Voice Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant uppercase" for="promptVoiceSelect">Prompt Voice</label>
+          <p class="font-body text-sm text-on-surface-variant/80 mb-1">Select the voice for translating prompts.</p>
+          <div class="relative">
+            <select id="promptVoiceSelect" class="w-full appearance-none bg-surface-container-lowest border border-outline-variant/30 text-on-surface font-body py-3 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors cursor-pointer hover:bg-surface-container-low">
+              <option value="">Default Russian Voice (ru-RU)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="h-px w-full bg-surface-variant"></div>
+        
+        <!-- Answer Voice Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant uppercase" for="spanishVoiceSelect">Answer Voice</label>
+          <p class="font-body text-sm text-on-surface-variant/80 mb-1">Select the voice for Spanish playback.</p>
+          <div class="relative">
+            <select id="spanishVoiceSelect" class="w-full appearance-none bg-surface-container-lowest border border-outline-variant/30 text-on-surface font-body py-3 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors cursor-pointer hover:bg-surface-container-low">
+              <option value="">Default Spanish Voice</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant"></div>
+
+        <!-- Spanish Speed Setting -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant uppercase" for="spanishSpeedRange">Spanish Speed</label>
+            <span id="spanishSpeedValue" class="font-mono text-sm font-bold text-primary tabular-nums">1.0×</span>
+          </div>
+          <p class="font-body text-sm text-on-surface-variant/80 -mt-1">Adjust the playback speed for Spanish answers.</p>
+          <input
+            type="range"
+            id="spanishSpeedRange"
+            min="0.5"
+            max="2.0"
+            step="0.1"
+            value="1.0"
+            class="w-full accent-primary cursor-pointer"
+          />
+          <div class="flex justify-between font-label text-xs text-on-surface-variant">
+            <span>0.5×</span>
+            <span>Normal</span>
+            <span>2.0×</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="px-8 py-5 bg-surface-container-low border-t border-surface-variant flex justify-end gap-4 items-center shrink-0">
+        <button id="saveAudioModalBtn" class="bg-primary text-on-primary font-label text-sm font-semibold px-6 py-2.5 rounded-lg hover:opacity-90 transition-opacity shadow-sm flex items-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined text-sm">check</span>
+          Done
+        </button>
+      </div>
+      
+    </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="bg-surface-container border-t border-outline-variant/10 w-full py-8 mt-auto flex z-40">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full px-8 text-center">
+      <div class="font-sans text-xs tracking-tight text-on-surface-variant">
+        <span class="font-serif font-semibold text-on-surface mr-1">Spanish Anchor</span> © 2026 • <a class="hover:text-primary transition-colors" href="mailto:support@spanishanchor.edu">support@spanishanchor.edu</a>
+      </div>
+    </div>
+  </footer>
 
   <script type="module" src="src/web/main.js"></script>
 </body>

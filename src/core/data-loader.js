@@ -15,7 +15,7 @@ import topicsCoreData from '../../data/topics_core.js';
  * @returns {Array} topics
  */
 export function loadAllTopics() {
-  return [week1Data, week2Data, week3Data, topicsCoreData];
+  return [week1Data, week2Data, week3Data];
 }
 
 /**

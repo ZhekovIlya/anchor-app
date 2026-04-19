@@ -10,6 +10,7 @@ import { showOnly } from './dashboard.js';
 import { incrementCompletion } from './storage.js';
 
 let activeEngine = null;
+let isHandlingCorrect = false;
 
 /**
  * Start a drill session and wire the engine to the DOM.
@@ -33,6 +34,7 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
   } = elements;
 
   showOnly(elements, 'drill');
+  isHandlingCorrect = false;
 
   activeEngine = createDrillEngine({
     phrases,
@@ -50,10 +52,10 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
 
         if (isCopyStage) {
           ghostText.classList.remove('opacity-0');
-          ghostText.classList.add('opacity-100');
+          ghostText.classList.add('opacity-30');
           revealAnswerBtn.classList.add('hidden');
         } else {
-          ghostText.classList.remove('opacity-100');
+          ghostText.classList.remove('opacity-30');
           ghostText.classList.add('opacity-0');
           revealAnswerBtn.classList.remove('hidden');
         }
@@ -68,18 +70,13 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
 
       onCorrectAnswer(phrase, done) {
         inputField.disabled = true;
-        if (successLoader) {
-          successLoader.classList.remove('hidden');
-          successLoader.style.display = 'flex';
-        }
+        successLoader?.classList.remove('hidden');
 
         speakAnswer(phrase.es, () => {
-          if (successLoader) {
-            successLoader.classList.add('hidden');
-            successLoader.style.display = 'none';
-          }
+          successLoader?.classList.add('hidden');
           inputField.disabled = false;
           inputField.focus();
+          isHandlingCorrect = false;
           done();
         });
       },
@@ -98,13 +95,13 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
   // Wire input events
   inputField.oninput = () => {
     renderFakeInput(fakeInput, inputField.value, activeEngine.getState().currentPhrase);
-
-    // Ensure scroll positions match after render
     fakeInput.scrollLeft = inputField.scrollLeft;
 
+    if (isHandlingCorrect) return;
     const { correct } = activeEngine.checkAnswer(inputField.value);
     if (correct) {
-      setTimeout(() => activeEngine.handleCorrect(), 100);
+      isHandlingCorrect = true;
+      activeEngine.handleCorrect();
     }
   };
 
@@ -116,7 +113,7 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
   revealAnswerBtn.onclick = () => {
     activeEngine.revealAnswer();
     ghostText.classList.remove('opacity-0');
-    ghostText.classList.add('opacity-100');
+    ghostText.classList.add('opacity-30');
     revealAnswerBtn.classList.add('hidden');
     inputField.focus();
   };

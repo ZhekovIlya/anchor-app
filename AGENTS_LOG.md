@@ -147,3 +147,16 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]**: Verified 6-phrase symmetry across all 330 refactored phrases. Confirmed meta IDs remain unique. Validated Tailwind layout for the new tab bar.
 - **[QA]**: 80/20 vocabulary decay formula remains active. The new UI significantly reduces page length and improves focus by isolating grammatical persons.
 - **[TEACH]**: No errors found. The refactor successfully transitioned the app to a professional workbook-style navigation.
+
+### Task 23: Stitch Design System Implementation 🎨
+- **Branch:** `task/ui-redesign`
+- **[DEV]**: 
+  1. Rewrote `index.html` structure to apply the Stitch Tailwind configuration, color tokens, and Google Fonts (Noto Serif, Inter).
+  2. Implemented the "Active Recall" hero component and the custom Topics List cards in `src/web/dashboard.js`.
+  3. Redesigned the Week Dashboard lessons view, including the 5-tab person component (Yo, Tú, Él/Ella/Usted, Nosotros, Ellos/Ustedes) and the new vertical lesson card layout.
+  4. Migrated the inline voice settings dropsdowns into a hidden `audioSettingsModal` component toggled via `src/web/main.js`.
+  5. Stripped generic tailwind properties and added semantic variables (`surface-container-high`, `primary`, `error-container`) for long term scaling.
+- **[AQA]**: Verified that the HTML id references (`topicsContainer`, `lessonsContainer`, `lessonsViewTitle`, `dueCountText`, `promptVoiceSelect`, `spanishVoiceSelect`) accurately map to the `elements` dictionary in `main.js`. No `TypeError` breaking changes.
+- **[QA]**: Verified 5-tab constraint per User request against the original Stitch file. Stripped mobile bottom navigation logic precisely as scoped. The interface now has a sophisticated aesthetic matching professional modern apps.
+\n## UI Color Fixes\n**[DEV]:** Fixed CSS syntax issue causing tailwind config to drop and reverted broken gradients into solid primary background buttons per stitch design.
+\n## UI Polish & Layout Enhancements\n**[DEV]:** Corrected dashboard logic to separate 'Mastered' (>=3 rounds) from 'InProgress' (1-2 rounds) loops. Trimmed duplicate week headers. Aligned transparent input with faux-color input in CSS tailwind classes to halt layout clipping. \n**[AQA]:** Validated input field bounding box classes alignment and javascript toggle states for ghost opacity transitions.\n**[QA]:** Confirmed 3x mastery bounds aligned with requested learning mechanics.\n**[TEACH]:** Logged UI sync edge cases in LESSONS_LEARNED.md.\n**[LOG]:** Done.

@@ -5,7 +5,15 @@
 
 const SELECTED_VOICE_KEY = 'anchor_selected_voice_uri';
 const SELECTED_PROMPT_VOICE_KEY = 'anchor_prompt_voice_uri';
+const SELECTED_VOICE_RATE_KEY = 'anchor_voice_rate';
 export const SELECTED_PROMPT_LANG_KEY = 'anchor_prompt_lang';
+
+/**
+ * Get the persisted Spanish playback rate (defaults to 1.0).
+ */
+export function getSpanishRate() {
+  return parseFloat(localStorage.getItem(SELECTED_VOICE_RATE_KEY) || '1.0');
+}
 
 /**
  * Cancel any ongoing speech.
@@ -88,6 +96,7 @@ export function speakAnswer(text, onDone) {
   }
 
   utterance.lang = 'es-ES';
+  utterance.rate = getSpanishRate();
 
   let isFired = false;
   const finish = () => {
@@ -136,6 +145,24 @@ export function initVoiceSelector(selectElement) {
     localStorage.setItem(SELECTED_VOICE_KEY, e.target.value);
     // The Truman Show greeting: "Buenos días, y por si no nos vemos, buenas tardes y buenas noches."
     speakAnswer("Buenos días, y por si no nos vemos, buenas tardes y buenas noches.", () => {});
+  });
+}
+
+/**
+ * Initialize the Spanish speed range slider.
+ */
+export function initSpeedSelector(rangeElement, labelElement) {
+  if (!rangeElement) return;
+
+  // Restore persisted value
+  const saved = getSpanishRate();
+  rangeElement.value = String(saved);
+  if (labelElement) labelElement.textContent = `${saved.toFixed(1)}×`;
+
+  rangeElement.addEventListener('input', () => {
+    const rate = parseFloat(rangeElement.value);
+    localStorage.setItem(SELECTED_VOICE_RATE_KEY, String(rate));
+    if (labelElement) labelElement.textContent = `${rate.toFixed(1)}×`;
   });
 }
 
