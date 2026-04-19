@@ -128,6 +128,9 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 
 
 
-
-
-
+### Task 21: Branching Strategy & Vercel Shield ✅
+- **Branch:** `task/git-workflow-setup`
+- **[DEV]**: Created a dedicated branch for workflow modification. Updated `multi-agent-rules.md` to strictly enforce branch-per-task logic.
+- **[AQA]**: Verified that the instructions in markdown are clear and follow the established project formatting.
+- **[QA]**: Ensured this process addresses the User's concern about accidental Vercel deployments from `main`.
+- **[TEACH]**: Recorded the branching requirement in `LESSONS_LEARNED.md`.
