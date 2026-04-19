@@ -158,5 +158,27 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
   5. Stripped generic tailwind properties and added semantic variables (`surface-container-high`, `primary`, `error-container`) for long term scaling.
 - **[AQA]**: Verified that the HTML id references (`topicsContainer`, `lessonsContainer`, `lessonsViewTitle`, `dueCountText`, `promptVoiceSelect`, `spanishVoiceSelect`) accurately map to the `elements` dictionary in `main.js`. No `TypeError` breaking changes.
 - **[QA]**: Verified 5-tab constraint per User request against the original Stitch file. Stripped mobile bottom navigation logic precisely as scoped. The interface now has a sophisticated aesthetic matching professional modern apps.
-\n## UI Color Fixes\n**[DEV]:** Fixed CSS syntax issue causing tailwind config to drop and reverted broken gradients into solid primary background buttons per stitch design.
-\n## UI Polish & Layout Enhancements\n**[DEV]:** Corrected dashboard logic to separate 'Mastered' (>=3 rounds) from 'InProgress' (1-2 rounds) loops. Trimmed duplicate week headers. Aligned transparent input with faux-color input in CSS tailwind classes to halt layout clipping. \n**[AQA]:** Validated input field bounding box classes alignment and javascript toggle states for ghost opacity transitions.\n**[QA]:** Confirmed 3x mastery bounds aligned with requested learning mechanics.\n**[TEACH]:** Logged UI sync edge cases in LESSONS_LEARNED.md.\n**[LOG]:** Done.
+
+## UI Color Fixes
+**[DEV]:** Fixed CSS syntax issue causing tailwind config to drop and reverted broken gradients into solid primary background buttons per stitch design.
+
+## UI Polish & Layout Enhancements
+**[DEV]:** Corrected dashboard logic to separate 'Mastered' (>=3 rounds) from 'InProgress' (1-2 rounds) loops. Trimmed duplicate week headers. Aligned transparent input with faux-color input in CSS tailwind classes to halt layout clipping. 
+**[AQA]:** Validated input field bounding box classes alignment and javascript toggle states for ghost opacity transitions.
+**[QA]:** Confirmed 3x mastery bounds aligned with requested learning mechanics.
+**[TEACH]:** Logged UI sync edge cases in LESSONS_LEARNED.md.
+**[LOG]:** Done.
+
+### Task 24: Voice Speed, Branch Cleanup & Code Polish ✅
+- **Branch:** `task/ui-redesign`
+- **Commit:** `59f6dce`
+- **[DEV]:**
+  1. **Voice Speed slider** — added `spanishSpeedRange` (0.5–2.0×) + live `spanishSpeedValue` label to the Audio Settings modal. Added `SELECTED_VOICE_RATE_KEY` + `getSpanishRate()` to `speech.js`. `speakAnswer` now reads `utterance.rate`. New `initSpeedSelector()` export wired in `main.js`.
+  2. **Branch cleanup** — deleted `screenshots/`, `stitch_*.html`, `take_screenshots.js`, `patch_dashboard.cjs`, `test.html`. Branch is now clean and merge-ready.
+  3. **Code polish** — 
+     - `dashboard.js`: Replaced 130-line if/else HTML template cascade with `TOPIC_THEMES` / `LESSON_THEMES` lookup maps and `getTopicStatus()` / `getLessonStatus()` pure helpers. File reduced by ~40 lines with zero logic change.
+     - `dashboard.js` + `main.js`: Replaced all `setTimeout()` paint hacks (10ms, 50ms) with `requestAnimationFrame` — semantically correct.
+     - `drill-ui.js`: Replaced `setTimeout(handleCorrect, 100)` debounce with `isHandlingCorrect` boolean flag guard — no race conditions, deterministic.
+     - `drill-ui.js`: `successLoader` toggled via `classList` only (optional chaining + no redundant `style.display`).
+- **[AQA]:** `node --input-type=module` import tests passed for `speech.js` and `dashboard.js`. All `id` references in `elements` dict verified against HTML. No missing refs.
+- **[QA]:** Speed feature is Spanish-only (correct scope). `requestAnimationFrame` is the correct platform API for layout-before-repaint sequencing. `isHandlingCorrect` flag reset on both `startDrill` entry and TTS `onend` callback — no stale state possible.
