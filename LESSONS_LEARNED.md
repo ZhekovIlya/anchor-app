@@ -14,5 +14,6 @@
 - **NPM Flag Passing (Reported by USER):** When passing flags like `--host` to an npm script (e.g., `npm run dev`), you MUST use the double-dash syntax: `npm run dev -- --host`. Otherwise, the flag is consumed by npm and never reaches the underlying tool (Vite).
 - **Background Servers (Reported by USER):** Do not leave processes like Vite (`npm run dev`) running indefinitely in the background. After verifying the dev environment, terminate the process.
 - **Strict Lesson Sizing (Reported by [AQA]):** Every standard sub-lesson MUST contain exactly 6 phrases. This is mathematically required to ensure the `targetStreak=24` (exactly 4 loops) completes symmetrically without orphaned reviews. Never output an 8-phrase or 4-phrase lesson under any circumstances.
+- **Branch-per-Task (User Request):** Always create a new branch (e.g., `git checkout -b task/description`) for every new task. This prevents unfinished work from being merged into `main` and automatically deployed to Vercel before local validation.
 
 ---
