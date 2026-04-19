@@ -150,7 +150,7 @@ export function initPromptVoiceSelector(selectElement) {
     const voices = getPromptVoices();
     const currentUri = localStorage.getItem(SELECTED_PROMPT_VOICE_KEY);
 
-    selectElement.innerHTML = '<option value="">Default Russian Voice (ru-RU)</option>';
+    selectElement.innerHTML = '<option value="">Default Prompt Voice</option>';
     voices.forEach(voice => {
       const option = document.createElement('option');
       option.value = voice.voiceURI;
