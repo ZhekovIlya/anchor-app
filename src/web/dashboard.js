@@ -5,18 +5,14 @@
 
 import { getCompletionCount } from './storage.js';
 
+let activePersonTab = 'yo';
+
 /**
  * Render the main topics dashboard.
- * @param {Object} elements - DOM element refs
- * @param {Array}  topics   - All topic data
- * @param {Object} srs      - SRS engine instance
- * @param {Object} phraseBank - Global phrase bank for SRS due count
- * @param {Function} onTopicClick  - Called with (topic) when a topic card is clicked
- * @param {Function} onReviewClick - Called when Daily Review is clicked
  */
 export function renderDashboard(elements, topics, srs, phraseBank, onTopicClick, onReviewClick) {
-  const { dashboardView, topicsContainer, lessonsView, drillView, endScreen } = elements;
-
+  const { elements: elRefs, topicsContainer } = elements;
+  
   showOnly(elements, 'dashboard');
   topicsContainer.innerHTML = '';
 
@@ -63,58 +59,103 @@ export function renderDashboard(elements, topics, srs, phraseBank, onTopicClick,
 }
 
 /**
- * Render the in-week lessons grid (5 columns).
- * @param {Object}   elements       - DOM element refs
- * @param {Object}   topic          - The active topic
- * @param {Function} onLessonClick  - Called with (lesson) when a lesson card is clicked
- * @param {Function} onBackClick    - Called when "Back to Topics" is clicked
+ * Render the in-week lessons grid with tabs for Personas.
  */
 export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
   const { lessonsViewTitle, lessonsContainer, backToDashboardBtn } = elements;
 
   showOnly(elements, 'lessons');
-
   lessonsViewTitle.textContent = topic.title;
   lessonsContainer.innerHTML = '';
 
-  topic.lessons.forEach(lesson => {
+  // 1. Identify valid persona tabs
+  const personaMap = {
+    'yo': 'Yo',
+    'tu': 'Tú',
+    'el_ella_usted': 'Él / Ella / Usted',
+    'nosotros': 'Nosotros',
+    'ellos_ellas_ustedes': 'Ellos / Ustedes'
+  };
+
+  const availablePersons = [...new Set(topic.lessons.filter(l => l.person).map(l => l.person))];
+  const sortedPersons = Object.keys(personaMap).filter(p => availablePersons.includes(p));
+
+  // Ensure active tab is valid for this topic
+  if (!sortedPersons.includes(activePersonTab) && sortedPersons.length > 0) {
+    activePersonTab = sortedPersons[0];
+  }
+
+  // 2. Render Tab Bar if person tags exist
+  if (sortedPersons.length > 0) {
+    const tabBar = document.createElement('div');
+    tabBar.className = 'col-span-1 md:col-span-5 flex flex-wrap gap-2 mb-6 border-b border-gray-100 pb-4';
+    
+    sortedPersons.forEach(pId => {
+      const tabBtn = document.createElement('button');
+      const isActive = activePersonTab === pId;
+      
+      tabBtn.className = `px-6 py-2 rounded-full font-bold transition-all cursor-pointer ${
+        isActive 
+          ? 'bg-blue-600 text-white shadow-md' 
+          : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+      }`;
+      tabBtn.textContent = personaMap[pId];
+      tabBtn.onclick = () => {
+        activePersonTab = pId;
+        renderLessonsView(elements, topic, onLessonClick, onBackClick);
+      };
+      tabBar.appendChild(tabBtn);
+    });
+    
+    lessonsContainer.appendChild(tabBar);
+  }
+
+  // 3. Render Lessons (Filtered by Tab or Exam)
+  const filteredLessons = topic.lessons.filter(l => l.exam || l.person === activePersonTab);
+
+  filteredLessons.forEach(lesson => {
     const timesFinished = getCompletionCount(lesson.id);
     const lessonBtn = document.createElement('button');
 
-    const baseClasses = 'text-left p-4 rounded-xl shadow-sm hover:shadow-md transition-all flex flex-col gap-1 cursor-pointer';
+    const baseClasses = 'text-left p-6 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col gap-2 cursor-pointer border';
     
     if (timesFinished > 0) {
-      lessonBtn.className = `${baseClasses} bg-green-100 border-2 border-green-300 hover:border-green-400`;
-      if (lesson.exam) lessonBtn.classList.add('col-span-1', 'md:col-span-5');
+      lessonBtn.className = `${baseClasses} bg-green-50 border-green-200 hover:border-green-300`;
+      if (lesson.exam) lessonBtn.classList.add('col-span-1', 'md:col-span-5', 'mt-8', 'bg-gradient-to-r', 'from-yellow-50', 'to-orange-50', 'border-yellow-200');
     } else if (lesson.exam) {
-      lessonBtn.className = `${baseClasses} bg-yellow-50 border-2 border-yellow-400 hover:border-yellow-500 col-span-1 md:col-span-5`;
+      lessonBtn.className = `${baseClasses} bg-white border-dashed border-gray-300 hover:border-yellow-400 col-span-1 md:col-span-5 mt-8 opacity-75`;
     } else {
-      lessonBtn.className = `${baseClasses} bg-white border border-gray-100 hover:border-blue-400`;
+      lessonBtn.className = `${baseClasses} bg-white border-gray-100 hover:border-blue-300`;
     }
 
     const lessonTitle = document.createElement('span');
     if (timesFinished > 0) {
-      lessonTitle.className = 'text-xl font-bold text-green-800';
+      lessonTitle.className = 'text-xl font-bold text-green-900';
     } else if (lesson.exam) {
-      lessonTitle.className = 'text-lg font-bold text-yellow-700';
+      lessonTitle.className = 'text-xl font-bold text-gray-500';
     } else {
-      lessonTitle.className = 'text-lg font-semibold text-gray-700';
+      lessonTitle.className = 'text-xl font-bold text-gray-800';
     }
     lessonTitle.textContent = lesson.title;
     lessonBtn.appendChild(lessonTitle);
 
-    const phraseCount = document.createElement('span');
-    phraseCount.className = timesFinished > 0 ? 'text-sm text-green-700 flex items-center gap-2 mt-1' : 'text-sm text-gray-400';
+    const phraseCount = document.createElement('div');
+    phraseCount.className = 'flex flex-wrap items-center gap-2 mt-1';
 
     let phraseTotal = lesson.exam
       ? topic.lessons.filter(l => !l.exam).reduce((sum, l) => sum + l.phrases.length, 0)
       : lesson.phrases.length;
-    let subtitle = `${phraseTotal} phrases` + (lesson.exam ? ' • Streak: 50' : '');
     
+    const countPill = document.createElement('span');
+    countPill.className = 'text-sm font-medium text-gray-400 bg-gray-50 px-3 py-1 rounded-full';
+    countPill.textContent = `${phraseTotal} phrases` + (lesson.exam ? ' • 🏆 Exam' : '');
+    phraseCount.appendChild(countPill);
+
     if (timesFinished > 0) {
-      phraseCount.innerHTML = `<span>${subtitle}</span> <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full border border-blue-200">✓ Completed ${timesFinished} time${timesFinished > 1 ? 's' : ''}</span>`;
-    } else {
-      phraseCount.textContent = subtitle;
+      const completionPill = document.createElement('span');
+      completionPill.className = 'bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-200';
+      completionPill.textContent = `Completed ${timesFinished} time${timesFinished > 1 ? 's' : ''}`;
+      phraseCount.appendChild(completionPill);
     }
 
     lessonBtn.appendChild(phraseCount);
@@ -122,14 +163,11 @@ export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
     lessonsContainer.appendChild(lessonBtn);
   });
 
-  // Rebind back button
   backToDashboardBtn.onclick = onBackClick;
 }
 
 /**
  * Show only the specified view, hide all others.
- * @param {Object} elements - DOM element refs
- * @param {'dashboard'|'lessons'|'drill'|'end'} viewName
  */
 export function showOnly(elements, viewName) {
   const views = {

@@ -135,3 +135,15 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]**: Verified that the instructions in markdown are clear and follow the established project formatting.
 - **[QA]**: Ensured this process addresses the User's concern about accidental Vercel deployments from `main`.
 - **[TEACH]**: Recorded the branching requirement in `LESSONS_LEARNED.md`.
+
+### Task 22: Tabbed Workbook Reorganization ✅
+- **Branch:** `task/tab-reorganization`
+- **[DEV]**: 
+  1. Refactored `data/week_1.js`, `data/week_2.js`, and `data/week_3.js` to support tab-based person grouping.
+  2. Consolidated `Usted` lessons into the `el_ella_usted` person group.
+  3. Preserved all legacy `id` fields to ensure non-breaking upgrades for existing users.
+  4. Normalized all lesson titles (removed numerical prefixes and persona identifiers).
+  5. Updated `src/web/dashboard.js` to render a horizontal Tab Bar for persons (`Yo`, `Tú`, etc.) and filter lessons dynamically.
+- **[AQA]**: Verified 6-phrase symmetry across all 330 refactored phrases. Confirmed meta IDs remain unique. Validated Tailwind layout for the new tab bar.
+- **[QA]**: 80/20 vocabulary decay formula remains active. The new UI significantly reduces page length and improves focus by isolating grammatical persons.
+- **[TEACH]**: No errors found. The refactor successfully transitioned the app to a professional workbook-style navigation.
