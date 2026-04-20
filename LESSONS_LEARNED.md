@@ -24,6 +24,7 @@
 ## Lesson Completion Layout Constraints
 - **Iconography vs Text Labels**: Users strongly prefer intuitive dashboard status tracking. Avoid spamming text tags like 'In Progress' or 'Mastered' repeatedly on item grids. Favor minimalist icons on the right edge (e.g. \check_circle\ for completed, \workspace_premium\ for mastered).
 - **Strict States**: Completion requires strictly meeting thresholds. Week logic -> Lesson logic.
+- **Context-Aware Mastery Thresholds**: When determining mastery status (e.g., `getLessonStatus`), always check if the item is an Exam or a standard Lesson. Standard lessons master at 3 completions, while Exams require 5. Using a hardcoded single threshold leads to premature 'Mastered' states in the UI.
 
 ## Technical UI Fixes (Reported by USER)
 - **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.

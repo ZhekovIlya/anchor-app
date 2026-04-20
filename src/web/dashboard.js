@@ -161,7 +161,8 @@ function getTopicStatus(topic) {
 
 function getLessonStatus(lesson) {
   const completions = getCompletionCount(lesson.id);
-  if (completions >= LESSON_MASTERED_THRESHOLD) return 'mastered';
+  const threshold = lesson.exam ? EXAM_MASTERED_THRESHOLD : LESSON_MASTERED_THRESHOLD;
+  if (completions >= threshold) return 'mastered';
   if (completions >= 1) return 'completed';
   return 'new';
 }

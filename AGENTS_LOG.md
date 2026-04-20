@@ -218,3 +218,10 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[DEV]**: Applying this exact lifecycle right now to sweep up the progress-bar padding and 100% color injection updates from Task 28.
 - **[AQA]**: Verified git state is clean.
 - **[QA]**: Workflow aligns with user's specific zero-friction deployment preferences.
+
+### Task 30: Fix Exam Mastery Threshold ?
+- **Branch:** task/fix-exam-mastery-threshold
+- **[DEV]**: Identified that \getLessonStatus\ in \dashboard.js\ was not checking if a lesson was an exam, causing it to default to the 3-completion lesson threshold. Fixed it to conditionally check \lesson.exam\ and use the 5-completion threshold (\EXAM_MASTERED_THRESHOLD\). 
+- **[AQA]**: Verified that the logic now correctly distinguishes between lessons and exams for status rendering.
+- **[QA]**: Thresholds now strictly follow the 3 (lesson) and 5 (exam) mastery rules. Passed. 
+- **[TEACH]**: Logged the need for context-aware thresholding in \LESSONS_LEARNED.md\.
