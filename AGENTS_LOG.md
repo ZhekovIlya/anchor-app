@@ -235,3 +235,10 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **Branch:** task/refine-workflow-safe-autorun
 - **[TEACH]**: Rule 17 successfully pivoted to 'Task Branch Lifecycle'. The model now commits locally and waits for a manual 'Merge' or 'Done' signal from the USER before touching the main branch. This prevents 'auto-deploying' broken code while allowing zero-friction pushes via SafeToAutoRun on the final deployment turn.
 - **[QA]**: Verified.
+
+### Task 33: Git Workflow Test ✅
+- **Branch:** `task/git-workflow-test`
+- **[DEV]**: Added a subtle "CI TEST" badge to the application footer in `index.html` to confirm the isolated task branch lifecycle.
+- **[AQA]**: Verified markup validity and visual scaling/positioning tokens.
+- **[QA]**: Change is non-breaking and functional for deployment verification.
+- **[TEACH]**: No errors found. Workflow isolation confirmed.
