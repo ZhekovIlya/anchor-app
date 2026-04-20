@@ -332,11 +332,14 @@
   <!-- Footer -->
   <footer class="bg-surface-container border-t border-outline-variant/10 w-full py-8 mt-auto flex z-40">
     <div class="flex flex-col md:flex-row justify-center items-center gap-4 w-full px-8 text-center">
-      <div class="font-sans text-xs tracking-tight text-on-surface-variant flex items-center justify-center">
-        <span class="font-serif font-semibold text-on-surface mr-1">Spanish Anchor</span>
-        <span id="revisionTag" class="px-1.5 py-0.5 bg-primary/10 text-primary rounded border border-primary/20 font-mono font-bold inline-block mx-1">Ref: ...</span>
-        <span class="mx-1">© 2026 •</span>
+      <div class="font-sans text-xs tracking-tight text-on-surface-variant flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0">
+        <div class="flex items-center">
+          <span class="font-serif font-semibold text-on-surface mr-1">Spanish Anchor</span>
+          <span class="mx-1">© 2026</span>
+        </div>
+        <span class="hidden md:inline mx-1">•</span>
         <a class="hover:text-primary transition-colors" href="mailto:illia.zhekov@gmail.com">illia.zhekov@gmail.com</a>
+        <span id="revisionTag" class="mt-1 md:mt-0 md:ml-3 px-1.5 py-0.5 bg-primary/10 text-primary rounded border border-primary/20 font-mono font-bold inline-block">Ref: ...</span>
       </div>
     </div>
   </footer>
