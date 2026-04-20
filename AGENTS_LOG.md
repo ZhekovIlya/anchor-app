@@ -191,3 +191,10 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]:** Verified that inline CSS modifications are targeted and properly cleaned up. No classes were unintentionally overridden.
 - **[QA]:** Ghosting issue reported by USER is resolved. The correct phrase now fades in when manually requested, and hides instantly upon progression without leaking the next phrase prematurely.
 - **[TEACH]:** Documented CSS Transition Ghosting dynamics and reflow mechanics in `LESSONS_LEARNED.md`.
+
+### Task 26: Enforce Mandatory Branching Rule & Push Main ?
+- **Branch:** task/enforce-branching-and-push
+- **[TEACH]**: Hardened Rule 17 in LESSONS_LEARNED.md to explicitly forbid direct modifications on main. Added 'STRICT USER REQUIREMENT' warning.
+- **[DEV]**: Rectified recent direct-to-main modification by stashing, branching, and merging properly. 
+- **[AQA]**: Verified git state and successfully pushed main to origin.
+- **[QA]**: Workflow now strictly mirrors the user's requested pedagogical and technical safety constraints. Passed.
