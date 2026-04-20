@@ -126,8 +126,6 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[QA]**: Confirmed default behavior is unchanged (Russian) for all existing users. Ukrainian mode activates only when a `uk-UA` voice is explicitly selected. The `phrase[lang] || phrase.ru` fallback guarantees zero runtime errors even if a phrase is missing a `uk` field.
 - **[AQA/Hotfix]**: Removed old duplicate language toggle from merge resolution. Refined dropsdowns in the audio settings to use `w-fit`, removing flag emojis and preventing container overflows on long voice names.
 
-
-
 ### Task 21: Branching Strategy & Vercel Shield ✅
 - **Commit:** `9026e72` (main)
 - **Branch:** `task/git-workflow-setup`
@@ -159,16 +157,6 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]**: Verified that the HTML id references (`topicsContainer`, `lessonsContainer`, `lessonsViewTitle`, `dueCountText`, `promptVoiceSelect`, `spanishVoiceSelect`) accurately map to the `elements` dictionary in `main.js`. No `TypeError` breaking changes.
 - **[QA]**: Verified 5-tab constraint per User request against the original Stitch file. Stripped mobile bottom navigation logic precisely as scoped. The interface now has a sophisticated aesthetic matching professional modern apps.
 
-## UI Color Fixes
-**[DEV]:** Fixed CSS syntax issue causing tailwind config to drop and reverted broken gradients into solid primary background buttons per stitch design.
-
-## UI Polish & Layout Enhancements
-**[DEV]:** Corrected dashboard logic to separate 'Mastered' (>=3 rounds) from 'InProgress' (1-2 rounds) loops. Trimmed duplicate week headers. Aligned transparent input with faux-color input in CSS tailwind classes to halt layout clipping. 
-**[AQA]:** Validated input field bounding box classes alignment and javascript toggle states for ghost opacity transitions.
-**[QA]:** Confirmed 3x mastery bounds aligned with requested learning mechanics.
-**[TEACH]:** Logged UI sync edge cases in LESSONS_LEARNED.md.
-**[LOG]:** Done.
-
 ### Task 24: Voice Speed, Branch Cleanup & Code Polish ✅
 - **Branch:** `task/ui-redesign`
 - **Commit:** `59f6dce`
@@ -181,16 +169,16 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
      - `drill-ui.js`: Replaced `setTimeout(handleCorrect, 100)` debounce with `isHandlingCorrect` boolean flag guard — no race conditions, deterministic.
      - `drill-ui.js`: `successLoader` toggled via `classList` only (optional chaining + no redundant `style.display`).
 - **[AQA]:** `node --input-type=module` import tests passed for `speech.js` and `dashboard.js`. All `id` references in `elements` dict verified against HTML. No missing refs.
-- **[QA]:** Speed feature is Spanish-only (correct scope). `requestAnimationFrame` is the correct platform API for layout-before-repaint sequencing. `isHandlingCorrect` flag reset on both `startDrill` entry and TTS `onend` callback — no stale state possible.
+- **[QA]**: Speed feature is Spanish-only (correct scope). `requestAnimationFrame` is the correct platform API for layout-before-repaint sequencing. `isHandlingCorrect` flag reset on both `startDrill` entry and TTS `onend` callback — no stale state possible.
 
 ### Task 25: Fix Reveal Answer Ghosting Transition Bug ✅
 - **Branch:** `task/ui-redesign` (continuing from current context)
-- **[DEV]:** 
+- **[DEV]**: 
   1. Updated `src/web/drill-ui.js` inside `onNextPhrase`. When transitioning to a new (unrevealed) phrase, temporarily set `ghostText.style.transition = 'none'` so the text and opacity (`opacity-0`) change instantly without triggering a fade-out animation.
   2. Updated `revealAnswerBtn.onclick` to restore `ghostText.style.transition = ''` and trigger a DOM reflow (`void ghostText.offsetHeight`) before applying `opacity-30`, ensuring the browser correctly animates the fade-in for revealed text.
-- **[AQA]:** Verified that inline CSS modifications are targeted and properly cleaned up. No classes were unintentionally overridden.
-- **[QA]:** Ghosting issue reported by USER is resolved. The correct phrase now fades in when manually requested, and hides instantly upon progression without leaking the next phrase prematurely.
-- **[TEACH]:** Documented CSS Transition Ghosting dynamics and reflow mechanics in `LESSONS_LEARNED.md`.
+- **[AQA]**: Verified that inline CSS modifications are targeted and properly cleaned up. No classes were unintentionally overridden.
+- **[QA]**: Ghosting issue reported by USER is resolved. The correct phrase now fades in when manually requested, and hides instantly upon progression without leaking the next phrase prematurely.
+- **[TEACH]**: Documented CSS Transition Ghosting dynamics and reflow mechanics in `LESSONS_LEARNED.md`.
 
 ### Task 26: Enforce Mandatory Branching Rule & Push Main ?
 - **Branch:** task/enforce-branching-and-push
@@ -208,7 +196,7 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 ### Task 28: Progress Bar Polish & Strict Deployment Rule ?
 - **Branch:** task/progress-bar-polish
 - **[TEACH]**: Rewritten Rule 17 in LESSONS_LEARNED.md. Explicitly prohibited autonomous git hooks executing merges into main or triggering remote pushes without explicit manual authorization. The agent must leave the user on the task branch for isolated local verification.
-- **[DEV]**: Added horizontal padding (\px-6\) to the \<main id='endScreen'>\ container restricting responsive overflowing and edge hugging for mobile layouts. Injected 100% completion threshold triggers in \drill-ui.js\ to dynamically shift the success capacity bar into a celebratory Green (\g-[#16a34a]\) whenever the underlying mathematics output 100%.
+- **[DEV]**: Added horizontal padding (`px-6`) to the `<main id='endScreen'>` container restricting responsive overflowing and edge hugging for mobile layouts. Injected 100% completion threshold triggers in `drill-ui.js` to dynamically shift the success capacity bar into a celebratory Green (`bg-[#16a34a]`) whenever the underlying mathematics output 100%.
 - **[AQA]**: Verified layout parameters inside DOM manipulation and CSS substitution matrices.
 - **[QA]**: Mobile UI bug mitigated. Logic queries resolved (null topic guard prevents index lookup errors on dynamic daily SRS review drills). Passed.
 
@@ -221,24 +209,24 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 
 ### Task 30: Fix Exam Mastery Threshold ?
 - **Branch:** task/fix-exam-mastery-threshold
-- **[DEV]**: Identified that \getLessonStatus\ in \dashboard.js\ was not checking if a lesson was an exam, causing it to default to the 3-completion lesson threshold. Fixed it to conditionally check \lesson.exam\ and use the 5-completion threshold (\EXAM_MASTERED_THRESHOLD\). 
+- **[DEV]**: Identified that `getLessonStatus` in `dashboard.js` was not checking if a lesson was an exam, causing it to default to the 3-completion lesson threshold. Fixed it to conditionally check `lesson.exam` and use the 5-completion threshold (`EXAM_MASTERED_THRESHOLD`). 
 - **[AQA]**: Verified that the logic now correctly distinguishes between lessons and exams for status rendering.
 - **[QA]**: Thresholds now strictly follow the 3 (lesson) and 5 (exam) mastery rules. Passed. 
-- **[TEACH]**: Logged the need for context-aware thresholding in \LESSONS_LEARNED.md\.
+- **[TEACH]**: Logged the need for context-aware thresholding in `LESSONS_LEARNED.md`.
 
 ### Task 31: Finalize Git Workflow Rule ?
 - **Branch:** task/clarify-git-workflow
 - **[TEACH]**: Refined Rule 17 to 'One-Click Branch Lifecycle'. Confirmed that the USER reviews code via the IDE tool proposal diffs. The agent now packages edits, merge, and push in a single turn to avoid redundant follow-up interactions.
 - **[DEV]**: Synchronized repo state with the new workflow.
 
-### Task 32: Finalizing 'Task Branch Lifecycle' Workflow ?
+### Task 32: Finalizing 'Task Branch Lifecycle' Workflow ✅
 - **Branch:** task/refine-workflow-safe-autorun
 - **[TEACH]**: Rule 17 successfully pivoted to 'Task Branch Lifecycle'. The model now commits locally and waits for a manual 'Merge' or 'Done' signal from the USER before touching the main branch. This prevents 'auto-deploying' broken code while allowing zero-friction pushes via SafeToAutoRun on the final deployment turn.
 - **[QA]**: Verified.
 
-### Task 33: Git Workflow Test ✅
+### Task 33: Git Workflow Test & Footer Updates ✅
 - **Branch:** `task/git-workflow-test`
-- **[DEV]**: Added a subtle "CI TEST" badge to the application footer in `index.html` to confirm the isolated task branch lifecycle.
-- **[AQA]**: Verified markup validity and visual scaling/positioning tokens.
-- **[QA]**: Change is non-breaking and functional for deployment verification.
-- **[TEACH]**: No errors found. Workflow isolation confirmed.
+- **[DEV]**: Enhanced the application footer by adding the current commit revision badge (`Ref: ffeaf43`) and updating the support email to `illia.zhekov@gmail.com`.
+- **[AQA]**: Verified markup and mailto link integrity.
+- **[QA]**: Improved technical transparency and personalization of the UX.
+- **[TEACH]**: No errors found. Workflow isolation and multi-turn iterative development confirmed.
