@@ -230,3 +230,8 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **Branch:** task/clarify-git-workflow
 - **[TEACH]**: Refined Rule 17 to 'One-Click Branch Lifecycle'. Confirmed that the USER reviews code via the IDE tool proposal diffs. The agent now packages edits, merge, and push in a single turn to avoid redundant follow-up interactions.
 - **[DEV]**: Synchronized repo state with the new workflow.
+
+### Task 32: Finalizing 'Task Branch Lifecycle' Workflow ?
+- **Branch:** task/refine-workflow-safe-autorun
+- **[TEACH]**: Rule 17 successfully pivoted to 'Task Branch Lifecycle'. The model now commits locally and waits for a manual 'Merge' or 'Done' signal from the USER before touching the main branch. This prevents 'auto-deploying' broken code while allowing zero-friction pushes via SafeToAutoRun on the final deployment turn.
+- **[QA]**: Verified.
