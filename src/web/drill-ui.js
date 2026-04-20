@@ -6,8 +6,8 @@
 import { COLOR_MAP } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
-import { showOnly } from './dashboard.js';
-import { incrementCompletion } from './storage.js';
+import { showOnly, calcProgressPercent, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
+import { incrementCompletion, getCompletionCount } from './storage.js';
 
 let activeEngine = null;
 let isHandlingCorrect = false;
@@ -23,7 +23,7 @@ let isHandlingCorrect = false;
  * @param {Object}  srs       - SRS engine instance
  * @param {Function} onQuit   - Called when user quits / returns
  */
-export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQuit) {
+export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText, ghostTextContainer,
@@ -89,7 +89,73 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
 
       onComplete() {
         showOnly(elements, 'end');
+
+        const previousCount = getCompletionCount(lesson.id);
         incrementCompletion(lesson.id);
+        const newCount = previousCount + 1;
+
+        elements.endScreenProgressContainer.classList.add('hidden', 'opacity-0');
+        elements.endScreenIconBox.className = 'w-20 h-20 flex items-center justify-center rounded-full mb-4 shadow-sm border transition-colors transition-transform scale-100';
+        
+        let title = '';
+        let subtitle = '';
+        let icon = '';
+        let iconColorClass = '';
+
+        if (previousCount === 0) {
+          title = isExam ? 'Exam Completed!' : 'Lesson Completed!';
+          subtitle = 'Week progress updated.';
+          icon = 'check_circle';
+          iconColorClass = 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]';
+          
+          if (topic) {
+            elements.endScreenProgressContainer.classList.remove('hidden');
+            const total = topic.lessons.length;
+            const totalCompletionsRaw = topic.lessons.filter(l => getCompletionCount(l.id) >= 1).length;
+            const newPctObj = total > 0 ? Math.round((totalCompletionsRaw / total) * 100) : 0;
+            const oldPctObj = total > 0 ? Math.round(((totalCompletionsRaw - 1) / total) * 100) : 0;
+            
+            elements.endScreenProgressBar.style.width = `${Math.max(0, oldPctObj)}%`;
+            elements.endScreenProgressLabel.textContent = `${newPctObj}%`;
+            
+            // Allow layout to render before animating target width
+            requestAnimationFrame(() => {
+              elements.endScreenProgressContainer.classList.remove('opacity-0');
+              elements.endScreenProgressBar.style.width = `${newPctObj}%`;
+            });
+          }
+        } else {
+          if (isExam) {
+            if (newCount >= EXAM_MASTERED_THRESHOLD) {
+              title = 'Exam Mastered!';
+              subtitle = 'Week Mastered!';
+              icon = 'workspace_premium';
+              iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
+            } else {
+              title = 'Exam Practiced!';
+              subtitle = `You need ${EXAM_MASTERED_THRESHOLD - newCount} more completions to master the exam. To master the week, master the exam.`;
+              icon = 'school';
+              iconColorClass = 'bg-surface-container-high text-on-surface-variant border-outline-variant/30';
+            }
+          } else {
+            if (newCount >= LESSON_MASTERED_THRESHOLD) {
+              title = 'Lesson Mastered!';
+              subtitle = 'Iron-Clad Grammar Complete.';
+              icon = 'workspace_premium';
+              iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
+            } else {
+              title = 'Lesson Practiced!';
+              subtitle = `Great! You need ${LESSON_MASTERED_THRESHOLD - newCount} more completions to master this lesson.`;
+              icon = 'sync';
+              iconColorClass = 'bg-primary-container text-primary border-primary/30';
+            }
+          }
+        }
+
+        elements.endScreenTitle.textContent = title;
+        elements.endScreenSubtitle.textContent = subtitle;
+        elements.endScreenIcon.textContent = icon;
+        elements.endScreenIconBox.className += ` ${iconColorClass}`;
       },
     },
   });
@@ -127,7 +193,7 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
 
   // End screen buttons
   restartBtn.onclick = () => {
-    startDrill(elements, phrases, lesson, isExam, isReview, srs, onQuit);
+    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit);
   };
   dashboardReturnBtn.onclick = onQuit;
 

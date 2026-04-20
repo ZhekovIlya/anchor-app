@@ -223,11 +223,21 @@
 
   <!-- END SCREEN -->
   <main id="endScreen" class="hidden w-full flex-col items-center justify-center min-h-[60vh] gap-6 flex-grow">
-    <div class="w-20 h-20 bg-tertiary-fixed text-tertiary flex items-center justify-center rounded-full mb-4 shadow-sm border border-tertiary-fixed-dim">
-      <span class="material-symbols-outlined text-4xl">workspace_premium</span>
+    <div id="endScreenIconBox" class="w-20 h-20 bg-tertiary-fixed text-tertiary flex items-center justify-center rounded-full mb-4 shadow-sm border border-tertiary-fixed-dim transition-colors transition-transform scale-100">
+      <span id="endScreenIcon" class="material-symbols-outlined text-4xl">workspace_premium</span>
     </div>
-    <h1 class="text-5xl md:text-6xl font-headline font-extrabold text-on-surface text-center">Lesson Mastered!</h1>
-    <p class="text-xl md:text-2xl font-body text-on-surface-variant font-medium text-center">Iron-Clad Grammar Complete</p>
+    <h1 id="endScreenTitle" class="text-5xl md:text-6xl font-headline font-extrabold text-on-surface text-center transition-opacity">Lesson Mastered!</h1>
+    <p id="endScreenSubtitle" class="text-xl md:text-2xl font-body text-on-surface-variant font-medium text-center transition-opacity">Iron-Clad Grammar Complete</p>
+    
+    <div id="endScreenProgressContainer" class="hidden w-full max-w-sm mt-4 opacity-0 transition-opacity duration-500">
+       <div class="flex justify-between items-end mb-2">
+         <span class="font-label text-sm text-on-surface-variant uppercase tracking-wider">Week Progress</span>
+         <span id="endScreenProgressLabel" class="font-mono text-lg font-bold text-primary">0%</span>
+       </div>
+       <div class="w-full bg-surface-variant rounded-full h-3 overflow-hidden shadow-inner flex">
+         <div id="endScreenProgressBar" class="bg-primary h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+       </div>
+    </div>
     <div class="flex flex-col sm:flex-row gap-4 mt-8">
       <button id="restartBtn" class="px-8 py-4 bg-surface-container-high text-on-surface rounded-xl text-xl font-label font-bold hover:bg-surface-variant transition-colors">
         Repeat Lesson

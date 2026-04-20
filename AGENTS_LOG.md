@@ -198,3 +198,9 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[DEV]**: Rectified recent direct-to-main modification by stashing, branching, and merging properly. 
 - **[AQA]**: Verified git state and successfully pushed main to origin.
 - **[QA]**: Workflow now strictly mirrors the user's requested pedagogical and technical safety constraints. Passed.
+
+### Task 27: Dynamic Drill Success Screen & Progress UI ?
+- **Branch:** task/drill-success-screen
+- **[DEV]**: Rewrote the end screen DOM schema in index.html to allow Javascript-driven element injection. Added an animated Week Progress capacity bar. Updated src/web/drill-ui.js to intercept module states *before* incrementing completion to correctly distinguish brand new logic bounds (old == 0) from repetitive cycles (old > 0). Exam lessons independently scale thresholds and conditionally output 'Exam Mastered' vs 'Exam Practiced' statuses according to the exact rules specified by the user.
+- **[AQA]**: Verified exports cross-linking for progress computations. DOM tree element binding correctly aligns with the rewritten main.js constants.
+- **[QA]**: First completion accurately fills the progress bar (Top feature request fulfilled). Repeat sessions correctly enumerate the distance remaining till Iron-Clad Mastery. Rule constraints satisfied.

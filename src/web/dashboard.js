@@ -141,8 +141,8 @@ const LESSON_THEMES = {
 // STATUS HELPERS
 // ========================
 
-const EXAM_MASTERED_THRESHOLD = 5;
-const LESSON_MASTERED_THRESHOLD = 3;
+export const EXAM_MASTERED_THRESHOLD = 5;
+export const LESSON_MASTERED_THRESHOLD = 3;
 
 function getTopicStatus(topic) {
   const examLesson = topic.lessons.find(l => l.exam);
@@ -170,7 +170,7 @@ function stripWeekPrefix(title) {
   return title.replace(/^Week\s*\d+\s*[:-]?\s*/i, '').trim() || title;
 }
 
-function calcProgressPercent(lessons) {
+export function calcProgressPercent(lessons) {
   const total = lessons.length;
   const done = lessons.filter(l => getCompletionCount(l.id) >= 1).length;
   return total > 0 ? Math.round((done / total) * 100) : 0;

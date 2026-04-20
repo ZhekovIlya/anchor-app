@@ -43,6 +43,13 @@ const elements = {
   backToDashboardBtn: document.getElementById('backToDashboardBtn'),
   drillView: document.getElementById('drillView'),
   endScreen: document.getElementById('endScreen'),
+  endScreenIconBox: document.getElementById('endScreenIconBox'),
+  endScreenIcon: document.getElementById('endScreenIcon'),
+  endScreenTitle: document.getElementById('endScreenTitle'),
+  endScreenSubtitle: document.getElementById('endScreenSubtitle'),
+  endScreenProgressContainer: document.getElementById('endScreenProgressContainer'),
+  endScreenProgressBar: document.getElementById('endScreenProgressBar'),
+  endScreenProgressLabel: document.getElementById('endScreenProgressLabel'),
   inputField: document.getElementById('strictInput'),
   fakeInput: document.getElementById('fakeInput'),
   streakCounter: document.getElementById('streakCounter'),
@@ -98,7 +105,7 @@ function onLessonClick(lesson) {
   const isExam = !!lesson.exam;
   const drillPhrases = isExam ? buildExamPhrases(activeTopic) : lesson.phrases;
 
-  startDrill(elements, drillPhrases, lesson, isExam, false, srs, returnToActiveTopic);
+  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srs, returnToActiveTopic);
 }
 
 function onReviewClick() {
@@ -106,7 +113,7 @@ function onReviewClick() {
   if (duePhrases.length === 0) return;
 
   const reviewLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
-  startDrill(elements, duePhrases, reviewLesson, false, true, srs, initDashboard);
+  startDrill(elements, duePhrases, null, reviewLesson, false, true, srs, initDashboard);
 }
 
 // ========================
