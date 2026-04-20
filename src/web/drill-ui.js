@@ -51,10 +51,12 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
         ghostText.textContent = phrase.es;
 
         if (isCopyStage) {
+          ghostText.style.transition = '';
           ghostText.classList.remove('opacity-0');
           ghostText.classList.add('opacity-30');
           revealAnswerBtn.classList.add('hidden');
         } else {
+          ghostText.style.transition = 'none';
           ghostText.classList.remove('opacity-30');
           ghostText.classList.add('opacity-0');
           revealAnswerBtn.classList.remove('hidden');
@@ -112,6 +114,8 @@ export function startDrill(elements, phrases, lesson, isExam, isReview, srs, onQ
   // Reveal answer
   revealAnswerBtn.onclick = () => {
     activeEngine.revealAnswer();
+    ghostText.style.transition = '';
+    void ghostText.offsetHeight; // force reflow so transition applies
     ghostText.classList.remove('opacity-0');
     ghostText.classList.add('opacity-30');
     revealAnswerBtn.classList.add('hidden');

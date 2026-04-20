@@ -182,3 +182,12 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
      - `drill-ui.js`: `successLoader` toggled via `classList` only (optional chaining + no redundant `style.display`).
 - **[AQA]:** `node --input-type=module` import tests passed for `speech.js` and `dashboard.js`. All `id` references in `elements` dict verified against HTML. No missing refs.
 - **[QA]:** Speed feature is Spanish-only (correct scope). `requestAnimationFrame` is the correct platform API for layout-before-repaint sequencing. `isHandlingCorrect` flag reset on both `startDrill` entry and TTS `onend` callback — no stale state possible.
+
+### Task 25: Fix Reveal Answer Ghosting Transition Bug ✅
+- **Branch:** `task/ui-redesign` (continuing from current context)
+- **[DEV]:** 
+  1. Updated `src/web/drill-ui.js` inside `onNextPhrase`. When transitioning to a new (unrevealed) phrase, temporarily set `ghostText.style.transition = 'none'` so the text and opacity (`opacity-0`) change instantly without triggering a fade-out animation.
+  2. Updated `revealAnswerBtn.onclick` to restore `ghostText.style.transition = ''` and trigger a DOM reflow (`void ghostText.offsetHeight`) before applying `opacity-30`, ensuring the browser correctly animates the fade-in for revealed text.
+- **[AQA]:** Verified that inline CSS modifications are targeted and properly cleaned up. No classes were unintentionally overridden.
+- **[QA]:** Ghosting issue reported by USER is resolved. The correct phrase now fades in when manually requested, and hides instantly upon progression without leaking the next phrase prematurely.
+- **[TEACH]:** Documented CSS Transition Ghosting dynamics and reflow mechanics in `LESSONS_LEARNED.md`.

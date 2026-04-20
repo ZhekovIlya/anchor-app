@@ -14,7 +14,7 @@
 - **NPM Flag Passing (Reported by USER):** When passing flags like `--host` to an npm script (e.g., `npm run dev`), you MUST use the double-dash syntax: `npm run dev -- --host`. Otherwise, the flag is consumed by npm and never reaches the underlying tool (Vite).
 - **Background Servers (Reported by USER):** Do not leave processes like Vite (`npm run dev`) running indefinitely in the background. After verifying the dev environment, terminate the process.
 - **Strict Lesson Sizing (Reported by [AQA]):** Every standard sub-lesson MUST contain exactly 6 phrases. This is mathematically required to ensure the `targetStreak=24` (exactly 4 loops) completes symmetrically without orphaned reviews. Never output an 8-phrase or 4-phrase lesson under any circumstances.
-- **Branch-per-Task (User Request):** Always create a new branch (e.g., `git checkout -b task/description`) for every new task. This prevents unfinished work from being merged into `main` and automatically deployed to Vercel before local validation.
+- **Mandatory Branch-per-Task (STRICT USER REQUIREMENT):** [DEV] MUST create a new task branch (e.g., `git checkout -b task/description`) and switch to it BEFORE making ANY file changes. NEVER modify files on the `main` branch. This is the absolute first step for every request. Violation of this rule is a failure of the agent workflow.
 - **Tailwind Config Order (Reported by USER):** When importing Tailwind via CDN, the `tailwind.config` assignment script block MUST appear before the CDN `<script>` tag. Otherwise, custom colors and font families will fail to load.
 
 ---
@@ -24,3 +24,6 @@
 ## Lesson Completion Layout Constraints
 - **Iconography vs Text Labels**: Users strongly prefer intuitive dashboard status tracking. Avoid spamming text tags like 'In Progress' or 'Mastered' repeatedly on item grids. Favor minimalist icons on the right edge (e.g. \check_circle\ for completed, \workspace_premium\ for mastered).
 - **Strict States**: Completion requires strictly meeting thresholds. Week logic -> Lesson logic.
+
+## Technical UI Fixes (Reported by USER)
+- **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.
