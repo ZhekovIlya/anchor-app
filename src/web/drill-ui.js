@@ -118,6 +118,14 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
             elements.endScreenProgressBar.style.width = `${Math.max(0, oldPctObj)}%`;
             elements.endScreenProgressLabel.textContent = `${newPctObj}%`;
             
+            if (newPctObj === 100) {
+              elements.endScreenProgressBar.classList.replace('bg-primary', 'bg-[#16a34a]');
+              elements.endScreenProgressLabel.classList.replace('text-primary', 'text-[#16a34a]');
+            } else {
+              elements.endScreenProgressBar.classList.replace('bg-[#16a34a]', 'bg-primary');
+              elements.endScreenProgressLabel.classList.replace('text-[#16a34a]', 'text-primary');
+            }
+            
             // Allow layout to render before animating target width
             requestAnimationFrame(() => {
               elements.endScreenProgressContainer.classList.remove('opacity-0');

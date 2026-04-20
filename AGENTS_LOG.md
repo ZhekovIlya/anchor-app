@@ -204,3 +204,17 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[DEV]**: Rewrote the end screen DOM schema in index.html to allow Javascript-driven element injection. Added an animated Week Progress capacity bar. Updated src/web/drill-ui.js to intercept module states *before* incrementing completion to correctly distinguish brand new logic bounds (old == 0) from repetitive cycles (old > 0). Exam lessons independently scale thresholds and conditionally output 'Exam Mastered' vs 'Exam Practiced' statuses according to the exact rules specified by the user.
 - **[AQA]**: Verified exports cross-linking for progress computations. DOM tree element binding correctly aligns with the rewritten main.js constants.
 - **[QA]**: First completion accurately fills the progress bar (Top feature request fulfilled). Repeat sessions correctly enumerate the distance remaining till Iron-Clad Mastery. Rule constraints satisfied.
+
+### Task 28: Progress Bar Polish & Strict Deployment Rule ?
+- **Branch:** task/progress-bar-polish
+- **[TEACH]**: Rewritten Rule 17 in LESSONS_LEARNED.md. Explicitly prohibited autonomous git hooks executing merges into main or triggering remote pushes without explicit manual authorization. The agent must leave the user on the task branch for isolated local verification.
+- **[DEV]**: Added horizontal padding (\px-6\) to the \<main id='endScreen'>\ container restricting responsive overflowing and edge hugging for mobile layouts. Injected 100% completion threshold triggers in \drill-ui.js\ to dynamically shift the success capacity bar into a celebratory Green (\g-[#16a34a]\) whenever the underlying mathematics output 100%.
+- **[AQA]**: Verified layout parameters inside DOM manipulation and CSS substitution matrices.
+- **[QA]**: Mobile UI bug mitigated. Logic queries resolved (null topic guard prevents index lookup errors on dynamic daily SRS review drills). Passed.
+
+### Task 29: Automated Git Lifecycle Update ?
+- **Branch:** task/progress-bar-polish
+- **[TEACH]**: Updated Rule 17 again! The USER clarified that their IDE terminal acceptance *is* their code review. Leaving changes lingering on branches creates manual overhead. The new rule is: Branch first (for safety), edit, commit, and then **automatically merge and push** when the task is complete. 
+- **[DEV]**: Applying this exact lifecycle right now to sweep up the progress-bar padding and 100% color injection updates from Task 28.
+- **[AQA]**: Verified git state is clean.
+- **[QA]**: Workflow aligns with user's specific zero-friction deployment preferences.
