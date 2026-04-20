@@ -159,5 +159,5 @@ initDashboard();
 // Dynamic Revision Injection
 const revisionTag = document.getElementById('revisionTag');
 if (revisionTag && typeof __GIT_REVISION__ !== 'undefined') {
-  revisionTag.textContent = `Ref: ${__GIT_REVISION__}`;
+  revisionTag.textContent = __GIT_REVISION__;
 }
