@@ -226,7 +226,7 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 
 ### Task 33: Git Workflow Test & Footer Updates ✅
 - **Branch:** `task/git-workflow-test`
-- **[DEV]**: Enhanced the application footer by adding the current commit revision badge (`Ref: ffeaf43`) and updating the support email to `illia.zhekov@gmail.com`.
-- **[AQA]**: Verified markup and mailto link integrity.
-- **[QA]**: Improved technical transparency and personalization of the UX.
+- **[DEV]**: Enhanced the application footer by implementing dynamic git revision injection via Vite's `define` plugin, restoring the missing copyright year (`© 2026`), and updating the support email to `illia.zhekov@gmail.com`. Refactored for mobile responsiveness and transitioned the revision display to a minimalist "hidden" hash (9px, 30% opacity) for a clean, developer-centric look.
+- **[AQA]**: Verified cross-module token injection from `vite.config.js` to `main.js`.
+- **[QA]**: Resolved "hardcoded revision" and "missing year" regressions.
 - **[TEACH]**: No errors found. Workflow isolation and multi-turn iterative development confirmed.
