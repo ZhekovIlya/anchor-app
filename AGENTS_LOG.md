@@ -230,3 +230,8 @@ All 7 MVP tasks COMPLETE. Branch `feature/curriculum-redesign` has 2 commits on 
 - **[AQA]**: Verified cross-module token injection from `vite.config.js` to `main.js`.
 - **[QA]**: Resolved "hardcoded revision" and "missing year" regressions.
 - **[TEACH]**: No errors found. Workflow isolation and multi-turn iterative development confirmed.
+
+### Task 34: Mandate Git Rebase & Squash Rule ✅
+- **Branch:** `task/workflow-squash-rule`
+- **[TEACH]**: Hardened Rule 17 in `LESSONS_LEARNED.md` to mandate squashing and rebasing of task-branch commits into a single, clean commit before merging into `main`. This ensures a clean project history and prevents "commit pollution" from small iterative fixes.
+- **[QA]**: Verified that the rule is explicitly documented as a STRICT USER REQUIREMENT.

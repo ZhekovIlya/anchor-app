@@ -5,9 +5,10 @@ import assert from 'node:assert/strict';
 import week1 from '../data/week_1.js';
 import week2 from '../data/week_2.js';
 import week3 from '../data/week_3.js';
+import week4 from '../data/week_4.js';
 import topicsCore from '../data/topics_core.js';
 
-const allTopics = [week1, week2, week3, topicsCore];
+const allTopics = [week1, week2, week3, week4, topicsCore];
 
 describe('Data file structure', () => {
   test('each topic has required fields', () => {
@@ -127,7 +128,7 @@ describe('Meta ID uniqueness', () => {
 });
 
 describe('Token types', () => {
-  const VALID_TYPES = new Set(['subject', 'verb', 'verb_infinitive', 'negation', 'object', 'space']);
+  const VALID_TYPES = new Set(['subject', 'verb', 'verb_infinitive', 'negation', 'object', 'space', 'adjective', 'adverb', 'question', 'preposition']);
 
   test('all token types are valid', () => {
     const invalid = [];
