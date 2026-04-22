@@ -9,11 +9,12 @@ export const COLOR_MAP = {
   verb: 'text-red-500',
   verb_infinitive: 'text-red-400',
   object: 'text-green-500',
+  article: 'text-teal-400',
   preposition: 'text-purple-400',
   adjective: 'text-orange-400',
   adverb: 'text-cyan-400',
   question: 'text-pink-400',
-  conjunction: 'text-slate-400',
+  conjunction: 'text-indigo-400',
   space: '',
 };
 
@@ -24,6 +25,7 @@ export const TOKEN_LABELS = {
   verb_infinitive: 'Verb (infinitive)',
   negation: 'Negation',
   object: 'Noun / Object',
+  article: 'Article',
   preposition: 'Preposition',
   adjective: 'Adjective',
   adverb: 'Adverb',

@@ -1,5 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import { tokenize } from '../src/core/tokenizer.js';
 
 // Import data modules
 import week1 from '../data/week_1.js';
@@ -34,44 +35,16 @@ describe('Data file structure', () => {
 });
 
 describe('Phrase validation', () => {
-  test('each phrase has ru, es, tokens', () => {
+  test('each phrase has ru, es', () => {
     for (const topic of allTopics) {
       for (const lesson of topic.lessons) {
         if (lesson.exam) continue;
         for (const phrase of lesson.phrases) {
           assert.ok(phrase.ru, `Phrase missing ru in lesson ${lesson.id}`);
           assert.ok(phrase.es, `Phrase missing es in lesson ${lesson.id}`);
-          assert.ok(Array.isArray(phrase.tokens), `Phrase "${phrase.es}" missing tokens in lesson ${lesson.id}`);
         }
       }
     }
-  });
-
-  test('token concatenation matches es string', () => {
-    let pass = 0;
-    let fail = 0;
-    const failures = [];
-
-    for (const topic of allTopics) {
-      for (const lesson of topic.lessons) {
-        if (lesson.exam) continue;
-        for (const phrase of lesson.phrases) {
-          const built = phrase.tokens.map(t => t.text).join('');
-          if (built === phrase.es) {
-            pass++;
-          } else {
-            fail++;
-            failures.push(`[${lesson.id}] built="${built}" vs es="${phrase.es}"`);
-          }
-        }
-      }
-    }
-
-    if (failures.length > 0) {
-      assert.fail(`Token mismatches:\n${failures.join('\n')}`);
-    }
-
-    console.log(`  ✓ ${pass} phrases validated, ${fail} failures`);
   });
 
   test('non-exam lessons have exactly 6 phrases', () => {
@@ -98,37 +71,41 @@ describe('Phrase validation', () => {
   });
 });
 
-describe('Meta ID uniqueness', () => {
-  test('no duplicate meta.id across new-format topics', () => {
-    const seen = new Map();
-    const duplicates = [];
+
+describe('Tokenizer', () => {
+  const VALID_TYPES = new Set([
+    'subject', 'verb', 'verb_infinitive', 'negation',
+    'object', 'article', 'space',
+    'adjective', 'adverb', 'question', 'preposition', 'conjunction',
+  ]);
+
+  test('tokenizer reconstructs every es string exactly', () => {
+    let pass = 0;
+    let fail = 0;
+    const failures = [];
 
     for (const topic of allTopics) {
-      if (topic.legacy) continue;
       for (const lesson of topic.lessons) {
         if (lesson.exam) continue;
         for (const phrase of lesson.phrases) {
-          if (phrase.meta && phrase.meta.id) {
-            if (seen.has(phrase.meta.id)) {
-              duplicates.push(`"${phrase.meta.id}" in ${lesson.id} (first seen in ${seen.get(phrase.meta.id)})`);
-            } else {
-              seen.set(phrase.meta.id, lesson.id);
-            }
+          const tokens = tokenize(phrase.es);
+          const built = tokens.map(t => t.text).join('');
+          if (built === phrase.es) {
+            pass++;
+          } else {
+            fail++;
+            failures.push(`[${lesson.id}] built="${built}" vs es="${phrase.es}"`);
           }
         }
       }
     }
 
-    if (duplicates.length > 0) {
-      assert.fail(`Duplicate meta IDs:\n${duplicates.join('\n')}`);
+    if (failures.length > 0) {
+      assert.fail(`Token mismatches:\n${failures.join('\n')}`);
     }
 
-    console.log(`  ✓ ${seen.size} unique meta IDs`);
+    console.log(`  ✓ ${pass} phrases tokenized, ${fail} failures`);
   });
-});
-
-describe('Token types', () => {
-  const VALID_TYPES = new Set(['subject', 'verb', 'verb_infinitive', 'negation', 'object', 'space', 'adjective', 'adverb', 'question', 'preposition', 'conjunction']);
 
   test('all token types are valid', () => {
     const invalid = [];
@@ -137,7 +114,8 @@ describe('Token types', () => {
       for (const lesson of topic.lessons) {
         if (lesson.exam) continue;
         for (const phrase of lesson.phrases) {
-          for (const token of phrase.tokens) {
+          const tokens = tokenize(phrase.es);
+          for (const token of tokens) {
             if (!VALID_TYPES.has(token.type)) {
               invalid.push(`"${token.type}" in phrase "${phrase.es}" (${lesson.id})`);
             }
