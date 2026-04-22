@@ -128,7 +128,7 @@ describe('Meta ID uniqueness', () => {
 });
 
 describe('Token types', () => {
-  const VALID_TYPES = new Set(['subject', 'verb', 'verb_infinitive', 'negation', 'object', 'space', 'adjective', 'adverb', 'question', 'preposition']);
+  const VALID_TYPES = new Set(['subject', 'verb', 'verb_infinitive', 'negation', 'object', 'space', 'adjective', 'adverb', 'question', 'preposition', 'conjunction']);
 
   test('all token types are valid', () => {
     const invalid = [];

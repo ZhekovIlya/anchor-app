@@ -319,4 +319,13 @@ export function showOnly(elements, viewName) {
     el.classList.toggle('hidden', name !== viewName);
     el.style.display = name === viewName ? 'flex' : 'none';
   }
+
+  // Toggle fixed info button — visible only during drill
+  if (elements.drillInfoBtn) {
+    elements.drillInfoBtn.classList.toggle('hidden', viewName !== 'drill');
+  }
+  // Auto-close legend when leaving drill
+  if (viewName !== 'drill' && elements.drillLegendOverlay) {
+    elements.drillLegendOverlay.classList.add('hidden');
+  }
 }

@@ -63,6 +63,11 @@ const elements = {
   spanishVoiceSelect: document.getElementById('spanishVoiceSelect'),
   promptVoiceSelect: document.getElementById('promptVoiceSelect'),
 
+  // Drill Legend
+  drillInfoBtn: document.getElementById('drillInfoBtn'),
+  drillLegendOverlay: document.getElementById('drillLegendOverlay'),
+  drillLegendClose: document.getElementById('drillLegendClose'),
+
   // Audio Modal
   audioSettingsBtn: document.getElementById('audioSettingsBtn'),
   audioSettingsModal: document.getElementById('audioSettingsModal'),
@@ -145,6 +150,24 @@ elements.closeAudioModalBtn.addEventListener('click', closeAudioModal);
 elements.saveAudioModalBtn.addEventListener('click', closeAudioModal);
 elements.audioSettingsModal.addEventListener('click', (e) => {
   if (e.target === elements.audioSettingsModal) closeAudioModal();
+});
+
+// ========================
+// DRILL LEGEND
+// ========================
+
+function openDrillLegend() {
+  elements.drillLegendOverlay.classList.remove('hidden');
+}
+
+function closeDrillLegend() {
+  elements.drillLegendOverlay.classList.add('hidden');
+}
+
+elements.drillInfoBtn.addEventListener('click', openDrillLegend);
+elements.drillLegendClose.addEventListener('click', closeDrillLegend);
+elements.drillLegendOverlay.addEventListener('click', (e) => {
+  if (e.target === elements.drillLegendOverlay) closeDrillLegend();
 });
 
 // ========================

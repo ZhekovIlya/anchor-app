@@ -9,7 +9,26 @@ export const COLOR_MAP = {
   verb: 'text-red-500',
   verb_infinitive: 'text-red-400',
   object: 'text-green-500',
+  preposition: 'text-purple-400',
+  adjective: 'text-orange-400',
+  adverb: 'text-cyan-400',
+  question: 'text-pink-400',
+  conjunction: 'text-slate-400',
   space: '',
+};
+
+/** Human-readable labels for token types (used in legend UI) */
+export const TOKEN_LABELS = {
+  subject: 'Subject / Pronoun',
+  verb: 'Verb (conjugated)',
+  verb_infinitive: 'Verb (infinitive)',
+  negation: 'Negation',
+  object: 'Noun / Object',
+  preposition: 'Preposition',
+  adjective: 'Adjective',
+  adverb: 'Adverb',
+  question: 'Question word',
+  conjunction: 'Conjunction',
 };
 
 /** Streak targets by lesson type */

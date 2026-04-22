@@ -113,7 +113,7 @@ export function createDrillEngine(options) {
      * Handle reveal answer — penalty, requeue phrase, SRS demote.
      */
     revealAnswer() {
-      targetStreak++;
+      targetStreak++; // Adds 1 extra phrase to the goal
       failedPhrases.push(currentPhrase);
 
       if (currentPhrase.meta && currentPhrase.meta.id) {
