@@ -58,6 +58,7 @@ const vocabulary = {
   ahora: 'adverb',
   allí: 'adverb',
   aquí: 'adverb',
+  ayer: 'adverb',
   bien: 'adverb',
   hoy: 'adverb',
   mal: 'adverb',
@@ -101,17 +102,45 @@ const vocabulary = {
   // morder
   muerdo: 'verb', muerdes: 'verb', muerde: 'verb', mordemos: 'verb', muerden: 'verb',
   // jugar
-  juegas: 'verb', jugamos: 'verb',
+  juegas: 'verb', juega: 'verb', jugamos: 'verb',
   // pagar
   pago: 'verb', pagas: 'verb', paga: 'verb', pagamos: 'verb', pagan: 'verb',
   // costar
   cuesta: 'verb', cuestan: 'verb',
+  // comprar
+  compro: 'verb', compras: 'verb', compra: 'verb', compramos: 'verb', compran: 'verb',
+  // hablar
+  hablo: 'verb', hablas: 'verb', habla: 'verb', hablamos: 'verb', hablan: 'verb',
+  // comer
+  como: 'verb', comes: 'verb', come: 'verb', comemos: 'verb', comen: 'verb',
+  // beber
+  bebo: 'verb', bebes: 'verb', bebe: 'verb', bebemos: 'verb', beben: 'verb',
+  // vivir
+  vivo: 'verb', vives: 'verb', vive: 'verb', vivimos: 'verb', viven: 'verb',
+
+  // ── Past Tense (Pretérito Indefinido) ─────────────────
+  // comprar (past)
+  compré: 'verb', compró: 'verb',
+  // hablar (past)
+  hablé: 'verb', habló: 'verb',
+  // comer (past)
+  comí: 'verb', comió: 'verb',
+  // beber (past)
+  bebí: 'verb', bebió: 'verb',
+  // vivir (past)
+  viví: 'verb', vivió: 'verb',
+  // pagar (past)
+  pagué: 'verb',
 
   // ── Verb Infinitives ─────────────────────────────────
   abrir: 'verb_infinitive',
   alquilar: 'verb_infinitive',
   ayudar: 'verb_infinitive',
+  beber: 'verb_infinitive',
   cerrar: 'verb_infinitive',
+  comer: 'verb_infinitive',
+  comprar: 'verb_infinitive',
+  hablar: 'verb_infinitive',
   hacer: 'verb_infinitive',
   ir: 'verb_infinitive',
   jugar: 'verb_infinitive',
@@ -122,6 +151,7 @@ const vocabulary = {
   pagar: 'verb_infinitive',
   secar: 'verb_infinitive',
   usar: 'verb_infinitive',
+  vivir: 'verb_infinitive',
 
   // ── Adjectives ───────────────────────────────────────
   amistosas: 'adjective', amistoso: 'adjective', amistosos: 'adjective',
@@ -146,25 +176,32 @@ const vocabulary = {
   agua: 'object',
   alquiler: 'object',
   baño: 'object',
+  café: 'object',
+  carne: 'object',
   casa: 'object',
   cocina: 'object',
+  comida: 'object',
   contrato: 'object',
   correa: 'object',
   dinero: 'object',
   ducha: 'object',
+  fruta: 'object',
   habitación: 'object',
   habitaciones: 'object',
   jabón: 'object',
   jardín: 'object',
   lavadora: 'object',
+  leche: 'object',
   llave: 'object',
   llaves: 'object',
   nevera: 'object',
+  pan: 'object',
   parque: 'object',
   patas: 'object',
   perro: 'object',
   piso: 'object',
   puerta: 'object',
+  tienda: 'object',
   tiempo: 'object',
   toalla: 'object',
   ventana: 'object',
