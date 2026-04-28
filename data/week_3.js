@@ -213,4 +213,9 @@ export default {
     { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
   ],
   lessons: week3Lessons,
+  theory: {
+    title: "Adjective Agreement & Negation",
+    subtitle: "Gender: -o/-a · SER vs ESTAR with Adjectives · NO + Verb Pattern",
+    image: "/theory/week_3.png",
+  },
 };

@@ -76,6 +76,13 @@ const elements = {
   saveAudioModalBtn: document.getElementById('saveAudioModalBtn'),
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
+
+  // Theory Modal
+  theoryModal: document.getElementById('theoryModal'),
+  theoryModalTitle: document.getElementById('theoryModalTitle'),
+  theoryModalSubtitle: document.getElementById('theoryModalSubtitle'),
+  theoryModalImage: document.getElementById('theoryModalImage'),
+  closeTheoryModalBtn: document.getElementById('closeTheoryModalBtn'),
 };
 
 // ========================
@@ -89,7 +96,15 @@ function initDashboard() {
 
 function onTopicClick(topic) {
   activeTopic = topic;
-  renderLessonsView(elements, topic, onLessonClick, initDashboard);
+  renderLessonsView(elements, topic, onLessonClick, initDashboard, onTheoryClick);
+}
+
+function onTheoryClick(theory) {
+  elements.theoryModalTitle.textContent = theory.title;
+  elements.theoryModalSubtitle.textContent = theory.subtitle;
+  elements.theoryModalImage.src = theory.image;
+  elements.theoryModal.classList.remove('hidden');
+  elements.theoryModal.style.display = 'flex';
 }
 
 function returnToActiveTopic() {
@@ -182,6 +197,20 @@ elements.drillInfoBtn.addEventListener('click', openDrillLegend);
 elements.drillLegendClose.addEventListener('click', closeDrillLegend);
 elements.drillLegendOverlay.addEventListener('click', (e) => {
   if (e.target === elements.drillLegendOverlay) closeDrillLegend();
+});
+
+// ========================
+// THEORY MODAL
+// ========================
+
+function closeTheoryModal() {
+  elements.theoryModal.style.display = 'none';
+  elements.theoryModal.classList.add('hidden');
+}
+
+elements.closeTheoryModalBtn.addEventListener('click', closeTheoryModal);
+elements.theoryModal.addEventListener('click', (e) => {
+  if (e.target === elements.theoryModal) closeTheoryModal();
 });
 
 // ========================

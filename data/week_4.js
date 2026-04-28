@@ -343,4 +343,9 @@ export default {
     { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
   ],
   lessons: week4Lessons,
+  theory: {
+    title: "Three Verb Groups: -AR / -ER / -IR",
+    subtitle: "Side-by-Side Present Endings · -ER/-IR Shortcut · Pattern Recognition",
+    image: "/theory/week_4.png",
+  },
 };

@@ -343,4 +343,9 @@ export default {
     { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
   ],
   lessons: week1Lessons,
+  theory: {
+    title: "Skeleton Grammar & SER vs ESTAR",
+    subtitle: "Subject Pronouns · SER (permanent) vs ESTAR (temporary) · Core Verb Pattern",
+    image: "/theory/week_1.png",
+  },
 };

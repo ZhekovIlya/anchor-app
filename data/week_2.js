@@ -213,4 +213,9 @@ export default {
     { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
   ],
   lessons: week2Lessons,
+  theory: {
+    title: "Regular -AR Pattern & Modals",
+    subtitle: "-AR Verb Endings · QUERER/PODER + Infinitive · Practical Verbs",
+    image: "/theory/week_2.png",
+  },
 };
