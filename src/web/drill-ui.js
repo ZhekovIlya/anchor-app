@@ -23,7 +23,7 @@ let isHandlingCorrect = false;
  * @param {Object}  srs       - SRS engine instance
  * @param {Function} onQuit   - Called when user quits / returns
  */
-export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit) {
+export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText, ghostTextContainer,
@@ -39,6 +39,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
   activeEngine = createDrillEngine({
     phrases,
     isExam,
+    isTabExam,
     isReview,
     srs,
     callbacks: {

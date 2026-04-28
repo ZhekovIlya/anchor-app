@@ -36,8 +36,12 @@ export const TOKEN_LABELS = {
 /** Streak targets by lesson type */
 export const STREAK_TARGETS = {
   regular: 24,
+  tabExam: 30,
   exam: 50,
 };
+
+/** Max phrases to draw for a tab-scoped exam (subset of tab's full pool) */
+export const TAB_EXAM_PHRASE_CAP = 30;
 
 /** Copy stage threshold — ghost text is visible for the first N correct answers */
 export const COPY_STAGE_THRESHOLD = 12;

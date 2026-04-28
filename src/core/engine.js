@@ -22,10 +22,14 @@ import { STREAK_TARGETS, COPY_STAGE_THRESHOLD } from './constants.js';
  *   - onComplete()
  */
 export function createDrillEngine(options) {
-  const { phrases, isExam, isReview, srs, callbacks } = options;
+  const { phrases, isExam, isTabExam, isReview, srs, callbacks } = options;
 
   let streak = 0;
-  let targetStreak = isExam ? STREAK_TARGETS.exam : (isReview ? Math.min(phrases.length, STREAK_TARGETS.regular) : STREAK_TARGETS.regular);
+  let targetStreak = isTabExam
+    ? STREAK_TARGETS.tabExam
+    : isExam
+      ? STREAK_TARGETS.exam
+      : (isReview ? Math.min(phrases.length, STREAK_TARGETS.regular) : STREAK_TARGETS.regular);
   const initialTargetStreak = targetStreak;
   let failedPhrases = [];
   let drawingDeck = [];
