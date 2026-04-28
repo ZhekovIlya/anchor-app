@@ -1,7 +1,7 @@
 const week3Lessons = [
   {
     id: "w3_l1",
-    person: "yo",
+    tab: "yo",
     title: "At the Dog Park",
     phrases: [
       { ru: "У меня есть собака", uk: "У мене є собака", es: "Yo tengo el perro" },
@@ -14,7 +14,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l2",
-    person: "tu",
+    tab: "tu",
     title: "At the Dog Park",
     phrases: [
       { ru: "У тебя есть собака?", uk: "У тебе є собака?", es: "¿Tú tienes el perro?" },
@@ -27,7 +27,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l3",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "At the Dog Park",
     phrases: [
       { ru: "У него есть собака", uk: "Він має собаку", es: "Él tiene el perro" },
@@ -40,7 +40,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l4",
-    person: "nosotros",
+    tab: "nosotros",
     title: "At the Dog Park",
     phrases: [
       { ru: "У нас есть собака", uk: "У нас є собака", es: "Nosotros tenemos el perro" },
@@ -53,7 +53,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l5",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "At the Dog Park",
     phrases: [
       { ru: "Они (м.р.) имеют собаку?", uk: "Вони (ч.р.) мають собаку?", es: "¿Ellos tienen el perro?" },
@@ -66,7 +66,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l6",
-    person: "yo",
+    tab: "yo",
     title: "Dog Behavior",
     phrases: [
       { ru: "Я лаю", uk: "Я гавкаю", es: "Yo ladro" },
@@ -79,7 +79,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l7",
-    person: "tu",
+    tab: "tu",
     title: "Dog Behavior",
     phrases: [
       { ru: "Ты лаешь", uk: "Ти гавкаєш", es: "Tú ladras" },
@@ -92,7 +92,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l8",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Dog Behavior",
     phrases: [
       { ru: "Он лает", uk: "Він гавкає", es: "Él ladra" },
@@ -105,7 +105,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l9",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Dog Behavior",
     phrases: [
       { ru: "Мы лаем", uk: "Ми гавкаємо", es: "Nosotros ladramos" },
@@ -118,7 +118,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l10",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Dog Behavior",
     phrases: [
       { ru: "Они (м.р.) лают", uk: "Вони (ч.р.) гавкають", es: "Ellos ladran" },
@@ -131,7 +131,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l11",
-    person: "yo",
+    tab: "yo",
     title: "Temperament",
     phrases: [
       { ru: "Я кусаю", uk: "Я кусаю", es: "Yo muerdo" },
@@ -144,7 +144,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l12",
-    person: "tu",
+    tab: "tu",
     title: "Temperament",
     phrases: [
       { ru: "Ты кусаешь", uk: "Ти кусаєш", es: "Tú muerdes" },
@@ -157,7 +157,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l13",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Temperament",
     phrases: [
       { ru: "Он кусает?", uk: "Він кусає?", es: "¿Él muerde?" },
@@ -170,7 +170,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l14",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Temperament",
     phrases: [
       { ru: "Мы кусаем", uk: "Ми кусаємо", es: "Nosotros mordemos" },
@@ -183,7 +183,7 @@ const week3Lessons = [
   },
   {
     id: "w3_l15",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Temperament",
     phrases: [
       { ru: "Они (м.р.) кусают?", uk: "Вони (ч.р.) кусають?", es: "¿Ellos muerden?" },
@@ -205,5 +205,12 @@ export default {
   id: "week_3",
   title: "Week 3: At the Park (Dog Owners)",
   legacy: false,
+  tabs: [
+    { id: "yo", label: "Yo" },
+    { id: "tu", label: "Tú" },
+    { id: "el_ella_usted", label: "Él / Ella / Usted" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
+  ],
   lessons: week3Lessons,
 };

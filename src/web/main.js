@@ -5,6 +5,7 @@
 
 import './styles.css';
 import { createSRS } from '../core/srs.js';
+import { TAB_EXAM_PHRASE_CAP } from '../core/constants.js';
 import { loadAllTopics, buildPhraseBank } from '../core/data-loader.js';
 import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView } from './dashboard.js';
@@ -99,18 +100,31 @@ function returnToActiveTopic() {
   }
 }
 
-function buildExamPhrases(topic) {
-  return topic.lessons
-    .filter(l => !l.exam && l.phrases)
+function buildExamPhrases(topic, examLesson) {
+  const pool = topic.lessons
+    .filter(l => {
+      if (l.exam || !l.phrases) return false;
+      // Tab-scoped exam: only pull from same-tab lessons
+      if (examLesson.tab) return l.tab === examLesson.tab;
+      // Final exam (no tab): pull from all lessons
+      return true;
+    })
     .flatMap(l => l.phrases)
     .sort(() => Math.random() - 0.5);
+
+  // Cap tab exams to a subset of the pool
+  if (examLesson.tab && pool.length > TAB_EXAM_PHRASE_CAP) {
+    return pool.slice(0, TAB_EXAM_PHRASE_CAP);
+  }
+  return pool;
 }
 
 function onLessonClick(lesson) {
   const isExam = !!lesson.exam;
-  const drillPhrases = isExam ? buildExamPhrases(activeTopic) : lesson.phrases;
+  const isTabExam = isExam && !!lesson.tab;
+  const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
-  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srs, returnToActiveTopic);
+  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srs, returnToActiveTopic, isTabExam);
 }
 
 function onReviewClick() {

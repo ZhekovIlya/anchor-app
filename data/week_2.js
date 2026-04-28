@@ -1,7 +1,7 @@
 const week2Lessons = [
   {
     id: "w2_l1",
-    person: "yo",
+    tab: "yo",
     title: "Apartment Intentions",
     phrases: [
       { ru: "Я хочу квартиру", uk: "Я хочу квартиру", es: "Yo quiero el piso" },
@@ -14,7 +14,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l2",
-    person: "tu",
+    tab: "tu",
     title: "Apartment Intentions",
     phrases: [
       { ru: "Ты хочешь квартиру?", uk: "Ти хочеш квартиру?", es: "¿Tú quieres el piso?" },
@@ -27,7 +27,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l3",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Apartment Intentions",
     phrases: [
       { ru: "Он хочет квартиру", uk: "Він хоче квартиру", es: "Él quiere el piso" },
@@ -40,7 +40,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l4",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Apartment Intentions",
     phrases: [
       { ru: "Мы хотим квартиру", uk: "Ми хочемо квартиру", es: "Nosotros queremos el piso" },
@@ -53,7 +53,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l5",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Apartment Intentions",
     phrases: [
       { ru: "Они (м.р.) хотят квартиру?", uk: "Вони (ч.р.) хочуть квартиру?", es: "¿Ellos quieren el piso?" },
@@ -66,7 +66,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l6",
-    person: "yo",
+    tab: "yo",
     title: "Capabilities & Tools",
     phrases: [
       { ru: "Я могу заплатить", uk: "Я можу заплатити", es: "Yo puedo pagar" },
@@ -79,7 +79,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l7",
-    person: "tu",
+    tab: "tu",
     title: "Capabilities & Tools",
     phrases: [
       { ru: "Ты можешь заплатить", uk: "Ти можеш заплатити", es: "Tú puedes pagar" },
@@ -92,7 +92,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l8",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Capabilities & Tools",
     phrases: [
       { ru: "Он может заплатить?", uk: "Він може заплатити?", es: "¿Él puede pagar?" },
@@ -105,7 +105,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l9",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Capabilities & Tools",
     phrases: [
       { ru: "Мы можем заплатить", uk: "Ми можемо заплатити", es: "Nosotros podemos pagar" },
@@ -118,7 +118,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l10",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Capabilities & Tools",
     phrases: [
       { ru: "Они (м.р.) могут заплатить?", uk: "Вони (ч.р.) можуть заплатити?", es: "¿Ellos pueden pagar?" },
@@ -131,7 +131,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l11",
-    person: "yo",
+    tab: "yo",
     title: "Needs & Documents",
     phrases: [
       { ru: "Мне нужен контракт", uk: "Мені потрібен контракт", es: "Yo necesito el contrato" },
@@ -144,7 +144,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l12",
-    person: "tu",
+    tab: "tu",
     title: "Needs & Documents",
     phrases: [
       { ru: "Тебе нужен контракт", uk: "Тобі потрібен контракт", es: "Tú necesitas el contrato" },
@@ -157,7 +157,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l13",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Needs & Documents",
     phrases: [
       { ru: "Ему нужен контракт", uk: "Йому потрібен контракт", es: "Él necesita el contrato" },
@@ -170,7 +170,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l14",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Needs & Documents",
     phrases: [
       { ru: "Нам нужен контракт", uk: "Нам потрібен контракт", es: "Nosotros necesitamos el contrato" },
@@ -183,7 +183,7 @@ const week2Lessons = [
   },
   {
     id: "w2_l15",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Needs & Documents",
     phrases: [
       { ru: "Им (м.р.) нужен контракт", uk: "Їм (ч.р.) потрібен контракт", es: "Ellos necesitan el contrato" },
@@ -205,5 +205,12 @@ export default {
   id: "week_2",
   title: "Week 2: Intention & Apartment Viewing",
   legacy: false,
+  tabs: [
+    { id: "yo", label: "Yo" },
+    { id: "tu", label: "Tú" },
+    { id: "el_ella_usted", label: "Él / Ella / Usted" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
+  ],
   lessons: week2Lessons,
 };

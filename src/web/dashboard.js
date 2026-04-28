@@ -5,7 +5,7 @@
 
 import { getCompletionCount } from './storage.js';
 
-let activePersonTab = 'yo';
+let activeTab = null;
 
 // ========================
 // STATUS THEMES
@@ -245,42 +245,38 @@ export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
     lessonsContainer.classList.add('transition-all', 'duration-300', 'opacity-100', 'scale-100');
   });
 
-  renderPersonaTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick);
+  renderTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick);
   renderLessonCards(lessonsContainer, topic, onLessonClick);
 
   backToDashboardBtn.onclick = onBackClick;
 }
 
-function renderPersonaTabs(container, topic, elements, onLessonClick, onBackClick) {
-  const personaLabels = {
-    'yo': 'Yo',
-    'tu': 'Tú',
-    'el_ella_usted': 'Él / Ella / Usted',
-    'nosotros': 'Nosotros',
-    'ellos_ellas_ustedes': 'Ellos / Ustedes',
-  };
+function renderTabs(container, topic, elements, onLessonClick, onBackClick) {
+  const tabs = topic.tabs || [];
+  if (tabs.length === 0) return;
 
-  const available = new Set(topic.lessons.filter(l => l.person).map(l => l.person));
-  const ordered = Object.keys(personaLabels).filter(p => available.has(p));
+  // Filter to only tabs that have at least one lesson
+  const available = new Set(topic.lessons.filter(l => l.tab).map(l => l.tab));
+  const visibleTabs = tabs.filter(t => available.has(t.id));
 
-  if (ordered.length === 0) return;
+  if (visibleTabs.length === 0) return;
 
-  if (!ordered.includes(activePersonTab)) {
-    activePersonTab = ordered[0];
+  if (!activeTab || !visibleTabs.find(t => t.id === activeTab)) {
+    activeTab = visibleTabs[0].id;
   }
 
-  ordered.forEach(personId => {
-    const isActive = activePersonTab === personId;
-    const tab = document.createElement('button');
-    tab.className = isActive
+  visibleTabs.forEach(tabDef => {
+    const isActive = activeTab === tabDef.id;
+    const btn = document.createElement('button');
+    btn.className = isActive
       ? 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-primary text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none'
       : 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low text-on-surface-variant hover:bg-surface-variant cursor-pointer whitespace-nowrap outline-none';
-    tab.textContent = personaLabels[personId];
-    tab.onclick = () => {
-      activePersonTab = personId;
+    btn.textContent = tabDef.label;
+    btn.onclick = () => {
+      activeTab = tabDef.id;
       renderLessonsView(elements, topic, onLessonClick, onBackClick);
     };
-    container.appendChild(tab);
+    container.appendChild(btn);
   });
 }
 
@@ -288,7 +284,7 @@ function renderLessonCards(container, topic, onLessonClick) {
   const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-surface-container-lowest';
 
   topic.lessons
-    .filter(l => l.exam || l.person === activePersonTab)
+    .filter(l => (l.exam && !l.tab) || l.tab === activeTab)
     .forEach(lesson => {
       const status = getLessonStatus(lesson);
       const theme = LESSON_THEMES[status];

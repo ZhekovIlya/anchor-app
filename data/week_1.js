@@ -1,7 +1,7 @@
 const week1Lessons = [
   {
     id: "w1_l1",
-    person: "yo",
+    tab: "yo",
     title: "Identity & Motion",
     phrases: [
       { ru: "Я (есть)", uk: "Я (є)", es: "Yo soy" },
@@ -14,7 +14,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l2a",
-    person: "tu",
+    tab: "tu",
     title: "Identity & Motion",
     phrases: [
       { ru: "Ты (есть)", uk: "Ти (є)", es: "Tú eres" },
@@ -27,7 +27,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l2b",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Identity & Motion",
     phrases: [
       { ru: "Он (есть)", uk: "Він (є)", es: "Él es" },
@@ -40,7 +40,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l3",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Identity & Motion",
     phrases: [
       { ru: "Мы (есть)", uk: "Ми (є)", es: "Nosotros somos" },
@@ -53,7 +53,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l3b",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Identity & Motion",
     phrases: [
       { ru: "Они (мужской род) (есть)", uk: "Вони (чоловічий рід) (є)", es: "Ellos son" },
@@ -66,7 +66,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l4",
-    person: "yo",
+    tab: "yo",
     title: "Core Actions",
     phrases: [
       { ru: "У меня есть", uk: "Я маю", es: "Yo tengo" },
@@ -79,7 +79,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l5a",
-    person: "tu",
+    tab: "tu",
     title: "Core Actions",
     phrases: [
       { ru: "У тебя есть", uk: "Ти маєш", es: "Tú tienes" },
@@ -92,7 +92,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l5b",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Core Actions",
     phrases: [
       { ru: "У него есть", uk: "Він має", es: "Él tiene" },
@@ -105,7 +105,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l6",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Core Actions",
     phrases: [
       { ru: "У нас есть", uk: "Ми маємо", es: "Nosotros tenemos" },
@@ -118,7 +118,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l6b",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Core Actions",
     phrases: [
       { ru: "Они (мужской род) имеют", uk: "Вони (чоловічий рід) мають", es: "Ellos tienen" },
@@ -131,7 +131,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l7",
-    person: "yo",
+    tab: "yo",
     title: "Identity Sentences",
     phrases: [
       { ru: "Я хороший", uk: "Я добрий", es: "Yo soy bueno" },
@@ -144,7 +144,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l8a",
-    person: "tu",
+    tab: "tu",
     title: "Identity Sentences",
     phrases: [
       { ru: "Ты хороший", uk: "Ти добрий", es: "Tú eres bueno" },
@@ -157,7 +157,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l8b",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Identity Sentences",
     phrases: [
       { ru: "Он большой", uk: "Він великий", es: "Él es grande" },
@@ -170,7 +170,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l9",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Identity Sentences",
     phrases: [
       { ru: "Мы хорошие", uk: "Ми хороші", es: "Nosotros somos buenos" },
@@ -183,7 +183,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l9b",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Identity Sentences",
     phrases: [
       { ru: "Они (м.р.) хорошие", uk: "Вони (ч.р.) хороші", es: "Ellos son buenos" },
@@ -196,7 +196,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l10",
-    person: "yo",
+    tab: "yo",
     title: "State & Location",
     phrases: [
       { ru: "Мне хорошо", uk: "Мені добре", es: "Yo estoy bien" },
@@ -209,7 +209,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l11a",
-    person: "tu",
+    tab: "tu",
     title: "State & Location",
     phrases: [
       { ru: "Тебе хорошо", uk: "Тобі добре", es: "Tú estás bien" },
@@ -222,7 +222,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l11b",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "State & Location",
     phrases: [
       { ru: "Он здесь", uk: "Він тут", es: "Él está aquí" },
@@ -235,7 +235,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l12",
-    person: "nosotros",
+    tab: "nosotros",
     title: "State & Location",
     phrases: [
       { ru: "Нам хорошо", uk: "Нам добре", es: "Nosotros estamos bien" },
@@ -248,7 +248,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l12b",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "State & Location",
     phrases: [
       { ru: "Им (мужской род) хорошо", uk: "Їм (ч.р.) добре", es: "Ellos están bien" },
@@ -261,7 +261,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l13",
-    person: "yo",
+    tab: "yo",
     title: "Possession & Direction",
     phrases: [
       { ru: "Я иду туда", uk: "Я йду туди", es: "Yo voy allí" },
@@ -274,7 +274,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l14a",
-    person: "tu",
+    tab: "tu",
     title: "Possession & Direction",
     phrases: [
       { ru: "Ты идешь туда", uk: "Ти йдеш туди", es: "Tú vas allí" },
@@ -287,7 +287,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l14b",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Possession & Direction",
     phrases: [
       { ru: "Он не идет туда", uk: "Він не іде туди", es: "Él no va allí" },
@@ -300,7 +300,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l15",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Possession & Direction",
     phrases: [
       { ru: "Мы идем туда", uk: "Ми йдемо туди", es: "Nosotros vamos allí" },
@@ -313,7 +313,7 @@ const week1Lessons = [
   },
   {
     id: "w1_l15b",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Possession & Direction",
     phrases: [
       { ru: "Они (м.р.) идут туда", uk: "Вони (ч.р.) йдуть туди", es: "Ellos van allí" },
@@ -335,5 +335,12 @@ export default {
   id: "week_1",
   title: "Week 1: Identity & Core Verbs",
   legacy: false,
+  tabs: [
+    { id: "yo", label: "Yo" },
+    { id: "tu", label: "Tú" },
+    { id: "el_ella_usted", label: "Él / Ella / Usted" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
+  ],
   lessons: week1Lessons,
 };

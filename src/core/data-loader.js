@@ -9,6 +9,7 @@ import week1Data from '../../data/week_1.js';
 import week2Data from '../../data/week_2.js';
 import week3Data from '../../data/week_3.js';
 import week4Data from '../../data/week_4.js';
+import week5Data from '../../data/week_5.js';
 import topicsCoreData from '../../data/topics_core.js';
 
 import { tokenize } from './tokenizer.js';
@@ -18,7 +19,7 @@ import { tokenize } from './tokenizer.js';
  * @returns {Array} topics
  */
 export function loadAllTopics() {
-  const topics = [week1Data, week2Data, week3Data, week4Data];
+  const topics = [week1Data, week2Data, week3Data, week4Data, week5Data];
 
   // Hydrate tokens + auto-generate meta.id at load time
   for (const topic of topics) {

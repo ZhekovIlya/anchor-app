@@ -1,7 +1,7 @@
 const week4Lessons = [
   {
     id: "w4_l1",
-    person: "yo",
+    tab: "yo",
     title: "Routine: Washing",
     phrases: [
       { ru: "Я мою грязные лапы мылом", uk: "Я мию брудні лапи милом", es: "Yo lavo las patas sucias con el jabón" },
@@ -14,7 +14,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l2",
-    person: "tu",
+    tab: "tu",
     title: "Routine: Washing",
     phrases: [
       { ru: "Ты моешь грязные лапы водой", uk: "Ти миєш брудні лапи водою", es: "Tú lavas las patas sucias con el agua" },
@@ -27,7 +27,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l3",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Routine: Washing",
     phrases: [
       { ru: "Он моет грязную собаку мылом", uk: "Він миє брудну собаку милом", es: "Él lava el perro sucio con el jabón" },
@@ -40,7 +40,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l4",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Routine: Washing",
     phrases: [
       { ru: "Мы моем грязную собаку водой", uk: "Ми миємо брудну собаку водою", es: "Nosotros lavamos el perro sucio con el agua" },
@@ -53,7 +53,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l5",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Routine: Washing",
     phrases: [
       { ru: "Они моют грязные лапы водой", uk: "Вони миють брудні лапи водою", es: "Ellos lavan las patas sucias con el agua" },
@@ -66,7 +66,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l6",
-    person: "yo",
+    tab: "yo",
     title: "Tools: Access",
     phrases: [
       { ru: "Я использую ключ чтобы открыть дверь", uk: "Я використовую ключ щоб відкрити двері", es: "Yo uso la llave para abrir la puerta" },
@@ -79,7 +79,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l7",
-    person: "tu",
+    tab: "tu",
     title: "Tools: Access",
     phrases: [
       { ru: "Ты открываешь дверь ключом", uk: "Ти відкриваєш двері ключем", es: "Tú abres la puerta con la llave" },
@@ -92,7 +92,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l8",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Tools: Access",
     phrases: [
       { ru: "Он использует ключ для двери", uk: "Він використовує ключ для дверей", es: "Él usa la llave para la puerta" },
@@ -105,7 +105,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l9",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Tools: Access",
     phrases: [
       { ru: "Мы используем ключи для двери", uk: "Ми використовуємо ключі для дверей", es: "Nosotros usamos las llaves para la puerta" },
@@ -118,7 +118,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l10",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Tools: Access",
     phrases: [
       { ru: "Они используют душ после парка", uk: "Вони використовують душ після парку", es: "Ellos usan la ducha del parque" },
@@ -131,7 +131,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l11",
-    person: "yo",
+    tab: "yo",
     title: "Property: Cleaning",
     phrases: [
       { ru: "Я убираю кухню и ванную", uk: "Я прибираю кухню і ванну", es: "Yo limpio la cocina y el baño" },
@@ -144,7 +144,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l12",
-    person: "tu",
+    tab: "tu",
     title: "Property: Cleaning",
     phrases: [
       { ru: "Ты убираешь кухню и комнату", uk: "Ти прибираєш кухню і кімнату", es: "Tú limpias la cocina y la habitación" },
@@ -157,7 +157,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l13",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Property: Cleaning",
     phrases: [
       { ru: "Он убирает дом и сад", uk: "Він прибирає будинок і сад", es: "Él limpia la casa y el jardín" },
@@ -170,7 +170,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l14",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Property: Cleaning",
     phrases: [
       { ru: "Мы убираем кухню и ванную", uk: "Ми прибираємо кухню і ванну", es: "Nosotros limpiamos la cocina y el baño" },
@@ -183,7 +183,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l15",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Property: Cleaning",
     phrases: [
       { ru: "Они убирают комнаты и ванную", uk: "Вони прибирають кімнати і ванну", es: "Ellos limpian las habitaciones y el baño" },
@@ -196,7 +196,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l16",
-    person: "yo",
+    tab: "yo",
     title: "Finance: Costs",
     phrases: [
       { ru: "Я плачу за аренду дома", uk: "Я плачу за оренду будинку", es: "Yo pago el alquiler de la casa" },
@@ -209,7 +209,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l17",
-    person: "tu",
+    tab: "tu",
     title: "Finance: Costs",
     phrases: [
       { ru: "Сколько стоит аренда?", uk: "Скільки коштує оренда?", es: "¿Cuánto cuesta el alquiler?" },
@@ -222,7 +222,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l18",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Finance: Costs",
     phrases: [
       { ru: "Сколько стоит дом?", uk: "Скільки коштує будинок?", es: "¿Cuánto cuesta la casa?" },
@@ -235,7 +235,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l19",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Finance: Costs",
     phrases: [
       { ru: "Мы платим за аренду и контракт", uk: "Ми платимо за оренду і контракт", es: "Nosotros pagamos el alquiler y el contrato" },
@@ -248,7 +248,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l20",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Finance: Costs",
     phrases: [
       { ru: "Сколько стоит душ?", uk: "Скільки коштує душ?", es: "¿Cuánto cuesta la ducha?" },
@@ -261,7 +261,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l21",
-    person: "yo",
+    tab: "yo",
     title: "Questions: Time",
     phrases: [
       { ru: "Где я сейчас?", uk: "Де я зараз?", es: "¿Dónde estoy yo ahora?" },
@@ -274,7 +274,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l22",
-    person: "tu",
+    tab: "tu",
     title: "Questions: Time",
     phrases: [
       { ru: "Когда ты идешь в парк?", uk: "Коли ти йдеш до парку?", es: "¿Cuándo tú vas al parque?" },
@@ -287,7 +287,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l23",
-    person: "el_ella_usted",
+    tab: "el_ella_usted",
     title: "Questions: Time",
     phrases: [
       { ru: "Где собака сейчас?", uk: "Де собака зараз?", es: "¿Dónde está el perro ahora?" },
@@ -300,7 +300,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l24",
-    person: "nosotros",
+    tab: "nosotros",
     title: "Questions: Time",
     phrases: [
       { ru: "Когда мы идем в парк сегодня?", uk: "Коли ми йдемо до парку сьогодні?", es: "¿Cuándo nosotros vamos al parque hoy?" },
@@ -313,7 +313,7 @@ const week4Lessons = [
   },
   {
     id: "w4_l25",
-    person: "ellos_ellas_ustedes",
+    tab: "ellos_ellas_ustedes",
     title: "Questions: Time",
     phrases: [
       { ru: "Где они сейчас?", uk: "Де вони зараз?", es: "¿Dónde están ellos ahora?" },
@@ -335,5 +335,12 @@ export default {
   id: "week_4",
   title: "Week 4: The Functional Leap",
   legacy: false,
+  tabs: [
+    { id: "yo", label: "Yo" },
+    { id: "tu", label: "Tú" },
+    { id: "el_ella_usted", label: "Él / Ella / Usted" },
+    { id: "nosotros", label: "Nosotros" },
+    { id: "ellos_ellas_ustedes", label: "Ellos / Ustedes" },
+  ],
   lessons: week4Lessons,
 };
