@@ -131,6 +131,24 @@ const vocabulary = {
   viví: 'verb', vivió: 'verb',
   // pagar (past)
   pagué: 'verb', pagó: 'verb',
+  // lavar (past)
+  lavé: 'verb', lavó: 'verb',
+  // secar (past)
+  sequé: 'verb', secó: 'verb',
+  // limpiar (past)
+  limpié: 'verb', limpió: 'verb',
+  // abrir (past)
+  abrí: 'verb', abrió: 'verb',
+  // cerrar (past)
+  cerré: 'verb', cerró: 'verb',
+  // usar (past)
+  usé: 'verb', usó: 'verb',
+  // ladrar (past)
+  ladré: 'verb', ladró: 'verb',
+  // morder (past)
+  mordí: 'verb', mordió: 'verb',
+  // necesitar (past)
+  necesité: 'verb', necesitó: 'verb',
 
   // ── Verb Infinitives ─────────────────────────────────
   abrir: 'verb_infinitive',
