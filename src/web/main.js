@@ -99,16 +99,22 @@ function returnToActiveTopic() {
   }
 }
 
-function buildExamPhrases(topic) {
+function buildExamPhrases(topic, examLesson) {
   return topic.lessons
-    .filter(l => !l.exam && l.phrases)
+    .filter(l => {
+      if (l.exam || !l.phrases) return false;
+      // Tab-scoped exam: only pull from same-tab lessons
+      if (examLesson.tab) return l.tab === examLesson.tab;
+      // Final exam (no tab): pull from all lessons
+      return true;
+    })
     .flatMap(l => l.phrases)
     .sort(() => Math.random() - 0.5);
 }
 
 function onLessonClick(lesson) {
   const isExam = !!lesson.exam;
-  const drillPhrases = isExam ? buildExamPhrases(activeTopic) : lesson.phrases;
+  const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
   startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srs, returnToActiveTopic);
 }

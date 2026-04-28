@@ -29,5 +29,8 @@
 - **Strict States**: Completion requires strictly meeting thresholds. Week logic -> Lesson logic.
 - **Context-Aware Mastery Thresholds**: When determining mastery status (e.g., `getLessonStatus`), always check if the item is an Exam or a standard Lesson. Standard lessons master at 3 completions, while Exams require 5. Using a hardcoded single threshold leads to premature 'Mastered' states in the UI.
 
+## Curriculum Content Purity (Reported by USER)
+- **Tab Topic Discipline:** When a tab is focused on a specific grammar point (e.g., "Past -AR"), ALL phrases in that tab MUST use that grammar point. NEVER pad lessons with random present-tense filler sentences from old weeks. If the tab is "Pasado: -AR", every phrase must contain at least one past-tense -AR verb. Old-week review content belongs EXCLUSIVELY in the dedicated Review/Repaso tab, not sprinkled as filler into new-grammar tabs.
+
 ## Technical UI Fixes (Reported by USER)
 - **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.

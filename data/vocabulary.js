@@ -130,7 +130,7 @@ const vocabulary = {
   // vivir (past)
   viví: 'verb', vivió: 'verb',
   // pagar (past)
-  pagué: 'verb',
+  pagué: 'verb', pagó: 'verb',
 
   // ── Verb Infinitives ─────────────────────────────────
   abrir: 'verb_infinitive',
