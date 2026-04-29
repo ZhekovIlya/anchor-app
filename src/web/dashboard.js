@@ -228,7 +228,7 @@ export function renderDashboard(elements, topics, srs, phraseBank, onTopicClick,
   });
 }
 
-export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
+export function renderLessonsView(elements, topic, onLessonClick, onBackClick, onTheoryClick) {
   const { lessonsViewTitle, lessonsContainer, backToDashboardBtn } = elements;
   const personTabsContainer = document.getElementById('personTabsContainer');
 
@@ -245,13 +245,37 @@ export function renderLessonsView(elements, topic, onLessonClick, onBackClick) {
     lessonsContainer.classList.add('transition-all', 'duration-300', 'opacity-100', 'scale-100');
   });
 
-  renderTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick);
+  // Theory card — rendered before tabs
+  if (topic.theory && onTheoryClick) {
+    renderTheoryCard(lessonsContainer, topic.theory, onTheoryClick);
+  }
+
+  renderTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick, onTheoryClick);
   renderLessonCards(lessonsContainer, topic, onLessonClick);
 
   backToDashboardBtn.onclick = onBackClick;
 }
 
-function renderTabs(container, topic, elements, onLessonClick, onBackClick) {
+function renderTheoryCard(container, theory, onClick) {
+  const card = document.createElement('button');
+  card.className = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-gradient-to-r from-primary-container/10 to-surface-container-lowest border-primary/20 hover:border-primary/40 hover:shadow-md mb-2';
+  card.innerHTML = `
+    <div class="flex items-center gap-4 pl-2">
+      <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-primary" style="font-size: 22px; font-variation-settings: 'FILL' 1;">lightbulb</span>
+      </div>
+      <div>
+        <h3 class="font-headline text-lg font-bold text-primary">${theory.title}</h3>
+        <p class="font-body text-xs text-on-surface-variant mt-0.5">${theory.subtitle}</p>
+      </div>
+    </div>
+    <span class="material-symbols-outlined text-primary/60 group-hover:text-primary transition-colors">open_in_full</span>
+  `;
+  card.addEventListener('click', () => onClick(theory));
+  container.appendChild(card);
+}
+
+function renderTabs(container, topic, elements, onLessonClick, onBackClick, onTheoryClick) {
   const tabs = topic.tabs || [];
   if (tabs.length === 0) return;
 
@@ -274,7 +298,7 @@ function renderTabs(container, topic, elements, onLessonClick, onBackClick) {
     btn.textContent = tabDef.label;
     btn.onclick = () => {
       activeTab = tabDef.id;
-      renderLessonsView(elements, topic, onLessonClick, onBackClick);
+      renderLessonsView(elements, topic, onLessonClick, onBackClick, onTheoryClick);
     };
     container.appendChild(btn);
   });

@@ -315,6 +315,26 @@
     </div>
   </main>
 
+  <!-- Theory Modal -->
+  <div id="theoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-inverse-surface/50 backdrop-blur-sm" style="display: none;">
+    <div class="relative z-50 w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/15 flex flex-col overflow-hidden max-h-[92vh]">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-surface border-b border-surface-variant flex justify-between items-center shrink-0">
+        <div class="flex flex-col">
+          <h2 id="theoryModalTitle" class="font-headline text-lg font-semibold text-on-surface">Grammar Cheat Sheet</h2>
+          <p id="theoryModalSubtitle" class="font-body text-xs text-on-surface-variant mt-0.5">Patterns &amp; building blocks</p>
+        </div>
+        <button id="closeTheoryModalBtn" class="text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-2 -mr-2 cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <!-- Modal Body -->
+      <div class="overflow-y-auto bg-white flex items-center justify-center">
+        <img id="theoryModalImage" src="" alt="Grammar theory infographic" class="w-full h-auto" />
+      </div>
+    </div>
+  </div>
+
   <!-- Audio Settings Modal -->
   <div id="audioSettingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-inverse-surface/40 backdrop-blur-sm opacity-0 transition-opacity duration-200" style="display: none;">
     <div class="relative z-50 w-full max-w-xl bg-surface-container-lowest rounded-xl shadow-[0_24px_40px_-12px_rgba(0,0,0,0.06)] border border-outline-variant/15 flex flex-col overflow-hidden max-h-[90vh]">

@@ -312,4 +312,9 @@ export default {
     { id: "review", label: "Pasado: Repaso" },
   ],
   lessons: week5Lessons,
+  theory: {
+    title: "The Past Switch: Pretérito Indefinido",
+    subtitle: "-AR: -é/-ó · -ER/-IR: -í/-ió · The Accent Rule",
+    image: "/theory/week_5.png",
+  },
 };
