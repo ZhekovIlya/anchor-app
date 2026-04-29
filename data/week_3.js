@@ -215,7 +215,7 @@ export default {
   lessons: week3Lessons,
   theory: {
     title: "Adjective Agreement & Negation",
-    subtitle: "Gender: -o/-a · SER vs ESTAR with Adjectives · NO + Verb Pattern",
+    subtitle: "Gender: -o/-a · Plural: -os/-as · SER vs ESTAR · Negation",
     image: "/theory/week_3.png",
   },
 };

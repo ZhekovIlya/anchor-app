@@ -215,7 +215,7 @@ export default {
   lessons: week2Lessons,
   theory: {
     title: "Regular -AR Pattern & Modals",
-    subtitle: "-AR Verb Endings · QUERER/PODER + Infinitive · Practical Verbs",
+    subtitle: "Building formula: Stem + Ending · QUERER/PODER + Infinitive",
     image: "/theory/week_2.png",
   },
 };
