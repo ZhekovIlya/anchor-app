@@ -152,8 +152,13 @@ export default {
     },
     {
       type: "video",
-      src: "https://www.youtube.com/embed/uEYlUHii3aM",
-      title: "Spanish Verb Conjugation Made Easy | AR ER IR Verbs Explained (Seño Bluemel)"
+      src: "https://www.youtube.com/embed/hfWcAgihqVw",
+      title: "Spanish Verbs Explained"
+    },
+    {
+      type: "video",
+      src: "https://www.youtube.com/embed/BFmmvdANZl0",
+      title: "More Verb Practice"
     }
   ]
 };

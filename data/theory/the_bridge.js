@@ -165,7 +165,7 @@ export default {
     },
     {
       type: "video",
-      src: "https://www.youtube.com/embed/gQ_7v2hK-fI",
+      src: "https://www.youtube.com/embed/MRBenl2FghA",
       title: "1001 Spanish Words You Already Know | Spanish Cognates (Real Fast Spanish)"
     }
   ]
