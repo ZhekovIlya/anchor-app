@@ -152,8 +152,8 @@ export default {
     },
     {
       type: "video",
-      src: "https://www.youtube.com/embed/lUa6R7R51-Q",
-      title: "How to Learn Spanish Verb Conjugations: AR ER IR — Complete Guide (Spring Spanish)"
+      src: "https://www.youtube.com/embed/uEYlUHii3aM",
+      title: "Spanish Verb Conjugation Made Easy | AR ER IR Verbs Explained (Seño Bluemel)"
     }
   ]
 };

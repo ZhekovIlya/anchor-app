@@ -165,8 +165,8 @@ export default {
     },
     {
       type: "video",
-      src: "https://www.youtube.com/embed/s2_kM5p3W8A",
-      title: "Spanish Cognate Pattern: TION to CIÓN — Unlock 1000+ Words (The Spanish Dude)"
+      src: "https://www.youtube.com/embed/gQ_7v2hK-fI",
+      title: "1001 Spanish Words You Already Know | Spanish Cognates (Real Fast Spanish)"
     }
   ]
 };
