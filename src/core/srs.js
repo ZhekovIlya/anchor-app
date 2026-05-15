@@ -4,24 +4,25 @@
 // Pure logic — no DOM, no browser APIs.
 // Accepts a storage adapter: { load(key), save(key, data) }
 
-import { BUCKET_INTERVALS, SRS_KEY } from './constants.js';
+import { BUCKET_INTERVALS } from './constants.js';
 
 /**
  * Create an SRS engine with injectable storage.
  * @param {Object} storage - { load(key): Object, save(key, data): void }
+ * @param {string} storageKey - localStorage key to use for this SRS pool
  * @returns {Object} SRS API
  */
-export function createSRS(storage) {
+export function createSRS(storage, storageKey) {
   function loadData() {
     try {
-      return storage.load(SRS_KEY) || {};
+      return storage.load(storageKey) || {};
     } catch (e) {
       return {};
     }
   }
 
   function saveData(data) {
-    storage.save(SRS_KEY, data);
+    storage.save(storageKey, data);
   }
 
   return {

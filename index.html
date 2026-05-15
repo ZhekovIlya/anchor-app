@@ -149,11 +149,13 @@
       </div>
     </section>
 
-    <!-- Topics List -->
+    <!-- Home Tab Bar -->
     <section class="w-full">
-      <h2 class="font-headline text-3xl font-bold text-on-surface mb-10 pb-4 border-b border-surface-variant">Select a topic to begin</h2>
+      <nav id="homeTabBar" class="flex gap-3 mb-10 pb-4 border-b border-surface-variant overflow-x-auto no-scrollbar">
+        <!-- Tabs injected via dashboard.js -->
+      </nav>
       <div id="topicsContainer" class="flex flex-col gap-6">
-        <!-- Injected via dashboard.js -->
+        <!-- Content injected via dashboard.js -->
       </div>
     </section>
   </main>
@@ -313,6 +315,19 @@
         Return to Lessons
       </button>
     </div>
+  </main>
+
+  <!-- THEORY ARTICLE VIEW -->
+  <main id="theoryArticleView" class="hidden flex-grow w-full max-w-3xl mx-auto px-6 py-12 flex-col gap-6">
+    <div class="flex items-center gap-4 border-b border-surface-container-highest pb-4">
+      <button id="backToTheoryBtn" class="p-2 hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center text-on-surface-variant">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h2 id="theoryArticleTitle" class="font-headline text-2xl font-bold text-on-surface">Theory</h2>
+    </div>
+    <article id="theoryArticleContent" class="pb-16">
+      <!-- Rich content injected via theory-viewer.js -->
+    </article>
   </main>
 
   <!-- Theory Modal -->

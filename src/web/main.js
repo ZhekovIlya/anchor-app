@@ -5,11 +5,12 @@
 
 import './styles.css';
 import { createSRS } from '../core/srs.js';
-import { TAB_EXAM_PHRASE_CAP } from '../core/constants.js';
-import { loadAllTopics, buildPhraseBank } from '../core/data-loader.js';
+import { TAB_EXAM_PHRASE_CAP, SRS_KEY_SENTENCES, SRS_KEY_WORDS, SRS_KEY, DRILL_MODE } from '../core/constants.js';
+import { loadAllData, buildPhraseBank, buildWordBank } from '../core/data-loader.js';
 import { localStorageAdapter } from './storage.js';
-import { renderDashboard, renderLessonsView } from './dashboard.js';
+import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHomeTab } from './dashboard.js';
 import { startDrill } from './drill-ui.js';
+import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 
@@ -22,14 +23,38 @@ if (import.meta.env.DEV) {
 }
 
 // ========================
+// SRS MIGRATION
+// ========================
+
+function migrateSrsData() {
+  try {
+    const legacy = localStorageAdapter.load(SRS_KEY);
+    if (legacy && Object.keys(legacy).length > 0) {
+      const existing = localStorageAdapter.load(SRS_KEY_SENTENCES);
+      if (!existing || Object.keys(existing).length === 0) {
+        localStorageAdapter.save(SRS_KEY_SENTENCES, legacy);
+      }
+      // Don't delete old key — harmless, and acts as a backup
+    }
+  } catch (e) {
+    // Silent migration — no user-facing error
+  }
+}
+
+migrateSrsData();
+
+// ========================
 // APP STATE
 // ========================
 
-const topics = loadAllTopics();
-const phraseBank = buildPhraseBank(topics);
-const srs = createSRS(localStorageAdapter);
+const data = loadAllData();
+const phraseBank = buildPhraseBank(data.sentences);
+const wordBank = buildWordBank(data.words);
+const srsSentences = createSRS(localStorageAdapter, SRS_KEY_SENTENCES);
+const srsWords = createSRS(localStorageAdapter, SRS_KEY_WORDS);
 
 let activeTopic = null;
+let activeMode = null; // 'sentences' | 'words'
 
 // ========================
 // DOM ELEMENT REFS
@@ -77,39 +102,63 @@ const elements = {
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
 
-  // Theory Modal
+  // Theory Modal (legacy — for sentence week theory images)
   theoryModal: document.getElementById('theoryModal'),
   theoryModalTitle: document.getElementById('theoryModalTitle'),
   theoryModalSubtitle: document.getElementById('theoryModalSubtitle'),
   theoryModalImage: document.getElementById('theoryModalImage'),
   closeTheoryModalBtn: document.getElementById('closeTheoryModalBtn'),
+
+  // Theory Article View (new — for standalone theory & word theory)
+  theoryArticleView: document.getElementById('theoryArticleView'),
+  theoryArticleTitle: document.getElementById('theoryArticleTitle'),
+  theoryArticleContent: document.getElementById('theoryArticleContent'),
+  backToTheoryBtn: document.getElementById('backToTheoryBtn'),
 };
 
 // ========================
-// NAVIGATION
+// NAVIGATION — SENTENCES
 // ========================
 
 function initDashboard() {
   activeTopic = null;
-  renderDashboard(elements, topics, srs, phraseBank, onTopicClick, onReviewClick);
+  activeMode = null;
+  renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
+    onTopicClick,
+    onReviewClick,
+    onTheoryTopicClick,
+    onWordTopicClick,
+    onWordReviewClick,
+  });
 }
 
 function onTopicClick(topic) {
   activeTopic = topic;
-  renderLessonsView(elements, topic, onLessonClick, initDashboard, onTheoryClick);
+  activeMode = 'sentences';
+  renderLessonsView(elements, topic, onLessonClick, initDashboard, onSentenceTheoryClick);
 }
 
-function onTheoryClick(theory) {
-  elements.theoryModalTitle.textContent = theory.title;
-  elements.theoryModalSubtitle.textContent = theory.subtitle;
-  elements.theoryModalImage.src = theory.image;
-  elements.theoryModal.classList.remove('hidden');
-  elements.theoryModal.style.display = 'flex';
+function onSentenceTheoryClick(theory) {
+  // Sentence-week theory: still uses the image modal
+  if (theory.image) {
+    elements.theoryModalTitle.textContent = theory.title;
+    elements.theoryModalSubtitle.textContent = theory.subtitle;
+    elements.theoryModalImage.src = theory.image;
+    elements.theoryModal.classList.remove('hidden');
+    elements.theoryModal.style.display = 'flex';
+  } else if (theory.sections) {
+    // Rich content theory (new style) — render in article view
+    renderWordTheoryArticle(elements, theory, () => onTopicClick(activeTopic));
+  }
 }
 
 function returnToActiveTopic() {
   if (activeTopic) {
-    onTopicClick(activeTopic);
+    if (activeMode === 'words') {
+      onWordTopicClick(activeTopic);
+    } else {
+      onTopicClick(activeTopic);
+    }
   } else {
     initDashboard();
   }
@@ -119,15 +168,12 @@ function buildExamPhrases(topic, examLesson) {
   const pool = topic.lessons
     .filter(l => {
       if (l.exam || !l.phrases) return false;
-      // Tab-scoped exam: only pull from same-tab lessons
       if (examLesson.tab) return l.tab === examLesson.tab;
-      // Final exam (no tab): pull from all lessons
       return true;
     })
     .flatMap(l => l.phrases)
     .sort(() => Math.random() - 0.5);
 
-  // Cap tab exams to a subset of the pool
   if (examLesson.tab && pool.length > TAB_EXAM_PHRASE_CAP) {
     return pool.slice(0, TAB_EXAM_PHRASE_CAP);
   }
@@ -139,15 +185,68 @@ function onLessonClick(lesson) {
   const isTabExam = isExam && !!lesson.tab;
   const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
-  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srs, returnToActiveTopic, isTabExam);
+  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE);
 }
 
 function onReviewClick() {
-  const duePhrases = srs.getDuePhrases(phraseBank);
+  const duePhrases = srsSentences.getDuePhrases(phraseBank);
   if (duePhrases.length === 0) return;
 
   const reviewLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
-  startDrill(elements, duePhrases, null, reviewLesson, false, true, srs, initDashboard);
+  startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
+}
+
+// ========================
+// NAVIGATION — THEORY (standalone)
+// ========================
+
+function onTheoryTopicClick(topic) {
+  renderTheoryArticle(elements, topic, () => {
+    setActiveHomeTab('theory');
+    initDashboard();
+  });
+}
+
+// ========================
+// NAVIGATION — WORDS
+// ========================
+
+function onWordTopicClick(topic) {
+  activeTopic = topic;
+  activeMode = 'words';
+  renderWordLessonsView(elements, topic, onWordLessonClick, () => {
+    setActiveHomeTab('words');
+    initDashboard();
+  }, onWordTopicTheoryClick);
+}
+
+function onWordTopicTheoryClick(theory) {
+  renderWordTheoryArticle(elements, theory, () => onWordTopicClick(activeTopic));
+}
+
+function buildWordExamItems(topic) {
+  return topic.lessons
+    .filter(l => !l.exam && l.words)
+    .flatMap(l => l.words)
+    .sort(() => Math.random() - 0.5);
+}
+
+function onWordLessonClick(lesson) {
+  const isExam = !!lesson.exam;
+  const drillItems = isExam ? buildWordExamItems(activeTopic) : lesson.words;
+
+  startDrill(elements, drillItems, activeTopic, lesson, isExam, false, srsWords, returnToActiveTopic, false, DRILL_MODE.WORD);
+}
+
+function onWordReviewClick() {
+  const dueWords = srsWords.getDuePhrases(wordBank);
+  if (dueWords.length === 0) return;
+
+  const reviewLesson = { id: 'word_daily_review', title: 'Word Review', exam: false };
+  startDrill(elements, dueWords, null, reviewLesson, false, true, srsWords, () => {
+    setActiveHomeTab('words');
+    initDashboard();
+  }, false, DRILL_MODE.WORD);
 }
 
 // ========================
@@ -200,7 +299,7 @@ elements.drillLegendOverlay.addEventListener('click', (e) => {
 });
 
 // ========================
-// THEORY MODAL
+// THEORY MODAL (legacy — sentence week images)
 // ========================
 
 function closeTheoryModal() {

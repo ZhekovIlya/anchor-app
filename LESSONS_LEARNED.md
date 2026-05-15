@@ -34,3 +34,12 @@
 
 ## Technical UI Fixes (Reported by USER)
 - **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.
+
+## Multi-Activity Architecture (2026-05-15)
+- **Three Pillars**: App has 3 content types: Sentences (phrase drills), Theory (read-only articles), Words (single-word drills). Each lives in its own data directory: `data/sentences/`, `data/theory/`, `data/words/`.
+- **Data Loader Returns Object**: `loadAllData()` returns `{ sentences, theory, words }` — not a flat array. Code that needs only sentences should use `loadAllData().sentences`.
+- **Separate SRS Pools**: Sentences use `srs_sentences` key, Words use `srs_words` key. NEVER mix them. `createSRS` now requires a `storageKey` parameter.
+- **Word Drill Mode**: Engine accepts `mode: 'sentence' | 'word'`. Word mode uses streak 48 (12 words × 4 loops) and copy threshold 24. Word drills do NOT use the tokenizer — `renderWordInput` shows plain primary-colored text.
+- **Word Lesson Size**: Exactly 12 unique words per lesson (not 6 like sentences). Word exams use 50 words from all topic lessons.
+- **Theory Content Structure**: Theory topics use a `sections` array with typed items (heading, paragraph, callout, table, image, video). Theory is read-only — no drill, no completion tracking.
+- **Word Topic Theory**: Word topics can have an optional `theory` property with embedded pattern explanations. This renders as a clickable card at the top of the word lessons view.

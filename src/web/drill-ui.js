@@ -2,8 +2,9 @@
 // DRILL UI (DOM + Input + End Screen)
 // ========================
 // Connects core/engine.js to the browser DOM.
+// Supports sentence mode (colored tokens) and word mode (plain text).
 
-import { COLOR_MAP } from '../core/constants.js';
+import { COLOR_MAP, DRILL_MODE } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
 import { showOnly, calcProgressPercent, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
@@ -16,22 +17,27 @@ let isHandlingCorrect = false;
  * Start a drill session and wire the engine to the DOM.
  *
  * @param {Object}  elements  - DOM refs
- * @param {Array}   phrases   - Phrase objects for this drill
+ * @param {Array}   phrases   - Phrase/word objects for this drill
+ * @param {Object}  topic     - Active topic object
  * @param {Object}  lesson    - Active lesson object
  * @param {boolean} isExam    - Is this a final exam?
  * @param {boolean} isReview  - Is this a daily review?
  * @param {Object}  srs       - SRS engine instance
  * @param {Function} onQuit   - Called when user quits / returns
+ * @param {boolean} isTabExam - Is this a tab-scoped exam?
+ * @param {string}  mode      - 'sentence' or 'word'
  */
-export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false) {
+export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
-    russianPrompt, ghostText, ghostTextContainer,
+    russianPrompt, ghostText,
     fakeInput, inputField, streakCounter,
     revealAnswerBtn, quitDrillBtn,
     successLoader,
     restartBtn, dashboardReturnBtn,
   } = elements;
+
+  const isWordMode = mode === DRILL_MODE.WORD;
 
   showOnly(elements, 'drill');
   isHandlingCorrect = false;
@@ -42,6 +48,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     isTabExam,
     isReview,
     srs,
+    mode,
     callbacks: {
       onNextPhrase({ phrase, isCopyStage }) {
         cancelSpeech();
@@ -97,7 +104,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
         elements.endScreenProgressContainer.classList.add('hidden', 'opacity-0');
         elements.endScreenIconBox.className = 'w-20 h-20 flex items-center justify-center rounded-full mb-4 shadow-sm border transition-colors transition-transform scale-100';
-        
+
         let title = '';
         let subtitle = '';
         let icon = '';
@@ -105,20 +112,20 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
         if (previousCount === 0) {
           title = isExam ? 'Exam Completed!' : 'Lesson Completed!';
-          subtitle = 'Week progress updated.';
+          subtitle = isWordMode ? 'Vocabulary progress updated.' : 'Week progress updated.';
           icon = 'check_circle';
           iconColorClass = 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]';
-          
+
           if (topic) {
             elements.endScreenProgressContainer.classList.remove('hidden');
             const total = topic.lessons.length;
             const totalCompletionsRaw = topic.lessons.filter(l => getCompletionCount(l.id) >= 1).length;
             const newPctObj = total > 0 ? Math.round((totalCompletionsRaw / total) * 100) : 0;
             const oldPctObj = total > 0 ? Math.round(((totalCompletionsRaw - 1) / total) * 100) : 0;
-            
+
             elements.endScreenProgressBar.style.width = `${Math.max(0, oldPctObj)}%`;
             elements.endScreenProgressLabel.textContent = `${newPctObj}%`;
-            
+
             if (newPctObj === 100) {
               elements.endScreenProgressBar.classList.replace('bg-primary', 'bg-[#16a34a]');
               elements.endScreenProgressLabel.classList.replace('text-primary', 'text-[#16a34a]');
@@ -126,8 +133,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
               elements.endScreenProgressBar.classList.replace('bg-[#16a34a]', 'bg-primary');
               elements.endScreenProgressLabel.classList.replace('text-[#16a34a]', 'text-primary');
             }
-            
-            // Allow layout to render before animating target width
+
             requestAnimationFrame(() => {
               elements.endScreenProgressContainer.classList.remove('opacity-0');
               elements.endScreenProgressBar.style.width = `${newPctObj}%`;
@@ -137,19 +143,19 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           if (isExam) {
             if (newCount >= EXAM_MASTERED_THRESHOLD) {
               title = 'Exam Mastered!';
-              subtitle = 'Week Mastered!';
+              subtitle = isWordMode ? 'Topic Mastered!' : 'Week Mastered!';
               icon = 'workspace_premium';
               iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
             } else {
               title = 'Exam Practiced!';
-              subtitle = `You need ${EXAM_MASTERED_THRESHOLD - newCount} more completions to master the exam. To master the week, master the exam.`;
+              subtitle = `You need ${EXAM_MASTERED_THRESHOLD - newCount} more completions to master the exam.`;
               icon = 'school';
               iconColorClass = 'bg-surface-container-high text-on-surface-variant border-outline-variant/30';
             }
           } else {
             if (newCount >= LESSON_MASTERED_THRESHOLD) {
               title = 'Lesson Mastered!';
-              subtitle = 'Iron-Clad Grammar Complete.';
+              subtitle = isWordMode ? 'Vocabulary Locked In!' : 'Iron-Clad Grammar Complete.';
               icon = 'workspace_premium';
               iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
             } else {
@@ -171,7 +177,12 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   // Wire input events
   inputField.oninput = () => {
-    renderFakeInput(fakeInput, inputField.value, activeEngine.getState().currentPhrase);
+    const state = activeEngine.getState();
+    if (isWordMode) {
+      renderWordInput(fakeInput, inputField.value);
+    } else {
+      renderFakeInput(fakeInput, inputField.value, state.currentPhrase);
+    }
     fakeInput.scrollLeft = inputField.scrollLeft;
 
     if (isHandlingCorrect) return;
@@ -190,7 +201,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
   revealAnswerBtn.onclick = () => {
     activeEngine.revealAnswer();
     ghostText.style.transition = '';
-    void ghostText.offsetHeight; // force reflow so transition applies
+    void ghostText.offsetHeight;
     ghostText.classList.remove('opacity-0');
     ghostText.classList.add('opacity-30');
     revealAnswerBtn.classList.add('hidden');
@@ -202,7 +213,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   // End screen buttons
   restartBtn.onclick = () => {
-    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit);
+    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode);
   };
   dashboardReturnBtn.onclick = onQuit;
 
@@ -220,7 +231,7 @@ function resetInput(elements) {
 }
 
 /**
- * Render the color-coded fake input overlay.
+ * Render the color-coded fake input overlay (sentence mode).
  */
 function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   let html = '';
@@ -249,4 +260,11 @@ function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   }
 
   fakeInputEl.innerHTML = html;
+}
+
+/**
+ * Render plain text input overlay (word mode — no tokenizer).
+ */
+function renderWordInput(fakeInputEl, userInput) {
+  fakeInputEl.innerHTML = `<span class="text-primary">${userInput}</span>`;
 }

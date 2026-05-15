@@ -1,0 +1,67 @@
+// ========================
+// WORDS: TIME & CALENDAR
+// ========================
+export default {
+  id: "words_time",
+  type: "words",
+  title: "Time & Calendar",
+  icon: "calendar_month",
+  description: "Days, months, and time expressions",
+  theory: {
+    title: "Time Patterns",
+    subtitle: "Days, months, and how to tell time in Spanish",
+    sections: [
+      { type: "heading", text: "📅 Days & Months — No Capitals!" },
+      { type: "paragraph", text: "Unlike English, Spanish does NOT capitalize days or months. 'lunes' not 'Lunes', 'enero' not 'Enero'." },
+      { type: "callout", style: "tip", text: "Days of the week end in '-es' (except sábado & domingo). Months mostly mirror English/Latin roots." },
+      { type: "heading", text: "🕐 Telling Time" },
+      { type: "paragraph", text: "Use 'Es la una' for 1:00 (singular). Use 'Son las [number]' for 2:00–12:00 (plural). Add 'y media' for :30, 'y cuarto' for :15." },
+      { type: "table", caption: "Time expressions", headers: ["Time", "Spanish"], rows: [["1:00","Es la una"],["2:00","Son las dos"],["3:30","Son las tres y media"],["5:15","Son las cinco y cuarto"],["12:00","Son las doce / Es mediodía"]] },
+    ]
+  },
+  lessons: [
+    { id: "wt_l1", title: "Days of the Week", words: [
+      { ru: "понедельник", uk: "понеділок", es: "lunes" },
+      { ru: "вторник", uk: "вівторок", es: "martes" },
+      { ru: "среда", uk: "середа", es: "miércoles" },
+      { ru: "четверг", uk: "четвер", es: "jueves" },
+      { ru: "пятница", uk: "п'ятниця", es: "viernes" },
+      { ru: "суббота", uk: "субота", es: "sábado" },
+      { ru: "воскресенье", uk: "неділя", es: "domingo" },
+      { ru: "день", uk: "день", es: "día" },
+      { ru: "неделя", uk: "тиждень", es: "semana" },
+      { ru: "сегодня", uk: "сьогодні", es: "hoy" },
+      { ru: "завтра", uk: "завтра", es: "mañana" },
+      { ru: "вчера", uk: "вчора", es: "ayer" },
+    ]},
+    { id: "wt_l2", title: "Months of the Year", words: [
+      { ru: "январь", uk: "січень", es: "enero" },
+      { ru: "февраль", uk: "лютий", es: "febrero" },
+      { ru: "март", uk: "березень", es: "marzo" },
+      { ru: "апрель", uk: "квітень", es: "abril" },
+      { ru: "май", uk: "травень", es: "mayo" },
+      { ru: "июнь", uk: "червень", es: "junio" },
+      { ru: "июль", uk: "липень", es: "julio" },
+      { ru: "август", uk: "серпень", es: "agosto" },
+      { ru: "сентябрь", uk: "вересень", es: "septiembre" },
+      { ru: "октябрь", uk: "жовтень", es: "octubre" },
+      { ru: "ноябрь", uk: "листопад", es: "noviembre" },
+      { ru: "декабрь", uk: "грудень", es: "diciembre" },
+    ]},
+    { id: "wt_l3", title: "Time & Periods", words: [
+      { ru: "час", uk: "година", es: "hora" },
+      { ru: "минута", uk: "хвилина", es: "minuto" },
+      { ru: "утро", uk: "ранок", es: "mañana" },
+      { ru: "полдень", uk: "полудень", es: "mediodía" },
+      { ru: "вечер", uk: "вечір", es: "tarde" },
+      { ru: "ночь", uk: "ніч", es: "noche" },
+      { ru: "полночь", uk: "північ", es: "medianoche" },
+      { ru: "сейчас", uk: "зараз", es: "ahora" },
+      { ru: "потом", uk: "потім", es: "después" },
+      { ru: "раньше", uk: "раніше", es: "antes" },
+      { ru: "всегда", uk: "завжди", es: "siempre" },
+      { ru: "никогда", uk: "ніколи", es: "nunca" },
+    ]},
+    { id: "wt_exam", title: "🏆 Time & Calendar Exam", exam: true },
+  ],
+};

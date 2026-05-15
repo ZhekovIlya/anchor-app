@@ -35,16 +35,24 @@ export const TOKEN_LABELS = {
 
 /** Streak targets by lesson type */
 export const STREAK_TARGETS = {
-  regular: 24,
-  tabExam: 30,
-  exam: 50,
+  regular: 24,      // sentence lessons (6 phrases × 4 loops)
+  tabExam: 30,      // tab-scoped sentence exams
+  exam: 50,         // sentence final exams
+  word: 48,          // word lessons (12 words × 4 loops)
+  wordExam: 50,      // word topic exams
 };
 
 /** Max phrases to draw for a tab-scoped exam (subset of tab's full pool) */
 export const TAB_EXAM_PHRASE_CAP = 30;
 
-/** Copy stage threshold — ghost text is visible for the first N correct answers */
-export const COPY_STAGE_THRESHOLD = 12;
+/** Copy stage thresholds — ghost text is visible for the first N correct answers */
+export const COPY_STAGE_THRESHOLDS = {
+  sentence: 12,    // first half of 24-streak
+  word: 24,        // first half of 48-streak
+};
+
+// Legacy alias — used by engine.js for sentence mode
+export const COPY_STAGE_THRESHOLD = COPY_STAGE_THRESHOLDS.sentence;
 
 /** SRS Leitner bucket intervals in milliseconds */
 export const BUCKET_INTERVALS = [
@@ -55,5 +63,15 @@ export const BUCKET_INTERVALS = [
   14 * 24 * 60 * 60 * 1000,// Bucket 4: 2 weeks
 ];
 
-/** SRS localStorage key */
+/** SRS localStorage keys — separate pools for sentences and words */
+export const SRS_KEY_SENTENCES = 'srs_sentences';
+export const SRS_KEY_WORDS = 'srs_words';
+
+// Legacy alias for backwards compatibility during migration
 export const SRS_KEY = 'srs_data';
+
+/** Drill modes */
+export const DRILL_MODE = {
+  SENTENCE: 'sentence',
+  WORD: 'word',
+};

@@ -1,11 +1,13 @@
 // ========================
 // DASHBOARD + LESSONS VIEW
 // ========================
-// DOM rendering for the topics dashboard and in-week lessons grid.
+// DOM rendering for the 3-tab home (Sentences / Theory / Words)
+// and in-topic lessons grids.
 
 import { getCompletionCount } from './storage.js';
 
 let activeTab = null;
+let activeHomeTab = 'sentences'; // 'sentences' | 'theory' | 'words'
 
 // ========================
 // STATUS THEMES
@@ -79,61 +81,22 @@ const LESSON_THEMES = {
     classes: 'bg-[#fefce8] border-[#fef08a] hover:bg-[#fef9c3] hover:border-[#ca8a04]',
     bar: GOLD.bar,
     title: GOLD.title,
-    lessonLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-4 w-full justify-between">
-        ${title}
-        <span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span>
-      </div>`,
-    examLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-[#ca8a04] text-2xl">workspace_premium</span>
-          ${title}
-        </div>
-        <span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span>
-      </div>`,
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#ca8a04] text-2xl">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span></div>`,
   },
   completed: {
     classes: 'bg-[#f0fdf4] border-[#bbf7d0] hover:bg-[#dcfce7] hover:border-[#16a34a]',
     bar: GREEN.bar,
     title: GREEN.title,
-    lessonLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-4 w-full justify-between">
-        ${title}
-        <span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span>
-      </div>`,
-    examLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-[#16a34a] text-2xl">workspace_premium</span>
-          ${title}
-        </div>
-        <span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span>
-      </div>`,
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#16a34a] text-2xl">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span></div>`,
   },
   new: {
     classes: 'border-outline-variant/50 hover:bg-surface-container-low hover:border-primary/50',
     bar: 'bg-primary opacity-0 group-hover:opacity-100 transition-opacity',
     title: 'text-on-surface group-hover:text-primary transition-colors',
-    lessonLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-4 w-full justify-between">
-        ${title}
-        <span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span>
-      </div>`,
-    examLayout: (bar, title) => `
-      ${bar}
-      <div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between">
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-on-surface-variant text-2xl group-hover:text-primary transition-colors">workspace_premium</span>
-          ${title}
-        </div>
-        <span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span>
-      </div>`,
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant text-2xl group-hover:text-primary transition-colors">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span></div>`,
   },
 };
 
@@ -145,15 +108,16 @@ export const EXAM_MASTERED_THRESHOLD = 5;
 export const LESSON_MASTERED_THRESHOLD = 3;
 
 function getTopicStatus(topic) {
-  const examLesson = topic.lessons.find(l => l.exam);
+  const lessons = topic.lessons;
+  const examLesson = lessons.find(l => l.exam);
   const examCompletions = examLesson ? getCompletionCount(examLesson.id) : 0;
   if (examCompletions >= EXAM_MASTERED_THRESHOLD) return 'mastered';
 
-  const total = topic.lessons.length;
-  const completedCount = topic.lessons.filter(l => getCompletionCount(l.id) >= 1).length;
+  const total = lessons.length;
+  const completedCount = lessons.filter(l => getCompletionCount(l.id) >= 1).length;
   if (total > 0 && completedCount === total) return 'completed';
 
-  const startedCount = topic.lessons.filter(l => getCompletionCount(l.id) > 0).length;
+  const startedCount = lessons.filter(l => getCompletionCount(l.id) > 0).length;
   if (startedCount > 0) return 'progress';
 
   return 'new';
@@ -178,26 +142,70 @@ export function calcProgressPercent(lessons) {
 }
 
 // ========================
-// RENDER FUNCTIONS
+// HOME TAB BAR
 // ========================
 
-export function renderDashboard(elements, topics, srs, phraseBank, onTopicClick, onReviewClick) {
+const HOME_TABS = [
+  { id: 'sentences', label: 'Sentences', icon: 'edit_note' },
+  { id: 'theory',    label: 'Theory',    icon: 'lightbulb' },
+  { id: 'words',     label: 'Words',     icon: 'abc' },
+];
+
+function renderHomeTabBar(container, activeId, onChange) {
+  container.innerHTML = '';
+  for (const tab of HOME_TABS) {
+    const btn = document.createElement('button');
+    const isActive = tab.id === activeId;
+    btn.className = isActive
+      ? 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-primary text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none'
+      : 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low text-on-surface-variant hover:bg-surface-variant cursor-pointer whitespace-nowrap outline-none';
+    btn.innerHTML = `<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${isActive ? 1 : 0};">${tab.icon}</span>${tab.label}`;
+    btn.onclick = () => onChange(tab.id);
+    container.appendChild(btn);
+  }
+}
+
+// ========================
+// RENDER: DASHBOARD (HOME)
+// ========================
+
+export function renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, callbacks) {
   const { topicsContainer } = elements;
+  const { onTopicClick, onReviewClick, onTheoryTopicClick, onWordTopicClick, onWordReviewClick } = callbacks;
 
   showOnly(elements, 'dashboard');
   topicsContainer.innerHTML = '';
 
+  // Home tab bar
+  const tabBar = document.getElementById('homeTabBar');
+  renderHomeTabBar(tabBar, activeHomeTab, (tabId) => {
+    activeHomeTab = tabId;
+    renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, callbacks);
+  });
+
+  if (activeHomeTab === 'sentences') {
+    renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick);
+  } else if (activeHomeTab === 'theory') {
+    renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick);
+  } else if (activeHomeTab === 'words') {
+    renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick);
+  }
+}
+
+function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick, onReviewClick) {
+  // Daily Review Card
   const dueCount = srs.getDueCount(phraseBank);
   const reviewSection = document.getElementById('reviewSection');
   reviewSection.style.display = dueCount > 0 ? 'block' : 'none';
 
   if (dueCount > 0) {
     document.getElementById('dueCountText').textContent =
-      `${dueCount} ready for review. Consistent practice builds lasting fluency.`;
+      `${dueCount} phrases ready for review. Consistent practice builds lasting fluency.`;
     document.getElementById('startReviewBtn').onclick = onReviewClick;
   }
 
-  topics.forEach((topic, index) => {
+  // Week cards
+  sentences.forEach((topic, index) => {
     const weekNumber = index + 1;
     const status = getTopicStatus(topic);
     const theme = TOPIC_THEMES[status];
@@ -224,9 +232,85 @@ export function renderDashboard(elements, topics, srs, phraseBank, onTopicClick,
     topicBtn.className = theme.card;
     topicBtn.innerHTML = barHtml + leftCol + theme.rightCol(progressPercent);
     topicBtn.addEventListener('click', () => onTopicClick(topic));
-    topicsContainer.appendChild(topicBtn);
+    container.appendChild(topicBtn);
   });
 }
+
+function renderTheoryTab(container, theoryTopics, onTheoryTopicClick) {
+  // Hide review section for theory
+  document.getElementById('reviewSection').style.display = 'none';
+
+  const header = document.createElement('div');
+  header.className = 'mb-2';
+  header.innerHTML = `<p class="font-body text-base text-on-surface-variant">Grammar explanations, visual cheat sheets, and pattern recognition guides.</p>`;
+  container.appendChild(header);
+
+  for (const topic of theoryTopics) {
+    const card = document.createElement('div');
+    card.className = 'group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-surface-container-low cursor-pointer flex items-center justify-between border border-outline-variant/30 shadow-sm hover:border-primary/50 gap-4';
+    card.innerHTML = `
+      <div class="flex items-center gap-4 pl-2">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">${topic.icon}</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-xl font-bold text-on-surface group-hover:text-primary transition-colors">${topic.title}</h3>
+          <p class="font-body text-sm text-on-surface-variant mt-0.5">${topic.description}</p>
+        </div>
+      </div>
+      <span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors text-2xl">arrow_forward</span>
+    `;
+    card.addEventListener('click', () => onTheoryTopicClick(topic));
+    container.appendChild(card);
+  }
+}
+
+function renderWordsTab(container, wordTopics, srs, wordBank, onWordTopicClick, onWordReviewClick) {
+  // Word Daily Review
+  const dueCount = srs.getDueCount(wordBank);
+  const reviewSection = document.getElementById('reviewSection');
+  reviewSection.style.display = dueCount > 0 ? 'block' : 'none';
+
+  if (dueCount > 0) {
+    document.getElementById('dueCountText').textContent =
+      `${dueCount} words ready for review. Build your vocabulary muscle memory.`;
+    document.getElementById('startReviewBtn').onclick = onWordReviewClick;
+  }
+
+  // Word topic cards
+  wordTopics.forEach((topic, index) => {
+    const status = getTopicStatus(topic);
+    const theme = TOPIC_THEMES[status];
+    const progressPercent = calcProgressPercent(topic.lessons);
+
+    const barHtml = theme.bar
+      ? `<div class="absolute left-0 top-0 bottom-0 w-1.5 ${theme.bar} rounded-l-xl"></div>`
+      : '';
+
+    const leftPadding = status === 'progress' ? 'pl-2' : 'pl-4';
+
+    const leftCol = `
+      <div class="flex items-center gap-4 sm:gap-6 ${leftPadding} w-full sm:w-auto">
+        <div class="w-12 h-12 rounded-xl ${theme.numBg} hidden sm:flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">${topic.icon}</span>
+        </div>
+        <div class="w-full sm:w-auto overflow-hidden">
+          <div class="font-label text-xs ${theme.label} tracking-wider uppercase mb-1">${topic.description}</div>
+          <h3 class="font-headline text-2xl ${theme.title} break-words line-clamp-2">${topic.title}</h3>
+        </div>
+      </div>`;
+
+    const card = document.createElement('div');
+    card.className = theme.card;
+    card.innerHTML = barHtml + leftCol + theme.rightCol(progressPercent);
+    card.addEventListener('click', () => onWordTopicClick(topic));
+    container.appendChild(card);
+  });
+}
+
+// ========================
+// RENDER: LESSONS VIEW (shared by sentences + words)
+// ========================
 
 export function renderLessonsView(elements, topic, onLessonClick, onBackClick, onTheoryClick) {
   const { lessonsViewTitle, lessonsContainer, backToDashboardBtn } = elements;
@@ -245,13 +329,67 @@ export function renderLessonsView(elements, topic, onLessonClick, onBackClick, o
     lessonsContainer.classList.add('transition-all', 'duration-300', 'opacity-100', 'scale-100');
   });
 
-  // Theory card — rendered before tabs
+  // Theory card — rendered before tabs (for sentence weeks)
   if (topic.theory && onTheoryClick) {
     renderTheoryCard(lessonsContainer, topic.theory, onTheoryClick);
   }
 
-  renderTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick, onTheoryClick);
+  // Person tabs (sentence weeks only)
+  if (topic.tabs) {
+    renderTabs(personTabsContainer, topic, elements, onLessonClick, onBackClick, onTheoryClick);
+  }
+
   renderLessonCards(lessonsContainer, topic, onLessonClick);
+  backToDashboardBtn.onclick = onBackClick;
+}
+
+/**
+ * Render word topic lessons view.
+ * Similar to sentence lessons but items use `words` instead of `phrases`.
+ */
+export function renderWordLessonsView(elements, topic, onLessonClick, onBackClick, onTheoryClick) {
+  const { lessonsViewTitle, lessonsContainer, backToDashboardBtn } = elements;
+  const personTabsContainer = document.getElementById('personTabsContainer');
+
+  showOnly(elements, 'lessons');
+  lessonsViewTitle.textContent = topic.title;
+  personTabsContainer.innerHTML = '';
+
+  lessonsContainer.classList.remove('transition-all', 'duration-300', 'opacity-100', 'scale-100');
+  lessonsContainer.classList.add('opacity-0', 'scale-95');
+  lessonsContainer.innerHTML = '';
+
+  requestAnimationFrame(() => {
+    lessonsContainer.classList.remove('opacity-0', 'scale-95');
+    lessonsContainer.classList.add('transition-all', 'duration-300', 'opacity-100', 'scale-100');
+  });
+
+  // Theory card for word topics (pattern explanations)
+  if (topic.theory && onTheoryClick) {
+    renderTheoryCard(lessonsContainer, topic.theory, onTheoryClick);
+  }
+
+  // Render word lesson cards
+  const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-surface-container-lowest';
+
+  topic.lessons.forEach(lesson => {
+    const status = getLessonStatus(lesson);
+    const theme = LESSON_THEMES[status];
+    const wordCount = lesson.exam
+      ? topic.lessons.filter(l => !l.exam).reduce((sum, l) => sum + (l.words ? l.words.length : 0), 0)
+      : (lesson.words ? lesson.words.length : 0);
+
+    const bar = `<div class="absolute left-0 top-0 bottom-0 w-1.5 ${theme.bar} rounded-l-xl"></div>`;
+    const titleHtml = `<div><h3 class="font-headline text-xl font-bold ${theme.title}">${lesson.title}</h3><p class="font-body text-xs text-on-surface-variant mt-1">${wordCount} words</p></div>`;
+    const layout = lesson.exam ? theme.examLayout(bar, titleHtml) : theme.lessonLayout(bar, titleHtml);
+    const examSpacing = lesson.exam ? ' mt-8' : '';
+
+    const card = document.createElement('button');
+    card.className = `${baseClasses} ${theme.classes}${examSpacing}`;
+    card.innerHTML = layout;
+    card.addEventListener('click', () => onLessonClick(lesson));
+    lessonsContainer.appendChild(card);
+  });
 
   backToDashboardBtn.onclick = onBackClick;
 }
@@ -279,7 +417,6 @@ function renderTabs(container, topic, elements, onLessonClick, onBackClick, onTh
   const tabs = topic.tabs || [];
   if (tabs.length === 0) return;
 
-  // Filter to only tabs that have at least one lesson
   const available = new Set(topic.lessons.filter(l => l.tab).map(l => l.tab));
   const visibleTabs = tabs.filter(t => available.has(t.id));
 
@@ -326,12 +463,17 @@ function renderLessonCards(container, topic, onLessonClick) {
     });
 }
 
+// ========================
+// VIEW MANAGER
+// ========================
+
 export function showOnly(elements, viewName) {
   const views = {
     dashboard: elements.dashboardView,
     lessons: elements.lessonsView,
     drill: elements.drillView,
     end: elements.endScreen,
+    theoryArticle: elements.theoryArticleView,
   };
 
   for (const [name, el] of Object.entries(views)) {
@@ -348,4 +490,15 @@ export function showOnly(elements, viewName) {
   if (viewName !== 'drill' && elements.drillLegendOverlay) {
     elements.drillLegendOverlay.classList.add('hidden');
   }
+}
+
+/**
+ * Get/set the active home tab (for external access).
+ */
+export function getActiveHomeTab() {
+  return activeHomeTab;
+}
+
+export function setActiveHomeTab(tab) {
+  activeHomeTab = tab;
 }
