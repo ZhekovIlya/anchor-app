@@ -155,6 +155,40 @@ function createImage(src, alt) {
 }
 
 function createVideo(src, title) {
+  // Extract YouTube video ID to create a clickable thumbnail
+  // This avoids "Playback disabled by owner" embed errors.
+  const videoIdMatch = src.match(/embed\/([^?]+)/);
+  const videoId = videoIdMatch ? videoIdMatch[1] : null;
+
+  if (videoId) {
+    const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+    const wrapper = document.createElement('a');
+    wrapper.href = watchUrl;
+    wrapper.target = '_blank';
+    wrapper.rel = 'noopener noreferrer';
+    wrapper.className = 'group block mb-6 rounded-xl overflow-hidden border border-surface-variant shadow-sm relative cursor-pointer';
+    wrapper.innerHTML = `
+      <div class="relative w-full aspect-video bg-surface-container-highest overflow-hidden">
+        <img src="${thumbUrl}" alt="${title || 'Video Thumbnail'}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+          <div class="w-16 h-16 bg-[#ff0000]/90 text-white rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform backdrop-blur-sm">
+            <span class="material-symbols-outlined text-4xl ml-1" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 bg-surface border-t border-surface-variant flex items-center justify-between">
+        <span class="font-headline text-base font-bold text-on-surface line-clamp-1">${title || 'Watch on YouTube'}</span>
+        <div class="flex items-center gap-1 text-on-surface-variant text-sm font-label uppercase tracking-wider">
+          <span class="material-symbols-outlined text-lg">open_in_new</span>
+        </div>
+      </div>
+    `;
+    return wrapper;
+  }
+
+  // Fallback to standard iframe for non-youtube URLs
   const wrapper = document.createElement('div');
   wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant shadow-sm';
   wrapper.innerHTML = `
