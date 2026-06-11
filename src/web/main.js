@@ -11,6 +11,7 @@ import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHomeTab } from './dashboard.js';
 import { startDrill } from './drill-ui.js';
 import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
+import { renderReadAloudList, startReadAloud } from './read-aloud-ui.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 import { createGamification } from '../core/gamification.js';
@@ -135,6 +136,7 @@ function initDashboard() {
     onTheoryTopicClick,
     onWordTopicClick,
     onWordReviewClick,
+    onReadAloudTabClick,
     gamification,
     storageAdapter: localStorageAdapter,
   });
@@ -257,6 +259,19 @@ function onWordReviewClick() {
     setActiveHomeTab('words');
     initDashboard();
   }, false, DRILL_MODE.WORD);
+}
+
+// ========================
+// NAVIGATION — READ ALOUD
+// ========================
+
+function onReadAloudTabClick(container, readAloudData) {
+  renderReadAloudList(container, readAloudData, (item) => {
+    startReadAloud(container, item, () => {
+      // On back
+      onReadAloudTabClick(container, readAloudData);
+    });
+  });
 }
 
 // ========================

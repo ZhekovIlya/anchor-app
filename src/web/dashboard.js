@@ -150,6 +150,7 @@ const HOME_TABS = [
   { id: 'sentences', label: 'Sentences', icon: 'edit_note' },
   { id: 'theory',    label: 'Theory',    icon: 'lightbulb' },
   { id: 'words',     label: 'Words',     icon: 'abc' },
+  { id: 'readAloud', label: 'Read',      icon: 'record_voice_over' },
   { id: 'stats',     label: 'Stats',     icon: 'bar_chart' },
 ];
 
@@ -191,6 +192,8 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
     renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick);
   } else if (activeHomeTab === 'words') {
     renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick);
+  } else if (activeHomeTab === 'readAloud') {
+    callbacks.onReadAloudTabClick(topicsContainer, data.readAloud);
   } else if (activeHomeTab === 'stats') {
     renderStatsTab(topicsContainer, callbacks.gamification, srsSentences, srsWords, phraseBank, wordBank, data, callbacks.storageAdapter);
   }

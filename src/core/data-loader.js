@@ -21,6 +21,8 @@ import wordsTime from '../../data/words/time_calendar.js';
 import wordsWeather from '../../data/words/weather.js';
 import wordsColors from '../../data/words/colors.js';
 
+import readAloudData from '../../data/read_aloud.js';
+
 import { tokenize } from './tokenizer.js';
 
 /**
@@ -32,7 +34,7 @@ export function loadAllData() {
   const theory = [theoryVerbs, theoryBridge, theoryCatalan];
   const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors]);
 
-  return { sentences, theory, words };
+  return { sentences, theory, words, readAloud: readAloudData };
 }
 
 /**
