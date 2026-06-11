@@ -15,8 +15,6 @@ import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from '.
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 import { createGamification } from '../core/gamification.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
-import { startMCDrill } from './mc-drill-ui.js';
-import { startWordOrderDrill } from './word-order-ui.js';
 import { checkAndShowReengagement } from './re-engagement.js';
 
 // ========================
@@ -195,13 +193,7 @@ function onLessonClick(lesson) {
   const isTabExam = isExam && !!lesson.tab;
   const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
-  // Week 6 (topic.id === 'week_6'): show drill mode selector
-  if (activeTopic && activeTopic.id === 'week_6') {
-    showDrillModeSelector(drillPhrases, activeTopic, lesson, isExam, isTabExam);
-  } else {
-    // All other weeks: go straight to type mode (unchanged)
-    startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
-  }
+  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
 }
 
 function onReviewClick() {
@@ -212,54 +204,7 @@ function onReviewClick() {
   startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
 }
 
-// ========================
-// DRILL MODE SELECTOR (Week 6 only)
-// ========================
 
-function showDrillModeSelector(drillPhrases, topic, lesson, isExam, isTabExam) {
-  const overlay = document.getElementById('drillModeSelector');
-  const closeBtn = document.getElementById('drillModeSelectorClose');
-  const typeBtn = document.getElementById('drillModeType');
-  const mcBtn = document.getElementById('drillModeMC');
-  const woBtn = document.getElementById('drillModeWordOrder');
-
-  if (!overlay) return;
-
-  // Show the overlay
-  overlay.classList.remove('hidden');
-
-  function hideSelector() {
-    overlay.classList.add('hidden');
-  }
-
-  // Close button: return to lessons
-  closeBtn.onclick = () => {
-    hideSelector();
-  };
-
-  // Click outside to close
-  overlay.onclick = (e) => {
-    if (e.target === overlay) hideSelector();
-  };
-
-  // Type mode (existing drill)
-  typeBtn.onclick = () => {
-    hideSelector();
-    startDrill(elements, drillPhrases, topic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
-  };
-
-  // Multiple Choice mode
-  mcBtn.onclick = () => {
-    hideSelector();
-    startMCDrill(elements, drillPhrases, topic, lesson, srsSentences, gamification, returnToActiveTopic);
-  };
-
-  // Word Order mode
-  woBtn.onclick = () => {
-    hideSelector();
-    startWordOrderDrill(elements, drillPhrases, topic, lesson, srsSentences, gamification, returnToActiveTopic);
-  };
-}
 
 // ========================
 // NAVIGATION — THEORY (standalone)

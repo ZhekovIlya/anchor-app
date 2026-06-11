@@ -2,22 +2,26 @@
 // DRILL STATE MACHINE
 // ========================
 // Pure logic — no DOM, no browser APIs.
-// Supports two modes: 'sentence' and 'word'.
+// Supports unified game modes for sentence drills.
 
 import { STREAK_TARGETS, COPY_STAGE_THRESHOLDS, DRILL_MODE } from './constants.js';
 
-/**
- * Create a drill engine instance.
- *
- * @param {Object} options
- * @param {Array}   options.phrases       - Array of phrase/word objects for this drill
- * @param {boolean} options.isExam        - Whether this is a final exam lesson
- * @param {boolean} options.isTabExam     - Whether this is a tab-scoped exam
- * @param {boolean} options.isReview      - Whether this is a daily SRS review
- * @param {string}  options.mode          - 'sentence' or 'word' (from DRILL_MODE)
- * @param {Object}  options.srs           - SRS engine instance (from createSRS)
- * @param {Object}  options.callbacks     - UI callbacks
- */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
 export function createDrillEngine(options) {
   const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE } = options;
 
@@ -27,25 +31,23 @@ export function createDrillEngine(options) {
   let targetStreak;
 
   if (isWordMode) {
-    targetStreak = isExam
-      ? STREAK_TARGETS.wordExam
-      : (isReview ? Math.min(phrases.length, STREAK_TARGETS.word) : STREAK_TARGETS.word);
+    targetStreak = isExam ? STREAK_TARGETS.wordExam : (isReview ? Math.min(phrases.length, STREAK_TARGETS.word) : STREAK_TARGETS.word);
   } else {
-    targetStreak = isTabExam
-      ? STREAK_TARGETS.tabExam
-      : isExam
-        ? STREAK_TARGETS.exam
-        : (isReview ? Math.min(phrases.length, STREAK_TARGETS.regular) : STREAK_TARGETS.regular);
+    targetStreak = isTabExam ? STREAK_TARGETS.tabExam : isExam ? STREAK_TARGETS.exam : (isReview ? Math.min(phrases.length, STREAK_TARGETS.regular) : STREAK_TARGETS.regular);
   }
 
   const initialTargetStreak = targetStreak;
   let failedPhrases = [];
   let drawingDeck = [];
   let currentPhrase = null;
+  let currentInteractionMode = 'TYPE'; // 'TYPE', 'MC', 'WORD_ORDER'
+  let currentQuestionData = null; 
 
-  const copyThreshold = isWordMode
-    ? COPY_STAGE_THRESHOLDS.word
-    : COPY_STAGE_THRESHOLDS.sentence;
+  const copyThreshold = isWordMode ? COPY_STAGE_THRESHOLDS.word : COPY_STAGE_THRESHOLDS.sentence;
+
+  function getStage() {
+    return !isExam && streak < copyThreshold;
+  }
 
   function pickNextPhrase() {
     if (streak >= initialTargetStreak && failedPhrases.length > 0) {
@@ -56,10 +58,81 @@ export function createDrillEngine(options) {
       }
       currentPhrase = drawingDeck.pop();
     }
+    prepareInteractionMode();
   }
 
-  function getStage() {
-    return !isExam && streak < copyThreshold;
+  function prepareInteractionMode() {
+    if (isWordMode) {
+      currentInteractionMode = 'TYPE';
+      currentQuestionData = null;
+      return;
+    }
+
+    const isCopyStage = getStage();
+    if (isCopyStage) {
+      currentInteractionMode = 'TYPE';
+      currentQuestionData = null;
+      return;
+    }
+
+    // Recall stage: 70% Type, 15% MC, 15% Word Order
+    const r = Math.random();
+    if (r < 0.70) {
+      currentInteractionMode = 'TYPE';
+      currentQuestionData = null;
+    } else if (r < 0.85) {
+      currentInteractionMode = 'MC';
+      currentQuestionData = generateMCData(currentPhrase);
+    } else {
+      const words = currentPhrase.es.split(' ');
+      if (words.length > 1) {
+        currentInteractionMode = 'WORD_ORDER';
+        currentQuestionData = generateWOData(currentPhrase);
+      } else {
+        currentInteractionMode = 'TYPE';
+        currentQuestionData = null;
+      }
+    }
+  }
+
+  function generateMCData(correctPhrase) {
+    const candidates = phrases.filter(p => p.es !== correctPhrase.es).map(p => p.es);
+    const unique = [...new Set(candidates)];
+    shuffle(unique);
+    const distractors = unique.slice(0, 3);
+    while (distractors.length < 3) {
+      if (candidates.length > 0) {
+        const pick = candidates[Math.floor(Math.random() * candidates.length)];
+        if (distractors.length === 0 || distractors[distractors.length - 1] !== pick) {
+          distractors.push(pick);
+        } else {
+          distractors.push(pick);
+        }
+      } else {
+        distractors.push(correctPhrase.es + '?');
+      }
+    }
+    const options = [correctPhrase.es, ...distractors];
+    shuffle(options);
+    return {
+      options,
+      correctIndex: options.indexOf(correctPhrase.es)
+    };
+  }
+
+  function generateWOData(correctPhrase) {
+    const correctOrder = correctPhrase.es.split(' ');
+    const shuffledWords = [...correctOrder];
+    let attempts = 0;
+    do {
+      shuffle(shuffledWords);
+      attempts++;
+    } while (arraysEqual(shuffledWords, correctOrder) && attempts < 10);
+    
+    return {
+      shuffledWords,
+      correctOrder
+    };
   }
 
   return {
@@ -72,6 +145,8 @@ export function createDrillEngine(options) {
       callbacks.onNextPhrase({
         phrase: currentPhrase,
         isCopyStage: getStage(),
+        interactionMode: currentInteractionMode,
+        questionData: currentQuestionData,
         streak,
         targetStreak,
       });
@@ -80,6 +155,16 @@ export function createDrillEngine(options) {
     checkAnswer(userInput) {
       const correct = userInput.trim().toLowerCase() === currentPhrase.es.toLowerCase();
       return { correct, phrase: currentPhrase };
+    },
+
+    submitMCAnswer(selectedIndex) {
+      const correct = selectedIndex === currentQuestionData.correctIndex;
+      return { correct, correctAnswer: currentPhrase.es, phrase: currentPhrase };
+    },
+
+    submitWOAnswer(orderedWords) {
+      const correct = arraysEqual(orderedWords, currentQuestionData.correctOrder);
+      return { correct, correctAnswer: currentPhrase.es, phrase: currentPhrase };
     },
 
     handleCorrect() {
@@ -102,6 +187,8 @@ export function createDrillEngine(options) {
           callbacks.onNextPhrase({
             phrase: currentPhrase,
             isCopyStage: getStage(),
+            interactionMode: currentInteractionMode,
+            questionData: currentQuestionData,
             streak,
             targetStreak,
           });
@@ -109,7 +196,7 @@ export function createDrillEngine(options) {
       });
     },
 
-    revealAnswer() {
+    handleWrong() {
       targetStreak++;
       failedPhrases.push(currentPhrase);
 
@@ -120,9 +207,23 @@ export function createDrillEngine(options) {
       callbacks.onRevealUpdate(streak, targetStreak);
     },
 
+    nextPhraseAfterWrong() {
+      pickNextPhrase();
+      callbacks.onNextPhrase({
+        phrase: currentPhrase,
+        isCopyStage: getStage(),
+        interactionMode: currentInteractionMode,
+        questionData: currentQuestionData,
+        streak,
+        targetStreak,
+      });
+    },
+
     getState() {
       return {
         currentPhrase,
+        interactionMode: currentInteractionMode,
+        questionData: currentQuestionData,
         streak,
         targetStreak,
         initialTargetStreak,

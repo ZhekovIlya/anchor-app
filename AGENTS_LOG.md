@@ -1,6 +1,35 @@
 # AGENTS LOG
 
-## Current Task: Gamification Overhaul & Week 6 Content (Barcelona Survival)
+## Current Task: Dynamic Game Modes & Unified Drill Engine
+
+### **[DEV] (The Builder):**
+- Branch `task/dynamic-drills` created.
+- Consolidated `multiple-choice.js`, `word-order.js`, and `engine.js` into a single, unified `engine.js` orchestrator.
+- Implemented dynamic probability distributions for interaction modes during the recall stage (70% TYPE, 15% MC, 15% WORD_ORDER).
+- Consolidated `mc-drill-ui.js`, `word-order-ui.js`, and `drill-ui.js` into a unified `drill-ui.js` renderer capable of hot-swapping modes.
+- Implemented a unified "Happy/Sad path" feedback bar overlay mimicking modern language-learning apps, removing the standard popups.
+- Ensured failed phrases across all interaction modes loop back into the queue dynamically.
+
+### **[AQA] (Technical QA):**
+- Verified deletion of deprecated standalone drill mode scripts.
+- Verified test coverage (`npm test`) remains 100% passing across 7 tests.
+- Verified successful production bundling of Vite (`npm run build`).
+
+### **[QA] (Product QA):**
+- Confirmed that the manual "Mode Selector" modal in Week 6 is entirely removed.
+- Validated that users can no longer manually select "game modes" and instead these modes are presented organically during recall drilling based on internal logic.
+- Validated the pedagogical requirement: Mistakes must be repeated at the end. Failed phrases now persist in the active queue until answered perfectly.
+
+### **Status:**
+- [X] Created unified `engine.js` orchestrator.
+- [X] Created unified `drill-ui.js` view renderer.
+- [X] Added dynamic feedback bar overlay.
+- [X] Integrated Word Order and Multiple Choice modes organically.
+- [X] Run full test suites successfully.
+
+---
+
+## Past Task: Gamification Overhaul & Week 6 Content (Barcelona Survival)
 
 ### **[DEV] (The Builder):**
 - Consolidated all milestone commits onto the target branch `task/gamification-overhaul`.

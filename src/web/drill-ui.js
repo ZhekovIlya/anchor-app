@@ -2,47 +2,97 @@
 // DRILL UI (DOM + Input + End Screen)
 // ========================
 // Connects core/engine.js to the browser DOM.
-// Supports sentence mode (colored tokens) and word mode (plain text).
+// Supports Unified Dynamic Game Modes (Type, MC, Word Order) seamlessly.
 
 import { COLOR_MAP, DRILL_MODE } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
-import { showOnly, calcProgressPercent, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
+import { showOnly, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
 import { incrementCompletion, getCompletionCount } from './storage.js';
 import { XP_REWARDS } from '../core/gamification.js';
-import { launchConfetti, animateXPGain, showLevelUpNotification, celebrateStreakMilestone, renderEndScreenXP } from './gamification-ui.js';
+import { launchConfetti, renderEndScreenXP, showLevelUpNotification, celebrateStreakMilestone } from './gamification-ui.js';
 
 let activeEngine = null;
-let isHandlingCorrect = false;
+let isHandlingFeedback = false;
 
-/**
- * Start a drill session and wire the engine to the DOM.
- *
- * @param {Object}  elements  - DOM refs
- * @param {Array}   phrases   - Phrase/word objects for this drill
- * @param {Object}  topic     - Active topic object
- * @param {Object}  lesson    - Active lesson object
- * @param {boolean} isExam    - Is this a final exam?
- * @param {boolean} isReview  - Is this a daily review?
- * @param {Object}  srs       - SRS engine instance
- * @param {Function} onQuit   - Called when user quits / returns
- * @param {boolean} isTabExam - Is this a tab-scoped exam?
- * @param {string}  mode      - 'sentence' or 'word'
- */
 export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText,
     fakeInput, inputField, streakCounter,
     revealAnswerBtn, quitDrillBtn,
-    successLoader,
     restartBtn, dashboardReturnBtn,
   } = elements;
+
+  const typeInputArea = document.getElementById('typeInputArea');
+  const mcContainer = document.getElementById('mcOptionsContainer');
+  const woContainer = document.getElementById('wordOrderContainer');
+  
+  const feedbackBar = document.getElementById('feedbackBar');
+  const feedbackBarTitle = document.getElementById('feedbackBarTitle');
+  const feedbackBarSubtitle = document.getElementById('feedbackBarSubtitle');
+  const feedbackBarIcon = document.getElementById('feedbackBarIcon');
+  const feedbackBarIconBox = document.getElementById('feedbackBarIconBox');
+  const feedbackBarBtn = document.getElementById('feedbackBarBtn');
 
   const isWordMode = mode === DRILL_MODE.WORD;
 
   showOnly(elements, 'drill');
-  isHandlingCorrect = false;
+  isHandlingFeedback = false;
+
+  function showFeedback(isCorrect, correctAnswerText, onCompleteCallback) {
+    isHandlingFeedback = true;
+    feedbackBar.classList.remove('hidden');
+    void feedbackBar.offsetWidth; // force reflow
+    feedbackBar.classList.remove('translate-y-full');
+
+    const handleContinue = () => {
+      feedbackBar.classList.add('translate-y-full');
+      isHandlingFeedback = false;
+      onCompleteCallback();
+    };
+
+    if (isCorrect) {
+      feedbackBar.className = 'absolute bottom-0 inset-x-0 w-full z-50 p-6 transition-transform duration-300 bg-[#f0fdf4] dark:bg-emerald-950 border-t border-[#bbf7d0] dark:border-emerald-800 shadow-[0_-10px_40px_rgba(22,163,74,0.15)] dark:shadow-[0_-10px_40px_rgba(52,211,153,0.15)]';
+      feedbackBarIconBox.className = 'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-white dark:bg-emerald-900 text-[#16a34a] dark:text-emerald-400 shadow-sm';
+      feedbackBarIcon.textContent = 'check';
+      feedbackBarTitle.className = 'font-headline text-xl font-bold text-[#15803d] dark:text-emerald-300';
+      feedbackBarTitle.textContent = 'Perfect!';
+      feedbackBarSubtitle.className = 'font-body text-sm text-[#166534] dark:text-emerald-400';
+      feedbackBarSubtitle.textContent = 'Repeating aloud...';
+      
+      feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#16a34a] dark:bg-emerald-600 text-white shadow-sm hover:opacity-90 hidden';
+      
+      speakAnswer(correctAnswerText, () => {
+        setTimeout(handleContinue, 500);
+      });
+    } else {
+      feedbackBar.className = 'absolute bottom-0 inset-x-0 w-full z-50 p-6 transition-transform duration-300 bg-[#fef2f2] dark:bg-red-950 border-t border-[#fecaca] dark:border-red-900 shadow-[0_-10px_40px_rgba(220,38,38,0.15)] dark:shadow-[0_-10px_40px_rgba(248,113,113,0.15)]';
+      feedbackBarIconBox.className = 'w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-white dark:bg-red-900 text-[#dc2626] dark:text-red-400 shadow-sm';
+      feedbackBarIcon.textContent = 'close';
+      feedbackBarTitle.className = 'font-headline text-xl font-bold text-[#b91c1c] dark:text-red-300';
+      feedbackBarTitle.textContent = 'Correct solution:';
+      feedbackBarSubtitle.className = 'font-body text-sm text-[#991b1b] dark:text-red-400 font-bold mt-1 text-lg';
+      feedbackBarSubtitle.textContent = correctAnswerText;
+
+      feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#dc2626] dark:bg-red-600 text-white shadow-sm hover:opacity-90 block';
+      
+      // Allow enter key or click
+      const enterHandler = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          document.removeEventListener('keydown', enterHandler);
+          handleContinue();
+        }
+      };
+      document.addEventListener('keydown', enterHandler);
+
+      feedbackBarBtn.onclick = () => {
+        document.removeEventListener('keydown', enterHandler);
+        handleContinue();
+      };
+    }
+  }
 
   activeEngine = createDrillEngine({
     phrases,
@@ -52,49 +102,63 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     srs,
     mode,
     callbacks: {
-      onNextPhrase({ phrase, isCopyStage }) {
-        cancelSpeech();
-
-        const lang = getPromptLang();
-        const promptText = phrase[lang] || phrase.ru;
-        russianPrompt.textContent = promptText;
-        ghostText.textContent = phrase.es;
-
-        if (isCopyStage) {
-          ghostText.style.transition = '';
-          ghostText.classList.remove('opacity-0');
-          ghostText.classList.add('opacity-30');
-          revealAnswerBtn.classList.add('hidden');
-        } else {
-          ghostText.style.transition = 'none';
-          ghostText.classList.remove('opacity-30');
-          ghostText.classList.add('opacity-0');
-          revealAnswerBtn.classList.remove('hidden');
-        }
-
-        resetInput(elements);
-        speakPrompt(promptText);
-      },
-
       onStreakUpdate(streak, target) {
         streakCounter.textContent = `${streak} / ${target}`;
       },
-
-      onCorrectAnswer(phrase, done) {
-        inputField.disabled = true;
-        successLoader?.classList.remove('hidden');
-
-        speakAnswer(phrase.es, () => {
-          successLoader?.classList.add('hidden');
-          inputField.disabled = false;
-          inputField.focus();
-          isHandlingCorrect = false;
-          done();
-        });
-      },
-
       onRevealUpdate(streak, target) {
         streakCounter.textContent = `${streak} / ${target}`;
+      },
+      onNextPhrase({ phrase, isCopyStage, interactionMode, questionData, streak, targetStreak }) {
+        cancelSpeech();
+
+        const lang = getPromptLang();
+        const promptText = lang === 'uk' ? phrase.uk : phrase.ru;
+        russianPrompt.textContent = promptText;
+        streakCounter.textContent = `${streak} / ${targetStreak}`;
+
+        // Reset containers
+        typeInputArea.classList.add('hidden');
+        mcContainer.classList.add('hidden');
+        woContainer.classList.add('hidden');
+        revealAnswerBtn.classList.add('hidden');
+        ghostText.parentElement.classList.add('hidden');
+        feedbackBar.classList.add('translate-y-full');
+
+        // Setup correct interaction mode
+        if (interactionMode === 'TYPE') {
+          typeInputArea.classList.remove('hidden');
+          ghostText.parentElement.classList.remove('hidden');
+          ghostText.textContent = phrase.es;
+          
+          inputField.value = '';
+          fakeInput.innerHTML = '';
+          inputField.disabled = false;
+          inputField.focus();
+
+          if (isCopyStage) {
+            ghostText.style.transition = '';
+            ghostText.classList.remove('opacity-0');
+            ghostText.classList.add('opacity-30');
+          } else {
+            ghostText.style.transition = 'none';
+            ghostText.classList.remove('opacity-30');
+            ghostText.classList.add('opacity-0');
+            revealAnswerBtn.classList.remove('hidden');
+          }
+        } else if (interactionMode === 'MC') {
+          mcContainer.classList.remove('hidden');
+          renderMC(mcContainer, questionData, phrase);
+        } else if (interactionMode === 'WORD_ORDER') {
+          woContainer.classList.remove('hidden');
+          renderWO(woContainer, questionData, phrase);
+        }
+
+        speakPrompt(promptText);
+      },
+
+      onCorrectAnswer(phrase, done) {
+        // Handled by local showFeedback logic
+        done();
       },
 
       onComplete() {
@@ -174,39 +238,22 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         elements.endScreenIcon.textContent = icon;
         elements.endScreenIconBox.className += ` ${iconColorClass}`;
 
-        // === Gamification wiring ===
         if (gamification) {
-          // Record daily activity and check streak
           const streakResult = gamification.recordActivity();
-
-          // Determine XP reward based on drill type
           let xpAmount = XP_REWARDS.lesson;
           if (isExam) xpAmount = XP_REWARDS.exam;
           else if (isReview) xpAmount = XP_REWARDS.review;
 
-          // Add XP
           const xpResult = gamification.addXP(xpAmount);
-
-          // Show XP on end screen
           renderEndScreenXP(xpAmount, xpResult.totalXP, xpResult.levelName);
 
-          // Launch confetti for first completion
           if (previousCount === 0) {
             const confettiContainer = document.getElementById('confettiContainer');
             if (confettiContainer) launchConfetti(confettiContainer);
           }
-
-          // Check for level-up
-          if (xpResult.leveledUp) {
-            showLevelUpNotification(xpResult.levelName);
-          }
-
-          // Check for streak milestone
-          if (streakResult.milestone) {
-            celebrateStreakMilestone(streakResult.milestone);
-          }
+          if (xpResult.leveledUp) showLevelUpNotification(xpResult.levelName);
+          if (streakResult.milestone) celebrateStreakMilestone(streakResult.milestone);
         } else {
-          // Hide XP container when gamification is not available
           const xpContainer = document.getElementById('endScreenXPContainer');
           if (xpContainer) xpContainer.classList.add('hidden');
         }
@@ -214,21 +261,26 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     },
   });
 
-  // Wire input events
+  // Type Mode Input Handlers
   inputField.oninput = () => {
     const state = activeEngine.getState();
+    if (state.interactionMode !== 'TYPE') return;
+
     if (isWordMode) {
-      renderWordInput(fakeInput, inputField.value);
+      fakeInput.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${inputField.value}</span>`;
     } else {
       renderFakeInput(fakeInput, inputField.value, state.currentPhrase);
     }
     fakeInput.scrollLeft = inputField.scrollLeft;
 
-    if (isHandlingCorrect) return;
+    if (isHandlingFeedback) return;
+
     const { correct } = activeEngine.checkAnswer(inputField.value);
     if (correct) {
-      isHandlingCorrect = true;
-      activeEngine.handleCorrect();
+      inputField.disabled = true;
+      showFeedback(true, state.currentPhrase.es, () => {
+        activeEngine.handleCorrect();
+      });
     }
   };
 
@@ -236,42 +288,147 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     fakeInput.scrollLeft = inputField.scrollLeft;
   };
 
-  // Reveal answer
+  // Reveal Answer (Sad Path trigger)
   revealAnswerBtn.onclick = () => {
-    activeEngine.revealAnswer();
-    ghostText.style.transition = '';
-    void ghostText.offsetHeight;
-    ghostText.classList.remove('opacity-0');
-    ghostText.classList.add('opacity-30');
+    if (isHandlingFeedback) return;
+    inputField.disabled = true;
     revealAnswerBtn.classList.add('hidden');
-    inputField.focus();
+    
+    const state = activeEngine.getState();
+    activeEngine.handleWrong(); 
+    
+    showFeedback(false, state.currentPhrase.es, () => {
+      activeEngine.nextPhraseAfterWrong();
+    });
   };
 
-  // Quit drill
-  quitDrillBtn.onclick = onQuit;
+  // MC Mode Renderer
+  function renderMC(container, questionData, phrase) {
+    container.innerHTML = '';
+    questionData.options.forEach((option, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'w-full p-4 rounded-xl font-body text-lg text-left border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 text-on-surface dark:text-stone-100 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500';
+      btn.textContent = option;
+      btn.addEventListener('click', () => {
+        if (isHandlingFeedback) return;
+        
+        const result = activeEngine.submitMCAnswer(idx);
+        
+        // Disable buttons
+        container.querySelectorAll('button').forEach(b => b.style.pointerEvents = 'none');
+        
+        if (result.correct) {
+          btn.classList.add('border-[#16a34a]', 'dark:border-emerald-500', 'bg-[#f0fdf4]', 'dark:bg-emerald-950/30', 'text-[#16a34a]', 'dark:text-emerald-400');
+          if (gamification) gamification.addXP(XP_REWARDS.mcCorrect);
+          
+          showFeedback(true, phrase.es, () => {
+            activeEngine.handleCorrect();
+          });
+        } else {
+          btn.classList.add('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/30', 'text-[#dc2626]', 'dark:text-red-400');
+          activeEngine.handleWrong();
+          showFeedback(false, phrase.es, () => {
+            activeEngine.nextPhraseAfterWrong();
+          });
+        }
+      });
+      container.appendChild(btn);
+    });
+  }
 
-  // End screen buttons
+  // Word Order Mode Renderer
+  function renderWO(container, questionData, phrase) {
+    const answerArea = document.getElementById('woAnswerArea');
+    const poolArea = document.getElementById('woPoolArea');
+    const checkBtn = document.getElementById('woCheckBtn');
+
+    let placedWords = [];
+    let availableWords = [...questionData.shuffledWords];
+
+    function renderAreas() {
+      answerArea.innerHTML = '';
+      if (placedWords.length === 0) {
+        answerArea.innerHTML = '<span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap words below to build your answer</span>';
+      } else {
+        placedWords.forEach((word, idx) => {
+          const pill = document.createElement('button');
+          pill.className = 'px-4 py-2 rounded-full bg-primary/10 dark:bg-emerald-600/20 border border-primary/30 dark:border-emerald-500/30 text-primary dark:text-emerald-400 font-body text-base font-medium cursor-pointer hover:bg-primary/20 dark:hover:bg-emerald-600/30 transition-all duration-150 focus:outline-none';
+          pill.textContent = word;
+          pill.onclick = () => {
+            if (isHandlingFeedback) return;
+            availableWords.push(placedWords.splice(idx, 1)[0]);
+            renderAreas();
+          };
+          answerArea.appendChild(pill);
+        });
+      }
+
+      poolArea.innerHTML = '';
+      availableWords.forEach((word, idx) => {
+        const pill = document.createElement('button');
+        pill.className = 'px-4 py-2 rounded-full bg-surface-container dark:bg-stone-800 border border-outline-variant/30 dark:border-stone-700 text-on-surface dark:text-stone-200 font-body text-base font-medium cursor-pointer hover:bg-surface-variant dark:hover:bg-stone-750 hover:border-primary/50 dark:hover:border-emerald-500/50 transition-all duration-150 focus:outline-none';
+        pill.textContent = word;
+        pill.onclick = () => {
+          if (isHandlingFeedback) return;
+          placedWords.push(availableWords.splice(idx, 1)[0]);
+          renderAreas();
+        };
+        poolArea.appendChild(pill);
+      });
+
+      checkBtn.disabled = placedWords.length === 0;
+      checkBtn.className = placedWords.length > 0
+        ? 'w-full max-w-sm px-6 py-3 rounded-xl font-label font-bold text-base uppercase tracking-wider bg-primary dark:bg-emerald-600 text-on-primary shadow-sm hover:opacity-90 dark:hover:bg-emerald-500 transition-all duration-200 cursor-pointer focus:outline-none'
+        : 'w-full max-w-sm px-6 py-3 rounded-xl font-label font-bold text-base uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface-variant/50 dark:text-stone-600 cursor-not-allowed transition-all duration-200';
+    }
+
+    checkBtn.onclick = () => {
+      if (isHandlingFeedback || placedWords.length === 0) return;
+      const result = activeEngine.submitWOAnswer(placedWords);
+      
+      poolArea.style.pointerEvents = 'none';
+      checkBtn.style.pointerEvents = 'none';
+
+      if (result.correct) {
+        answerArea.classList.add('border-[#16a34a]', 'dark:border-emerald-500', 'bg-[#f0fdf4]', 'dark:bg-emerald-950/20');
+        if (gamification) gamification.addXP(XP_REWARDS.wordOrderCorrect);
+        
+        showFeedback(true, phrase.es, () => {
+          answerArea.classList.remove('border-[#16a34a]', 'dark:border-emerald-500', 'bg-[#f0fdf4]', 'dark:bg-emerald-950/20');
+          poolArea.style.pointerEvents = '';
+          checkBtn.style.pointerEvents = '';
+          activeEngine.handleCorrect();
+        });
+      } else {
+        answerArea.classList.add('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
+        activeEngine.handleWrong();
+        showFeedback(false, phrase.es, () => {
+          answerArea.classList.remove('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
+          poolArea.style.pointerEvents = '';
+          checkBtn.style.pointerEvents = '';
+          activeEngine.nextPhraseAfterWrong();
+        });
+      }
+    };
+
+    renderAreas();
+  }
+
+  // Quit and End Handlers
+  quitDrillBtn.onclick = () => {
+    feedbackBar.classList.add('translate-y-full');
+    onQuit();
+  };
   restartBtn.onclick = () => {
     startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode, gamification);
   };
-  dashboardReturnBtn.onclick = onQuit;
+  dashboardReturnBtn.onclick = () => {
+    onQuit();
+  };
 
-  // Start
   activeEngine.start();
-  inputField.focus();
 }
 
-/**
- * Reset the input field.
- */
-function resetInput(elements) {
-  elements.inputField.value = '';
-  elements.fakeInput.innerHTML = '';
-}
-
-/**
- * Render the color-coded fake input overlay (sentence mode).
- */
 function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   let html = '';
   let remainingInput = userInput;
@@ -299,11 +456,4 @@ function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   }
 
   fakeInputEl.innerHTML = html;
-}
-
-/**
- * Render plain text input overlay (word mode — no tokenizer).
- */
-function renderWordInput(fakeInputEl, userInput) {
-  fakeInputEl.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${userInput}</span>`;
 }

@@ -176,42 +176,26 @@
       <span class="material-symbols-outlined text-xl">info</span>
     </button>
 
-  </main>
-
-  <!-- Drill Mode Selector Overlay (Week 6 only) -->
-  <div id="drillModeSelector" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-all duration-200" style="background:rgba(0,0,0,0.5)">
-    <div class="bg-surface dark:bg-stone-850 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md p-8 transition-all duration-300 animate-[slideUp_0.2s_ease-out]">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">Choose Drill Mode</h3>
-        <button id="drillModeSelectorClose" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-stone-800 transition-all duration-300 cursor-pointer">
-          <span class="material-symbols-outlined text-on-surface-variant dark:text-stone-400">close</span>
-        </button>
-      </div>
-      <div class="flex flex-col gap-3">
-        <button id="drillModeType" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
-          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">keyboard</span>
-          <div>
-            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Type</div>
-            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Type the translation from memory</div>
+    <!-- Unified Feedback Bar -->
+    <div id="feedbackBar" class="hidden absolute bottom-0 inset-x-0 w-full z-50 p-6 transition-transform duration-300 translate-y-full shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+      <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div id="feedbackBarMessage" class="flex items-center gap-4 text-left w-full sm:w-auto">
+          <div id="feedbackBarIconBox" class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
+            <span id="feedbackBarIcon" class="material-symbols-outlined text-2xl font-bold"></span>
           </div>
-        </button>
-        <button id="drillModeMC" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
-          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">quiz</span>
           <div>
-            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Multiple Choice</div>
-            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Pick the correct translation from 4 options</div>
+            <h3 id="feedbackBarTitle" class="font-headline text-xl font-bold"></h3>
+            <p id="feedbackBarSubtitle" class="font-body text-sm"></p>
           </div>
-        </button>
-        <button id="drillModeWordOrder" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
-          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">reorder</span>
-          <div>
-            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Word Order</div>
-            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Arrange scrambled words in the right order</div>
-          </div>
+        </div>
+        <button id="feedbackBarBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200">
+          Continue
         </button>
       </div>
     </div>
-  </div>
+
+  </main>
+
 
   <!-- Drill Legend Overlay (body-level) -->
   <div id="drillLegendOverlay" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 dark:bg-black/70 backdrop-blur-sm transition-all duration-300">
