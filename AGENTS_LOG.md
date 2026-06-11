@@ -1,6 +1,32 @@
 # AGENTS LOG
 
-## Current Task: Dynamic Game Modes & Unified Drill Engine
+## Current Task: Drill UI Polish & Week 6 Expansion
+
+### **[DEV] (The Builder):**
+- Branch `task/week6-improvements` created.
+- Converted `feedbackBar` from absolute positioning at the bottom to a floating, centered snackbar.
+- Transitioned `feedbackBar` visibility logic from vertical translation to opacity crossfading.
+- Added a `feedbackBarReplayBtn` so users can replay pronunciation on correct/wrong modals.
+- Added `w6_l6b` (Prices) lesson covering "¿Cuánto costaría?" and "¿Cuánto sería?".
+- Added `w6_l13b` (Tú & Nosotros) lesson for past tense conjugations.
+- Appended a structured `theory` object directly into `week_6.js` covering "tú/nosotros past" and "costaría/sería".
+
+### **[AQA] (Technical QA):**
+- Verified DOM changes map cleanly to `drill-ui.js` listeners without throwing unhandled exceptions.
+- Checked `opacity-0`/`opacity-100` transition overrides.
+
+### **[QA] (Product QA):**
+- Confirmed phrases follow the curriculum constraint (Tú and Nosotros past matching expected definitions).
+- Validated pedagogical feedback bar constraints (auto-hides on correct success, allows replay on failure).
+
+### **Status:**
+- [X] Updated `index.html` and `drill-ui.js` for smoother UI.
+- [X] Added Week 6 phrase lists.
+- [X] Injected Week 6 `theory` data dynamically.
+
+---
+
+## Past Task: Dynamic Game Modes & Unified Drill Engine
 
 ### **[DEV] (The Builder):**
 - Branch `task/dynamic-drills` created.

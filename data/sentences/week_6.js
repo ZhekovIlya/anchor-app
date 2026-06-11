@@ -83,6 +83,19 @@ const week6Lessons = [
     ],
   },
   {
+    id: "w6_l6b",
+    tab: "shopping",
+    title: "Precios (Prices)",
+    phrases: [
+      { ru: "Сколько это будет стоить?", uk: "Скільки це буде коштувати?", es: "¿Cuánto costaría esto?" },
+      { ru: "Сколько это будет (всего)?", uk: "Скільки це буде (всього)?", es: "¿Cuánto sería en total?" },
+      { ru: "Сколько будет стоить хлеб?", uk: "Скільки буде коштувати хліб?", es: "¿Cuánto costaría el pan?" },
+      { ru: "Сколько будет стоить кофе?", uk: "Скільки буде коштувати кава?", es: "¿Cuánto costaría el café?" },
+      { ru: "Сколько с меня? (Сколько это будет?)", uk: "Скільки з мене? (Скільки це буде?)", es: "¿Cuánto sería?" },
+      { ru: "Сколько будет за воду?", uk: "Скільки буде за воду?", es: "¿Cuánto sería por el agua?" },
+    ],
+  },
+  {
     id: "w6_exam_shopping",
     tab: "shopping",
     title: "📝 Shopping Quiz",
@@ -183,6 +196,19 @@ const week6Lessons = [
       { ru: "Я жил в Барселоне и ел мясо каждый день", uk: "Я жив у Барселоні і їв м'ясо кожен день", es: "Yo viví en Barcelona y comí la carne cada día" },
       { ru: "Она не пила воду и не ела вчера", uk: "Вона не пила воду і не їла вчора", es: "Ella no bebió el agua y no comió ayer" },
       { ru: "Он заплатил за аренду и купил еду", uk: "Він заплатив за оренду і купив їжу", es: "Él pagó el alquiler y compró la comida" },
+    ],
+  },
+  {
+    id: "w6_l13b",
+    tab: "past_shopping",
+    title: "Past: Tú & Nosotros",
+    phrases: [
+      { ru: "Ты купил хлеб вчера", uk: "Ти купив хліб вчора", es: "Tú compraste el pan ayer" },
+      { ru: "Мы купили еду на рынке", uk: "Ми купили їжу на ринку", es: "Nosotros compramos la comida en el mercado" },
+      { ru: "Ты ел в ресторане", uk: "Ти їв у ресторані", es: "Tú comiste en el restaurante" },
+      { ru: "Мы ели мясо и фрукты", uk: "Ми їли м'ясо і фрукти", es: "Nosotros comimos la carne y la fruta" },
+      { ru: "Ты пил кофе", uk: "Ти пив каву", es: "Tú bebiste el café" },
+      { ru: "Мы говорили много", uk: "Ми говорили багато", es: "Nosotros hablamos mucho" },
     ],
   },
   {
@@ -299,4 +325,46 @@ export default {
     { id: "review", label: "Repaso: Semanas 3-4" },
   ],
   lessons: week6Lessons,
+  theory: {
+    title: "Week 6 Grammar Expansion",
+    subtitle: "Prices, Politeness & More Past Tense",
+    sections: [
+      {
+        type: 'heading',
+        text: 'Past Tense: Tú and Nosotros'
+      },
+      {
+        type: 'paragraph',
+        text: 'We now add Tú (you) and Nosotros (we) to our past tense (Pretérito) toolbelt.'
+      },
+      {
+        type: 'table',
+        headers: ['Pronoun', '-AR Verbs (comprar)', '-ER/-IR Verbs (comer)'],
+        rows: [
+          ['Yo', 'compré', 'comí'],
+          ['Tú', 'compraste', 'comiste'],
+          ['Él/Ella', 'compró', 'comió'],
+          ['Nosotros', 'compramos', 'comimos']
+        ]
+      },
+      {
+        type: 'callout',
+        style: 'important',
+        text: 'Notice that for Nosotros, the past tense of -AR and -IR verbs looks EXACTLY the same as the present tense (compramos, vivimos). Context tells us if it happened in the past or is happening now.'
+      },
+      {
+        type: 'heading',
+        text: 'Asking for Prices: Costaría & Sería'
+      },
+      {
+        type: 'paragraph',
+        text: 'When asking for a price or total, we often use the conditional tense (would cost / would be) to sound more polite and native.'
+      },
+      {
+        type: 'callout',
+        style: 'tip',
+        text: '¿Cuánto costaría? = How much would it cost?\n¿Cuánto sería? = How much would it be (total)?'
+      }
+    ]
+  }
 };

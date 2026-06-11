@@ -44,10 +44,12 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     isHandlingFeedback = true;
     feedbackBar.classList.remove('hidden');
     void feedbackBar.offsetWidth; // force reflow
-    feedbackBar.classList.remove('translate-y-full');
+    feedbackBar.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+    feedbackBar.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
 
     const handleContinue = () => {
-      feedbackBar.classList.add('translate-y-full');
+      feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+      feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
       isHandlingFeedback = false;
       onCompleteCallback();
     };
@@ -63,6 +65,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       
       feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#16a34a] dark:bg-emerald-600 text-white shadow-sm hover:opacity-90 hidden';
       
+      const replayBtn = document.getElementById('feedbackBarReplayBtn');
+      if (replayBtn) replayBtn.classList.add('hidden');
+      
       speakAnswer(correctAnswerText, () => {
         setTimeout(handleContinue, 500);
       });
@@ -76,6 +81,14 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       feedbackBarSubtitle.textContent = correctAnswerText;
 
       feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#dc2626] dark:bg-red-600 text-white shadow-sm hover:opacity-90 block';
+      
+      const replayBtn = document.getElementById('feedbackBarReplayBtn');
+      if (replayBtn) {
+        replayBtn.classList.remove('hidden');
+        replayBtn.onclick = () => {
+          speakAnswer(correctAnswerText, () => {});
+        };
+      }
       
       // Allow enter key or click
       const enterHandler = (e) => {
@@ -122,7 +135,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         woContainer.classList.add('hidden');
         revealAnswerBtn.classList.add('hidden');
         ghostText.parentElement.classList.add('hidden');
-        feedbackBar.classList.add('translate-y-full');
+        
+        feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+        feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
 
         // Setup correct interaction mode
         if (interactionMode === 'TYPE') {
@@ -416,7 +431,8 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   // Quit and End Handlers
   quitDrillBtn.onclick = () => {
-    feedbackBar.classList.add('translate-y-full');
+    feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+    feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
     onQuit();
   };
   restartBtn.onclick = () => {
