@@ -126,10 +126,11 @@ export function initVoiceSelector(selectElement) {
     const voices = getSpanishVoices();
     const currentUri = localStorage.getItem(SELECTED_VOICE_KEY);
 
-    selectElement.innerHTML = '<option value="">Default Spanish Voice</option>';
+    selectElement.innerHTML = '<option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Spanish Voice</option>';
     voices.forEach(voice => {
       const option = document.createElement('option');
       option.value = voice.voiceURI;
+      option.className = 'bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100';
       option.textContent = `${voice.name} (${voice.lang})`;
       if (voice.voiceURI === currentUri) option.selected = true;
       selectElement.appendChild(option);
@@ -177,10 +178,11 @@ export function initPromptVoiceSelector(selectElement) {
     const voices = getPromptVoices();
     const currentUri = localStorage.getItem(SELECTED_PROMPT_VOICE_KEY);
 
-    selectElement.innerHTML = '<option value="">Default Prompt Voice</option>';
+    selectElement.innerHTML = '<option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Prompt Voice</option>';
     voices.forEach(voice => {
       const option = document.createElement('option');
       option.value = voice.voiceURI;
+      option.className = 'bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100';
       option.dataset.lang = voice.lang.startsWith('uk') ? 'uk' : 'ru';
       option.textContent = `${voice.name} (${voice.lang})`;
       if (voice.voiceURI === currentUri) option.selected = true;

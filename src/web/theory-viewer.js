@@ -70,14 +70,14 @@ function renderSection(section) {
 
 function createHeading(text) {
   const h = document.createElement('h2');
-  h.className = 'font-headline text-2xl font-bold text-on-surface mt-10 mb-4 first:mt-0';
+  h.className = 'font-headline text-2xl font-bold text-on-surface dark:text-stone-100 mt-10 mb-4 first:mt-0 transition-colors duration-300';
   h.textContent = text;
   return h;
 }
 
 function createParagraph(text) {
   const p = document.createElement('p');
-  p.className = 'font-body text-base text-on-surface-variant leading-relaxed mb-4';
+  p.className = 'font-body text-base text-on-surface-variant dark:text-stone-300 leading-relaxed mb-4 transition-colors duration-300';
   p.textContent = text;
   return p;
 }
@@ -85,35 +85,35 @@ function createParagraph(text) {
 function createCallout(style, text) {
   const styles = {
     tip: {
-      border: 'border-l-4 border-[#16a34a]',
-      bg: 'bg-[#f0fdf4]',
+      border: 'border-l-4 border-[#16a34a] dark:border-emerald-500',
+      bg: 'bg-[#f0fdf4] dark:bg-emerald-950/20',
       icon: 'lightbulb',
-      iconColor: 'text-[#16a34a]',
-      textColor: 'text-[#166534]',
+      iconColor: 'text-[#16a34a] dark:text-emerald-400',
+      textColor: 'text-[#166534] dark:text-emerald-300',
     },
     important: {
-      border: 'border-l-4 border-primary',
-      bg: 'bg-primary-container/10',
+      border: 'border-l-4 border-primary dark:border-emerald-500',
+      bg: 'bg-primary-container/10 dark:bg-emerald-900/10',
       icon: 'info',
-      iconColor: 'text-primary',
-      textColor: 'text-on-surface',
+      iconColor: 'text-primary dark:text-emerald-400',
+      textColor: 'text-on-surface dark:text-stone-200',
     },
     warning: {
-      border: 'border-l-4 border-[#ca8a04]',
-      bg: 'bg-[#fefce8]',
+      border: 'border-l-4 border-[#ca8a04] dark:border-amber-500',
+      bg: 'bg-[#fefce8] dark:bg-amber-950/20',
       icon: 'warning',
-      iconColor: 'text-[#ca8a04]',
-      textColor: 'text-[#854d0e]',
+      iconColor: 'text-[#ca8a04] dark:text-amber-400',
+      textColor: 'text-[#854d0e] dark:text-amber-300',
     },
   };
 
   const s = styles[style] || styles.tip;
 
   const div = document.createElement('div');
-  div.className = `${s.border} ${s.bg} rounded-r-xl p-4 mb-6 flex items-start gap-3`;
+  div.className = `${s.border} ${s.bg} rounded-r-xl p-4 mb-6 flex items-start gap-3 transition-colors duration-300`;
   div.innerHTML = `
-    <span class="material-symbols-outlined ${s.iconColor} text-xl mt-0.5 flex-shrink-0" style="font-variation-settings: 'FILL' 1;">${s.icon}</span>
-    <p class="font-body text-sm ${s.textColor} leading-relaxed">${text}</p>
+    <span class="material-symbols-outlined ${s.iconColor} text-xl mt-0.5 flex-shrink-0 transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">${s.icon}</span>
+    <p class="font-body text-sm ${s.textColor} leading-relaxed transition-colors duration-300">${text}</p>
   `;
   return div;
 }
@@ -124,20 +124,20 @@ function createTable(caption, headers, rows) {
 
   let html = '';
   if (caption) {
-    html += `<div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-2">${caption}</div>`;
+    html += `<div class="font-label text-xs uppercase tracking-widest text-on-surface-variant dark:text-stone-400 mb-2 transition-colors duration-300">${caption}</div>`;
   }
 
   html += '<table class="w-full border-collapse">';
   html += '<thead><tr>';
   for (const h of headers) {
-    html += `<th class="text-left font-label text-xs uppercase tracking-wider text-on-surface-variant py-3 px-4 border-b border-surface-variant bg-surface-container-low">${h}</th>`;
+    html += `<th class="text-left font-label text-xs uppercase tracking-wider text-on-surface-variant dark:text-stone-400 py-3 px-4 border-b border-surface-variant dark:border-stone-800 bg-surface-container-low dark:bg-stone-850 transition-colors duration-300">${h}</th>`;
   }
   html += '</tr></thead><tbody>';
 
   for (const row of rows) {
-    html += '<tr class="border-b border-surface-variant/50 hover:bg-surface-container-low transition-colors">';
+    html += '<tr class="border-b border-surface-variant/50 dark:border-stone-800/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-colors duration-300">';
     for (const cell of row) {
-      html += `<td class="font-body text-sm text-on-surface py-3 px-4">${cell}</td>`;
+      html += `<td class="font-body text-sm text-on-surface dark:text-stone-200 py-3 px-4 transition-colors duration-300">${cell}</td>`;
     }
     html += '</tr>';
   }
@@ -149,14 +149,14 @@ function createTable(caption, headers, rows) {
 
 function createImage(src, alt) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant shadow-sm';
+  wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant dark:border-stone-800 shadow-sm transition-colors duration-300';
   wrapper.innerHTML = `<img src="${src}" alt="${alt || ''}" class="w-full h-auto" loading="lazy" />`;
   return wrapper;
 }
 
 function createVideo(src, title) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant shadow-sm bg-black';
+  wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant dark:border-stone-800 shadow-sm bg-black transition-colors duration-300';
   wrapper.innerHTML = `
     <div class="relative w-full" style="padding-bottom: 56.25%;">
       <iframe

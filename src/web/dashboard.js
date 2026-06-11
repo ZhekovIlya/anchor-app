@@ -14,89 +14,89 @@ let activeHomeTab = 'sentences'; // 'sentences' | 'theory' | 'words'
 // ========================
 
 const GOLD = {
-  bar: 'bg-[#ca8a04]',
-  label: 'text-[#a16207]',
-  title: 'text-[#854d0e]',
+  bar: 'bg-[#ca8a04] dark:bg-amber-500',
+  label: 'text-[#a16207] dark:text-amber-400',
+  title: 'text-[#854d0e] dark:text-amber-300',
 };
 
 const GREEN = {
-  bar: 'bg-[#16a34a]',
-  label: 'text-[#15803d]',
-  title: 'text-[#166534]',
+  bar: 'bg-[#16a34a] dark:bg-emerald-500',
+  label: 'text-[#15803d] dark:text-emerald-400',
+  title: 'text-[#166534] dark:text-emerald-300',
 };
 
 const TOPIC_THEMES = {
   mastered: {
-    card: 'group relative bg-[#fefce8] rounded-xl p-6 transition-all hover:bg-[#fef9c3] cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-[#fef08a] shadow-sm gap-4',
+    card: 'group relative bg-[#fefce8] dark:bg-amber-950/20 rounded-xl p-6 transition-all hover:bg-[#fef9c3] dark:hover:bg-amber-950/30 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-[#fef08a] dark:border-yellow-600/30 shadow-sm gap-4 transition-colors duration-300',
     bar: GOLD.bar,
-    numBg: 'bg-[#fef08a] text-[#ca8a04]',
+    numBg: 'bg-[#fef08a] dark:bg-yellow-600/30 text-[#ca8a04] dark:text-amber-400 transition-colors duration-300',
     label: GOLD.label,
     title: GOLD.title,
     rightCol: () => `
-      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start">
-        <span class="font-body text-sm font-bold text-[#ca8a04] uppercase tracking-wide">Mastered</span>
-        <span class="material-symbols-outlined text-[#ca8a04] text-3xl">workspace_premium</span>
+      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start transition-colors duration-300">
+        <span class="font-body text-sm font-bold text-[#ca8a04] dark:text-amber-400 uppercase tracking-wide transition-colors duration-300">Mastered</span>
+        <span class="material-symbols-outlined text-[#ca8a04] dark:text-amber-400 text-3xl transition-colors duration-300">workspace_premium</span>
       </div>`,
   },
   completed: {
-    card: 'group relative bg-[#f0fdf4] rounded-xl p-6 transition-all hover:bg-[#dcfce7] cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-[#bbf7d0] shadow-sm gap-4',
+    card: 'group relative bg-[#f0fdf4] dark:bg-emerald-950/20 rounded-xl p-6 transition-all hover:bg-[#dcfce7] dark:hover:bg-emerald-950/30 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-[#bbf7d0] dark:border-emerald-600/30 shadow-sm gap-4 transition-colors duration-300',
     bar: GREEN.bar,
-    numBg: 'bg-[#dcfce7] text-[#16a34a]',
+    numBg: 'bg-[#dcfce7] dark:bg-emerald-600/30 text-[#16a34a] dark:text-emerald-400 transition-colors duration-300',
     label: GREEN.label,
     title: GREEN.title,
     rightCol: () => `
-      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start">
-        <span class="font-body text-sm font-bold text-[#16a34a] uppercase tracking-wide">Completed</span>
-        <span class="material-symbols-outlined text-[#16a34a] text-3xl">check_circle</span>
+      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start transition-colors duration-300">
+        <span class="font-body text-sm font-bold text-[#16a34a] dark:text-emerald-400 uppercase tracking-wide transition-colors duration-300">Completed</span>
+        <span class="material-symbols-outlined text-[#16a34a] dark:text-emerald-400 text-3xl transition-colors duration-300">check_circle</span>
       </div>`,
   },
   progress: {
-    card: 'group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-surface-container-low cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-outline-variant/30 shadow-sm hover:border-primary/50 gap-4',
-    numBg: 'bg-surface-container-high text-on-surface-variant group-hover:bg-primary-container group-hover:text-primary transition-colors',
-    label: 'text-on-surface-variant',
-    title: 'text-on-surface',
+    card: 'group relative bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 transition-all hover:bg-surface-container-low dark:hover:bg-stone-800 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 gap-4 transition-colors duration-300',
+    numBg: 'bg-surface-container-high dark:bg-stone-800 text-on-surface-variant dark:text-stone-400 group-hover:bg-primary-container dark:group-hover:bg-emerald-900/40 group-hover:text-primary dark:group-hover:text-emerald-400 transition-all duration-300',
+    label: 'text-on-surface-variant dark:text-stone-400 transition-colors duration-300',
+    title: 'text-on-surface dark:text-stone-100 transition-colors duration-300',
     rightCol: (progressPercent) => `
       <div class="flex items-center gap-4 w-full sm:w-48 pr-2">
-        <div class="flex-grow bg-surface-variant rounded-full h-1.5 overflow-hidden">
-          <div class="bg-primary h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+        <div class="flex-grow bg-surface-variant dark:bg-stone-800 rounded-full h-1.5 overflow-hidden transition-colors duration-300">
+          <div class="bg-primary dark:bg-emerald-600 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
         </div>
-        <span class="font-body text-sm font-medium text-primary min-w-[32px] text-right">${progressPercent}%</span>
+        <span class="font-body text-sm font-medium text-primary dark:text-emerald-400 min-w-[32px] text-right transition-colors duration-300">${progressPercent}%</span>
       </div>`,
   },
   new: {
-    card: 'group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-surface-container-low cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-outline-variant/30 shadow-sm hover:border-primary/50 gap-4',
-    numBg: 'bg-surface-container-highest text-on-surface-variant group-hover:text-primary transition-colors',
-    label: 'text-on-surface-variant',
-    title: 'text-on-surface',
+    card: 'group relative bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 transition-all hover:bg-surface-container-low dark:hover:bg-stone-800 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 gap-4 transition-colors duration-300',
+    numBg: 'bg-surface-container-highest dark:bg-stone-800 text-on-surface-variant dark:text-stone-400 group-hover:text-primary dark:group-hover:text-emerald-400 transition-all duration-300',
+    label: 'text-on-surface-variant dark:text-stone-400 transition-colors duration-300',
+    title: 'text-on-surface dark:text-stone-100 transition-colors duration-300',
     rightCol: () => `
-      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start opacity-0 group-hover:opacity-100 transition-opacity">
-        <span class="font-label text-sm font-bold text-primary tracking-wide hidden sm:block">START</span>
-        <span class="material-symbols-outlined text-primary text-3xl sm:hidden">arrow_forward</span>
+      <div class="flex items-center gap-3 w-full sm:w-auto pr-2 justify-end sm:justify-start opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <span class="font-label text-sm font-bold text-primary dark:text-emerald-400 tracking-wide hidden sm:block transition-colors duration-300">START</span>
+        <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-3xl sm:hidden transition-colors duration-300">arrow_forward</span>
       </div>`,
   },
 };
 
 const LESSON_THEMES = {
   mastered: {
-    classes: 'bg-[#fefce8] border-[#fef08a] hover:bg-[#fef9c3] hover:border-[#ca8a04]',
+    classes: 'bg-[#fefce8] dark:bg-amber-950/20 border-[#fef08a] dark:border-yellow-600/30 hover:bg-[#fef9c3] dark:hover:bg-amber-950/30 hover:border-[#ca8a04] dark:hover:border-amber-500/50 transition-colors duration-300',
     bar: GOLD.bar,
     title: GOLD.title,
-    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span></div>`,
-    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#ca8a04] text-2xl">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#ca8a04] text-3xl hidden sm:block">workspace_premium</span></div>`,
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between transition-colors duration-300">${title}<span class="material-symbols-outlined text-[#ca8a04] dark:text-amber-400 text-3xl hidden sm:block transition-colors duration-300">workspace_premium</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between transition-colors duration-300"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#ca8a04] dark:text-amber-400 text-2xl transition-colors duration-300">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#ca8a04] dark:text-amber-400 text-3xl hidden sm:block transition-colors duration-300">workspace_premium</span></div>`,
   },
   completed: {
-    classes: 'bg-[#f0fdf4] border-[#bbf7d0] hover:bg-[#dcfce7] hover:border-[#16a34a]',
+    classes: 'bg-[#f0fdf4] dark:bg-emerald-950/20 border-[#bbf7d0] dark:border-emerald-600/30 hover:bg-[#dcfce7] dark:hover:bg-emerald-950/30 hover:border-[#16a34a] dark:hover:border-emerald-500/50 transition-colors duration-300',
     bar: GREEN.bar,
     title: GREEN.title,
-    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span></div>`,
-    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#16a34a] text-2xl">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#16a34a] text-3xl hidden sm:block">check_circle</span></div>`,
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between transition-colors duration-300">${title}<span class="material-symbols-outlined text-[#16a34a] dark:text-emerald-400 text-3xl hidden sm:block transition-colors duration-300">check_circle</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between transition-colors duration-300"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-[#16a34a] dark:text-emerald-400 text-2xl transition-colors duration-300">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-[#16a34a] dark:text-emerald-400 text-3xl hidden sm:block transition-colors duration-300">check_circle</span></div>`,
   },
   new: {
-    classes: 'border-outline-variant/50 hover:bg-surface-container-low hover:border-primary/50',
-    bar: 'bg-primary opacity-0 group-hover:opacity-100 transition-opacity',
-    title: 'text-on-surface group-hover:text-primary transition-colors',
-    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between">${title}<span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span></div>`,
-    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant text-2xl group-hover:text-primary transition-colors">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-primary text-3xl opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">arrow_forward</span></div>`,
+    classes: 'border-outline-variant/50 dark:border-stone-850 hover:bg-surface-container-low dark:hover:bg-stone-800 hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300 bg-surface-container-lowest dark:bg-stone-850',
+    bar: 'bg-primary dark:bg-emerald-600 opacity-0 group-hover:opacity-100 transition-all duration-300',
+    title: 'text-on-surface dark:text-stone-100 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300',
+    lessonLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-4 w-full justify-between transition-colors duration-300">${title}<span class="material-symbols-outlined text-primary dark:text-emerald-400 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">arrow_forward</span></div>`,
+    examLayout: (bar, title) => `${bar}<div class="flex items-center gap-4 pl-2 sm:pl-4 w-full justify-between transition-colors duration-300"><div class="flex items-center gap-3"><span class="material-symbols-outlined text-on-surface-variant dark:text-stone-400 text-2xl group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300">workspace_premium</span>${title}</div><span class="material-symbols-outlined text-primary dark:text-emerald-400 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">arrow_forward</span></div>`,
   },
 };
 
@@ -157,8 +157,8 @@ function renderHomeTabBar(container, activeId, onChange) {
     const btn = document.createElement('button');
     const isActive = tab.id === activeId;
     btn.className = isActive
-      ? 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-primary text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none'
-      : 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low text-on-surface-variant hover:bg-surface-variant cursor-pointer whitespace-nowrap outline-none';
+      ? 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-primary dark:bg-emerald-600 text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none transition-colors duration-300'
+      : 'flex items-center gap-2 px-6 py-3 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low dark:bg-stone-850 text-on-surface-variant dark:text-stone-400 hover:bg-surface-variant dark:hover:bg-stone-800 cursor-pointer whitespace-nowrap outline-none transition-colors duration-300';
     btn.innerHTML = `<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${isActive ? 1 : 0};">${tab.icon}</span>${tab.label}`;
     btn.onclick = () => onChange(tab.id);
     container.appendChild(btn);
@@ -242,23 +242,23 @@ function renderTheoryTab(container, theoryTopics, onTheoryTopicClick) {
 
   const header = document.createElement('div');
   header.className = 'mb-2';
-  header.innerHTML = `<p class="font-body text-base text-on-surface-variant">Grammar explanations, visual cheat sheets, and pattern recognition guides.</p>`;
+  header.innerHTML = `<p class="font-body text-base text-on-surface-variant dark:text-stone-400 transition-colors duration-300">Grammar explanations, visual cheat sheets, and pattern recognition guides.</p>`;
   container.appendChild(header);
 
   for (const topic of theoryTopics) {
     const card = document.createElement('div');
-    card.className = 'group relative bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-surface-container-low cursor-pointer flex items-center justify-between border border-outline-variant/30 shadow-sm hover:border-primary/50 gap-4';
+    card.className = 'group relative bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 transition-all hover:bg-surface-container-low dark:hover:bg-stone-800 cursor-pointer flex items-center justify-between border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 gap-4 transition-colors duration-300';
     card.innerHTML = `
       <div class="flex items-center gap-4 pl-2">
-        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">${topic.icon}</span>
+        <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-emerald-600/20 flex items-center justify-center flex-shrink-0 transition-colors duration-300">
+          <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-2xl transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">${topic.icon}</span>
         </div>
         <div>
-          <h3 class="font-headline text-xl font-bold text-on-surface group-hover:text-primary transition-colors">${topic.title}</h3>
-          <p class="font-body text-sm text-on-surface-variant mt-0.5">${topic.description}</p>
+          <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300">${topic.title}</h3>
+          <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mt-0.5 transition-colors duration-300">${topic.description}</p>
         </div>
       </div>
-      <span class="material-symbols-outlined text-primary/40 group-hover:text-primary transition-colors text-2xl">arrow_forward</span>
+      <span class="material-symbols-outlined text-primary/40 dark:text-emerald-500/40 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300 text-2xl">arrow_forward</span>
     `;
     card.addEventListener('click', () => onTheoryTopicClick(topic));
     container.appendChild(card);
@@ -370,7 +370,7 @@ export function renderWordLessonsView(elements, topic, onLessonClick, onBackClic
   }
 
   // Render word lesson cards
-  const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-surface-container-lowest';
+  const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 flex items-center justify-between border dark:border-stone-800 relative overflow-hidden group shadow-sm bg-surface-container-lowest dark:bg-stone-850 transition-colors duration-300';
 
   topic.lessons.forEach(lesson => {
     const status = getLessonStatus(lesson);
@@ -380,7 +380,7 @@ export function renderWordLessonsView(elements, topic, onLessonClick, onBackClic
       : (lesson.words ? lesson.words.length : 0);
 
     const bar = `<div class="absolute left-0 top-0 bottom-0 w-1.5 ${theme.bar} rounded-l-xl"></div>`;
-    const titleHtml = `<div><h3 class="font-headline text-xl font-bold ${theme.title}">${lesson.title}</h3><p class="font-body text-xs text-on-surface-variant mt-1">${wordCount} words</p></div>`;
+    const titleHtml = `<div><h3 class="font-headline text-xl font-bold ${theme.title}">${lesson.title}</h3><p class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-1 transition-colors duration-300">${wordCount} words</p></div>`;
     const layout = lesson.exam ? theme.examLayout(bar, titleHtml) : theme.lessonLayout(bar, titleHtml);
     const examSpacing = lesson.exam ? ' mt-8' : '';
 
@@ -396,18 +396,18 @@ export function renderWordLessonsView(elements, topic, onLessonClick, onBackClic
 
 function renderTheoryCard(container, theory, onClick) {
   const card = document.createElement('button');
-  card.className = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-gradient-to-r from-primary-container/10 to-surface-container-lowest border-primary/20 hover:border-primary/40 hover:shadow-md mb-2';
+  card.className = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 flex items-center justify-between border relative overflow-hidden group shadow-sm bg-gradient-to-r from-primary-container/10 to-surface-container-lowest dark:from-emerald-900/10 dark:to-stone-850 border-primary/20 dark:border-stone-800 hover:border-primary/40 dark:hover:border-emerald-500/50 hover:shadow-md mb-2 transition-all duration-300';
   card.innerHTML = `
     <div class="flex items-center gap-4 pl-2">
-      <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-        <span class="material-symbols-outlined text-primary" style="font-size: 22px; font-variation-settings: 'FILL' 1;">lightbulb</span>
+      <div class="w-10 h-10 rounded-full bg-primary/10 dark:bg-emerald-600/20 flex items-center justify-center flex-shrink-0 transition-colors duration-300">
+        <span class="material-symbols-outlined text-primary dark:text-emerald-400 transition-colors duration-300" style="font-size: 22px; font-variation-settings: 'FILL' 1;">lightbulb</span>
       </div>
       <div>
-        <h3 class="font-headline text-lg font-bold text-primary">${theory.title}</h3>
-        <p class="font-body text-xs text-on-surface-variant mt-0.5">${theory.subtitle}</p>
+        <h3 class="font-headline text-lg font-bold text-primary dark:text-emerald-400 transition-colors duration-300">${theory.title}</h3>
+        <p class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5 transition-colors duration-300">${theory.subtitle}</p>
       </div>
     </div>
-    <span class="material-symbols-outlined text-primary/60 group-hover:text-primary transition-colors">open_in_full</span>
+    <span class="material-symbols-outlined text-primary/60 dark:text-emerald-400/60 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300">open_in_full</span>
   `;
   card.addEventListener('click', () => onClick(theory));
   container.appendChild(card);
@@ -430,8 +430,8 @@ function renderTabs(container, topic, elements, onLessonClick, onBackClick, onTh
     const isActive = activeTab === tabDef.id;
     const btn = document.createElement('button');
     btn.className = isActive
-      ? 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-primary text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none'
-      : 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low text-on-surface-variant hover:bg-surface-variant cursor-pointer whitespace-nowrap outline-none';
+      ? 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-primary dark:bg-emerald-600 text-on-primary shadow-md cursor-pointer whitespace-nowrap outline-none transition-colors duration-300'
+      : 'px-6 py-2.5 rounded-full font-label font-bold tracking-wide transition-all bg-surface-container-low dark:bg-stone-850 text-on-surface-variant dark:text-stone-400 hover:bg-surface-variant dark:hover:bg-stone-800 cursor-pointer whitespace-nowrap outline-none transition-colors duration-300';
     btn.textContent = tabDef.label;
     btn.onclick = () => {
       activeTab = tabDef.id;
@@ -442,7 +442,7 @@ function renderTabs(container, topic, elements, onLessonClick, onBackClick, onTh
 }
 
 function renderLessonCards(container, topic, onLessonClick) {
-  const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between border relative overflow-hidden group shadow-sm bg-surface-container-lowest';
+  const baseClasses = 'w-full p-5 rounded-xl transition-all cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 flex items-center justify-between border dark:border-stone-800 relative overflow-hidden group shadow-sm bg-surface-container-lowest dark:bg-stone-850 transition-colors duration-300';
 
   topic.lessons
     .filter(l => (l.exam && !l.tab) || l.tab === activeTab)

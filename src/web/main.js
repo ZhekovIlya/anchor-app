@@ -94,13 +94,14 @@ const elements = {
   drillLegendOverlay: document.getElementById('drillLegendOverlay'),
   drillLegendClose: document.getElementById('drillLegendClose'),
 
-  // Audio Modal
-  audioSettingsBtn: document.getElementById('audioSettingsBtn'),
-  audioSettingsModal: document.getElementById('audioSettingsModal'),
-  closeAudioModalBtn: document.getElementById('closeAudioModalBtn'),
-  saveAudioModalBtn: document.getElementById('saveAudioModalBtn'),
+  // Settings Modal
+  settingsBtn: document.getElementById('settingsBtn'),
+  settingsModal: document.getElementById('settingsModal'),
+  closeSettingsModalBtn: document.getElementById('closeSettingsModalBtn'),
+  saveSettingsModalBtn: document.getElementById('saveSettingsModalBtn'),
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
+  themeSelect: document.getElementById('themeSelect'),
 
   // Theory Modal (legacy — for sentence week theory images)
   theoryModal: document.getElementById('theoryModal'),
@@ -123,6 +124,7 @@ const elements = {
 function initDashboard() {
   activeTopic = null;
   activeMode = null;
+
   renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
     onTopicClick,
     onReviewClick,
@@ -250,20 +252,20 @@ function onWordReviewClick() {
 }
 
 // ========================
-// AUDIO MODAL
+// SETTINGS MODAL
 // ========================
 
-function openAudioModal() {
-  elements.audioSettingsModal.style.display = 'flex';
-  elements.audioSettingsModal.classList.remove('hidden');
+function openSettingsModal() {
+  elements.settingsModal.style.display = 'flex';
+  elements.settingsModal.classList.remove('hidden');
   requestAnimationFrame(() => {
-    elements.audioSettingsModal.classList.remove('opacity-0');
-    elements.audioSettingsModal.classList.add('opacity-100');
+    elements.settingsModal.classList.remove('opacity-0');
+    elements.settingsModal.classList.add('opacity-100');
   });
 }
 
-function closeAudioModal() {
-  const modal = elements.audioSettingsModal;
+function closeSettingsModal() {
+  const modal = elements.settingsModal;
   modal.classList.remove('opacity-100');
   modal.classList.add('opacity-0');
 
@@ -273,12 +275,24 @@ function closeAudioModal() {
   }, { once: true });
 }
 
-elements.audioSettingsBtn.addEventListener('click', openAudioModal);
-elements.closeAudioModalBtn.addEventListener('click', closeAudioModal);
-elements.saveAudioModalBtn.addEventListener('click', closeAudioModal);
-elements.audioSettingsModal.addEventListener('click', (e) => {
-  if (e.target === elements.audioSettingsModal) closeAudioModal();
+elements.settingsBtn.addEventListener('click', openSettingsModal);
+elements.closeSettingsModalBtn.addEventListener('click', closeSettingsModal);
+elements.saveSettingsModalBtn.addEventListener('click', closeSettingsModal);
+elements.settingsModal.addEventListener('click', (e) => {
+  if (e.target === elements.settingsModal) closeSettingsModal();
 });
+
+if (elements.themeSelect) {
+  elements.themeSelect.addEventListener('change', (e) => {
+    const value = e.target.value;
+    if (value === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorageAdapter.save('anchor_theme_settings', { theme: value });
+  });
+}
 
 // ========================
 // DRILL LEGEND
@@ -319,6 +333,19 @@ elements.theoryModal.addEventListener('click', (e) => {
 initVoiceSelector(elements.spanishVoiceSelect);
 initPromptVoiceSelector(elements.promptVoiceSelect);
 initSpeedSelector(elements.spanishSpeedRange, elements.spanishSpeedValue);
+
+// Load and apply theme setting
+const savedTheme = localStorageAdapter.load('anchor_theme_settings');
+const theme = (savedTheme && savedTheme.theme) || 'light';
+if (theme === 'dark') {
+  document.documentElement.classList.add('dark');
+} else {
+  document.documentElement.classList.remove('dark');
+}
+if (elements.themeSelect) {
+  elements.themeSelect.value = theme;
+}
+
 initDashboard();
 
 // Dynamic Revision Injection

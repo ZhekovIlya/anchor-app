@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import { tokenize } from '../src/core/tokenizer.js';
 
 // Import data modules
-import week1 from '../data/week_1.js';
-import week2 from '../data/week_2.js';
-import week3 from '../data/week_3.js';
-import week4 from '../data/week_4.js';
-import topicsCore from '../data/topics_core.js';
+import week1 from '../data/sentences/week_1.js';
+import week2 from '../data/sentences/week_2.js';
+import week3 from '../data/sentences/week_3.js';
+import week4 from '../data/sentences/week_4.js';
+import week5 from '../data/sentences/week_5.js';
+import topicsCore from '../data/sentences/topics_core.js';
 
-const allTopics = [week1, week2, week3, week4, topicsCore];
+const allTopics = [week1, week2, week3, week4, week5, topicsCore];
 
 describe('Data file structure', () => {
   test('each topic has required fields', () => {

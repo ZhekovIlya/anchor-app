@@ -34,6 +34,8 @@
 
 ## Technical UI Fixes (Reported by USER)
 - **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.
+- **Tailwind v4 vs v3 Play CDN Hybrid Conflicts**: Never load both the Tailwind v3 Play CDN script (`https://cdn.tailwindcss.com`) and Vite-compiled Tailwind v4 styles (`@tailwindcss/vite`) in the same application. This creates severe clashes in dark-mode behavior because Tailwind v4 defaults to media query-based dark mode, ignoring class-based toggles, and custom colors defined only in `tailwind.config` inside `index.html` fail to register under Tailwind v4. Always define custom colors in Tailwind v4's `@theme` block in the main CSS file and remove the Play CDN script entirely.
+- **Premium Modal Depth in Dark Mode**: To prevent modals from appearing flat or blending completely into dark backgrounds, always style the modal panel with a slightly lighter background (e.g., `dark:bg-stone-850`) than the main body (e.g., `dark:bg-stone-900`). Elevate header and footer elements with nested backgrounds (e.g., `dark:bg-stone-900`) and borders (e.g., `dark:border-stone-800`), and use a clean glassmorphic backdrop (`bg-black/60 dark:bg-black/70 backdrop-blur-sm`).
 
 ## Multi-Activity Architecture (2026-05-15)
 - **Three Pillars**: App has 3 content types: Sentences (phrase drills), Theory (read-only articles), Words (single-word drills). Each lives in its own data directory: `data/sentences/`, `data/theory/`, `data/words/`.
@@ -43,3 +45,4 @@
 - **Word Lesson Size**: Exactly 12 unique words per lesson (not 6 like sentences). Word exams use 50 words from all topic lessons.
 - **Theory Content Structure**: Theory topics use a `sections` array with typed items (heading, paragraph, callout, table, image, video). Theory is read-only — no drill, no completion tracking.
 - **Word Topic Theory**: Word topics can have an optional `theory` property with embedded pattern explanations. This renders as a clickable card at the top of the word lessons view.
+

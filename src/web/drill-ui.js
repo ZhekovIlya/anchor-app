@@ -114,7 +114,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           title = isExam ? 'Exam Completed!' : 'Lesson Completed!';
           subtitle = isWordMode ? 'Vocabulary progress updated.' : 'Week progress updated.';
           icon = 'check_circle';
-          iconColorClass = 'bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]';
+          iconColorClass = 'bg-[#f0fdf4] dark:bg-emerald-950/20 text-[#16a34a] dark:text-emerald-400 border-[#bbf7d0] dark:border-emerald-600/30';
 
           if (topic) {
             elements.endScreenProgressContainer.classList.remove('hidden');
@@ -127,11 +127,11 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
             elements.endScreenProgressLabel.textContent = `${newPctObj}%`;
 
             if (newPctObj === 100) {
-              elements.endScreenProgressBar.classList.replace('bg-primary', 'bg-[#16a34a]');
-              elements.endScreenProgressLabel.classList.replace('text-primary', 'text-[#16a34a]');
+              elements.endScreenProgressBar.className = 'bg-[#16a34a] dark:bg-emerald-600 h-full rounded-full transition-all duration-1000 ease-out';
+              elements.endScreenProgressLabel.className = 'font-mono text-lg font-bold text-[#16a34a] dark:text-emerald-400';
             } else {
-              elements.endScreenProgressBar.classList.replace('bg-[#16a34a]', 'bg-primary');
-              elements.endScreenProgressLabel.classList.replace('text-[#16a34a]', 'text-primary');
+              elements.endScreenProgressBar.className = 'bg-primary dark:bg-emerald-600 h-full rounded-full transition-all duration-1000 ease-out';
+              elements.endScreenProgressLabel.className = 'font-mono text-lg font-bold text-primary dark:text-emerald-400';
             }
 
             requestAnimationFrame(() => {
@@ -145,24 +145,24 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
               title = 'Exam Mastered!';
               subtitle = isWordMode ? 'Topic Mastered!' : 'Week Mastered!';
               icon = 'workspace_premium';
-              iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
+              iconColorClass = 'bg-[#fefce8] dark:bg-amber-950/20 text-[#ca8a04] dark:text-amber-400 border-[#fef08a] dark:border-yellow-600/30';
             } else {
               title = 'Exam Practiced!';
               subtitle = `You need ${EXAM_MASTERED_THRESHOLD - newCount} more completions to master the exam.`;
               icon = 'school';
-              iconColorClass = 'bg-surface-container-high text-on-surface-variant border-outline-variant/30';
+              iconColorClass = 'bg-surface-container-high dark:bg-stone-800 text-on-surface-variant dark:text-stone-300 border-outline-variant/30 dark:border-stone-700/30';
             }
           } else {
             if (newCount >= LESSON_MASTERED_THRESHOLD) {
               title = 'Lesson Mastered!';
               subtitle = isWordMode ? 'Vocabulary Locked In!' : 'Iron-Clad Grammar Complete.';
               icon = 'workspace_premium';
-              iconColorClass = 'bg-[#fefce8] text-[#ca8a04] border-[#fef08a]';
+              iconColorClass = 'bg-[#fefce8] dark:bg-amber-950/20 text-[#ca8a04] dark:text-amber-400 border-[#fef08a] dark:border-yellow-600/30';
             } else {
               title = 'Lesson Practiced!';
               subtitle = `Great! You need ${LESSON_MASTERED_THRESHOLD - newCount} more completions to master this lesson.`;
               icon = 'sync';
-              iconColorClass = 'bg-primary-container text-primary border-primary/30';
+              iconColorClass = 'bg-primary-container dark:bg-emerald-900/20 text-primary dark:text-emerald-400 border-primary/30 dark:border-emerald-600/30';
             }
           }
         }
@@ -266,5 +266,5 @@ function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
  * Render plain text input overlay (word mode — no tokenizer).
  */
 function renderWordInput(fakeInputEl, userInput) {
-  fakeInputEl.innerHTML = `<span class="text-primary">${userInput}</span>`;
+  fakeInputEl.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${userInput}</span>`;
 }

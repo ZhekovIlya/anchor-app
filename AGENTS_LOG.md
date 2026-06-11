@@ -1,26 +1,29 @@
 # AGENTS LOG
 
-## Current Task: Token Coloring System Overhaul
+## Current Task: Night Mode Toggling & Modal Aesthetics
 
 ### **[DEV] (The Builder):**
-- Expanded `COLOR_MAP` in `src/core/constants.js`.
-- Created and executed `fix-tokens.js` to normalize 720 phrases across 4 weeks.
-- Implemented the `drillInfoBtn` and `drillLegendOverlay` in `index.html`.
-- Updated `src/web/main.js` and `src/web/dashboard.js` for UI toggling and event wiring.
-- Moved the info button from body-level fixed to drill-container absolute (`top-8 right-8`) with cozy styling.
+- Resolved hybrid styling issues by migrating all 47 custom colors, typography fonts, and radii from `index.html`'s `tailwind.config` to `src/web/styles.css` using the Tailwind v4 CSS-first `@theme` block.
+- Defined custom dark-mode colors `stone-750` (#373230) and `stone-850` (#22201e) to provide visual nested depth in modals and dropdown hover states.
+- Removed the legacy Tailwind v3 Play CDN script from `index.html` to eliminate compilation conflicts.
+- Redesigned backdrops of `settingsModal`, `theoryModal`, and `drillLegendOverlay` using glassmorphism (`bg-black/60 dark:bg-black/70 backdrop-blur-sm`).
+- Styled selectors in settings and speech modules dynamically to use high-contrast backgrounds (`bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100`) for Windows browser readability.
+- Retained strict theme transition times (300ms) on all elements.
 
 ### **[AQA] (Technical QA):**
-- Verified `npm test` passes (720 phrases, 0 failures).
-- Updated `tests/validate-data.test.js` to include the new `conjunction` token type.
-- Confirmed no duplicate meta IDs and exact 6-phrase symmetry.
+- Checked file integrity and syntactical accuracy across all modified files (`index.html`, `styles.css`, `speech.js`).
+- Verified Tailwind v4 compilation outputs: build runs cleanly (`npm run build`) without any errors.
+- Verified that unit tests are fully passing (6/6 tests passing successfully).
 
 ### **[QA] (Product QA):**
-- Verified the legend explains the 80/20 vocabulary retention rules implicitly through the streak mechanic explanation.
-- Confirmed the ⓘ button is non-intrusive and matches the "help button" aesthetic.
-- Verified the split of compound tokens ("del parque" -> preposition + object) logic correctly applies colors.
+- Confirmed Light/Dark mode toggling works dynamically when changing dropdown settings (theme class toggling on `document.documentElement` functions correctly since v4 media query defaults are overridden).
+- Verified option dropdown values are fully readable with good text-to-background contrast on both themes.
+- Verified modal layouts do not look flat in dark mode; they now show correct depth levels using layered stone-900 / stone-850 backgrounds.
 
 ### **Status:**
-- [X] Expanded Coloring System
-- [X] Automated Data Transformation
-- [X] Drill Legend Tooltip
-- [X] Responsive Layout Check
+- [x] Migrate Tailwind Configuration to CSS-first v4
+- [x] Remove Legacy Play CDN Script
+- [x] Fix Always-Dark Mode (Class Toggle Override)
+- [x] Upgrade Modal Backdrops & Layered Surface Contrast
+- [x] Fix Windows Select Dropdown Contrast
+- [x] squash branch and merge to main
