@@ -8,11 +8,13 @@ import { SpeechRecognitionService } from '../core/speech-recognition.js';
 let activeParagraph = null;
 let words = [];
 let currentIndex = 0;
+let lastMatchedTranscriptIndex = -1;
+let prevSpokenWords = [];
 let speechService = null;
 
 // Clean text for comparison (remove punctuation, lower case)
 function cleanWord(word) {
-  return word.replace(/[.,¡!¿?]/g, '').toLowerCase().trim();
+  return word.replace(/[.,;:"'!?¿¡]/g, '').toLowerCase().trim();
 }
 
 export function renderReadAloudList(container, readAloudData, onStartReading) {
@@ -47,6 +49,8 @@ export function startReadAloud(container, item, onBack) {
   activeParagraph = item;
   words = item.text.split(/\s+/);
   currentIndex = 0;
+  lastMatchedTranscriptIndex = -1;
+  prevSpokenWords = [];
 
   container.innerHTML = `
     <div class="flex items-center gap-4 mb-8 pb-4 border-b border-surface-container-highest dark:border-stone-800">
@@ -75,6 +79,15 @@ export function startReadAloud(container, item, onBack) {
 
   const textContainer = container.querySelector('#raTextContainer');
   textContainer.innerHTML = words.map((w, i) => `<span id="ra-word-${i}" class="transition-colors duration-300">${w}</span>`).join(' ');
+
+  // Cleanup when container is removed from DOM (e.g., user navigates away)
+  const observer = new MutationObserver(() => {
+    if (!document.body.contains(textContainer)) {
+      if (speechService) speechService.stop();
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 
   const backBtn = container.querySelector('#raBackBtn');
   const startBtn = container.querySelector('#raStartBtn');
@@ -134,23 +147,32 @@ function handleTranscript(transcript) {
   
   const spokenWords = transcript.split(/\s+/).map(cleanWord);
   
+  // If the transcript shrinks or the first word changes, assume it's a new utterance
+  if (spokenWords.length < prevSpokenWords.length || (spokenWords.length > 0 && prevSpokenWords.length > 0 && spokenWords[0] !== prevSpokenWords[0])) {
+    lastMatchedTranscriptIndex = -1;
+  }
+  prevSpokenWords = spokenWords;
+  
   // Try to match spoken words against upcoming expected words
-  spokenWords.forEach(spoken => {
+  // Only evaluate newly appended words in this transcript
+  for (let t = lastMatchedTranscriptIndex + 1; t < spokenWords.length; t++) {
+    const spoken = spokenWords[t];
+    
     // Look ahead a little bit to allow skipping a missed word
     for (let i = currentIndex; i < Math.min(currentIndex + 3, words.length); i++) {
       const expected = cleanWord(words[i]);
       if (spoken === expected) {
-        // Mark all up to i as missed/skipped (optional, but let's just mark i as correct and move on)
         // Mark current correctly
         const wordEl = document.getElementById(`ra-word-${i}`);
         if (wordEl) {
           wordEl.classList.add('text-primary', 'dark:text-emerald-400', 'font-bold');
         }
         currentIndex = i + 1;
+        lastMatchedTranscriptIndex = t;
         break;
       }
     }
-  });
+  }
 
   // If completed
   if (currentIndex >= words.length) {

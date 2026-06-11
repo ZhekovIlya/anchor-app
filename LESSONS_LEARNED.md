@@ -49,3 +49,7 @@
 - **Theory Content Structure**: Theory topics use a `sections` array with typed items (heading, paragraph, callout, table, image, video). Theory is read-only — no drill, no completion tracking.
 - **Word Topic Theory**: Word topics can have an optional `theory` property with embedded pattern explanations. This renders as a clickable card at the top of the word lessons view.
 
+## Read Aloud Technical Requirements (Reported by [AQA])
+- **Speech Interim Results Token Matching:** The Web Speech API emits `interimResults` cumulatively (e.g. "el", then "el perro"). Token matching logic must track the index of the *last matched word* in the transcript, and only evaluate *newly appended* words against the expected text to prevent jumping ahead when encountering duplicate words (like "el" ... "el").
+- **Resource Leaks on Navigation:** When integrating hardware APIs like `SpeechRecognition`, you MUST bind a cleanup function to the navigation event. If a user navigates away from the Read Aloud tab, the microphone must be explicitly stopped.
+- **Robust Punctuation Stripping:** When comparing spoken words to expected text, the regex for stripping punctuation must be comprehensive, including colons, semicolons, quotes, question marks, and exclamation points (e.g., `word.replace(/[.,;:"'!?¿¡]/g, '')`).
