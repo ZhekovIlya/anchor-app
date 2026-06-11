@@ -1,6 +1,37 @@
 # AGENTS LOG
 
-## Current Task: Night Mode Toggling & Modal Aesthetics
+## Current Task: Gamification Overhaul & Week 6 Content (Barcelona Survival)
+
+### **[DEV] (The Builder):**
+- Consolidated all milestone commits onto the target branch `task/gamification-overhaul`.
+- Cherry-picked welcome back re-engagement (`132f3d6`) and multiple-choice/word-order drill modes + stats dashboard (`dc0f3d0`) from `task/night-mode-toggle`.
+- Hard-reset the `task/night-mode-toggle` branch back to the clean dark theme base commit (`7aae60c`), ensuring strict branch isolation.
+- Verified that all new files (`re-engagement.js`, `stats-dashboard.js`, `multiple-choice.js`, `word-order.js`, etc.) are correctly referenced in `index.html` and `src/web/main.js`.
+- Fixed a critical `ReferenceError: gamification is not defined` bug in `src/web/main.js` that was preventing the dashboard from rendering.
+- Verified production build compile state (`npm run build`).
+
+### **[AQA] (Technical QA):**
+- Ran code syntax and module import checks on all newly consolidated scripts.
+- Verified that the testing environment (`npm test`) passes successfully with 7 tests and 0 failures.
+- Confirmed that tokenizer logic accurately processes and reconstructs all 954 phrases without failures.
+- Verified that every non-exam lesson in Week 6 has exactly 6 phrases.
+
+### **[QA] (Product QA):**
+- Verified the sliding window 80/20 vocabulary decay formula in Week 6 content (50% W5, 20% W4, 10% W3, 20% new shopping/errands terms).
+- Confirmed correct use of Spanish copulas for prices (e.g. "el café es caro" using `ser`) and adjectives (e.g. "el restaurante está sucio" using `estar`).
+- Checked RU/UK translations of all Week 6 phrases against their Castellano targets to verify semantic alignment.
+- Verified that the stats tab correctly derives SRS words encountered, lessons mastered, streak, and 4-week activity bar chart from local storage.
+
+### **Status:**
+- [X] Consolidated M1-M6 commits onto `task/gamification-overhaul`
+- [X] Restored and cleaned up `task/night-mode-toggle`
+- [X] Verified syntax, modules, and compilation
+- [X] Ran full test suites successfully
+- [X] Checked vocabulary decay and strict grammar rules
+
+---
+
+## Past Task: Night Mode Toggling & Modal Aesthetics (Merged to Main)
 
 ### **[DEV] (The Builder):**
 - Resolved hybrid styling issues by migrating all 47 custom colors, typography fonts, and radii from `index.html`'s `tailwind.config` to `src/web/styles.css` using the Tailwind v4 CSS-first `@theme` block.

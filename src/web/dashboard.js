@@ -5,6 +5,7 @@
 // and in-topic lessons grids.
 
 import { getCompletionCount } from './storage.js';
+import { renderStatsTab } from './stats-dashboard.js';
 
 let activeTab = null;
 let activeHomeTab = 'sentences'; // 'sentences' | 'theory' | 'words'
@@ -149,6 +150,7 @@ const HOME_TABS = [
   { id: 'sentences', label: 'Sentences', icon: 'edit_note' },
   { id: 'theory',    label: 'Theory',    icon: 'lightbulb' },
   { id: 'words',     label: 'Words',     icon: 'abc' },
+  { id: 'stats',     label: 'Stats',     icon: 'bar_chart' },
 ];
 
 function renderHomeTabBar(container, activeId, onChange) {
@@ -189,6 +191,8 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
     renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick);
   } else if (activeHomeTab === 'words') {
     renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick);
+  } else if (activeHomeTab === 'stats') {
+    renderStatsTab(topicsContainer, callbacks.gamification, srsSentences, srsWords, phraseBank, wordBank, data, callbacks.storageAdapter);
   }
 }
 

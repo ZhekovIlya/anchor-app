@@ -13,6 +13,11 @@ import { startDrill } from './drill-ui.js';
 import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
+import { createGamification } from '../core/gamification.js';
+import { updateGamificationDisplay } from './gamification-ui.js';
+import { startMCDrill } from './mc-drill-ui.js';
+import { startWordOrderDrill } from './word-order-ui.js';
+import { checkAndShowReengagement } from './re-engagement.js';
 
 // ========================
 // SEED (dev preview only)
@@ -52,6 +57,7 @@ const phraseBank = buildPhraseBank(data.sentences);
 const wordBank = buildWordBank(data.words);
 const srsSentences = createSRS(localStorageAdapter, SRS_KEY_SENTENCES);
 const srsWords = createSRS(localStorageAdapter, SRS_KEY_WORDS);
+const gamification = createGamification(localStorageAdapter);
 
 let activeTopic = null;
 let activeMode = null; // 'sentences' | 'words'
@@ -131,6 +137,8 @@ function initDashboard() {
     onTheoryTopicClick,
     onWordTopicClick,
     onWordReviewClick,
+    gamification,
+    storageAdapter: localStorageAdapter,
   });
 }
 
@@ -187,7 +195,13 @@ function onLessonClick(lesson) {
   const isTabExam = isExam && !!lesson.tab;
   const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
-  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE);
+  // Week 6 (topic.id === 'week_6'): show drill mode selector
+  if (activeTopic && activeTopic.id === 'week_6') {
+    showDrillModeSelector(drillPhrases, activeTopic, lesson, isExam, isTabExam);
+  } else {
+    // All other weeks: go straight to type mode (unchanged)
+    startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
+  }
 }
 
 function onReviewClick() {
@@ -196,6 +210,55 @@ function onReviewClick() {
 
   const reviewLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
   startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
+}
+
+// ========================
+// DRILL MODE SELECTOR (Week 6 only)
+// ========================
+
+function showDrillModeSelector(drillPhrases, topic, lesson, isExam, isTabExam) {
+  const overlay = document.getElementById('drillModeSelector');
+  const closeBtn = document.getElementById('drillModeSelectorClose');
+  const typeBtn = document.getElementById('drillModeType');
+  const mcBtn = document.getElementById('drillModeMC');
+  const woBtn = document.getElementById('drillModeWordOrder');
+
+  if (!overlay) return;
+
+  // Show the overlay
+  overlay.classList.remove('hidden');
+
+  function hideSelector() {
+    overlay.classList.add('hidden');
+  }
+
+  // Close button: return to lessons
+  closeBtn.onclick = () => {
+    hideSelector();
+  };
+
+  // Click outside to close
+  overlay.onclick = (e) => {
+    if (e.target === overlay) hideSelector();
+  };
+
+  // Type mode (existing drill)
+  typeBtn.onclick = () => {
+    hideSelector();
+    startDrill(elements, drillPhrases, topic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
+  };
+
+  // Multiple Choice mode
+  mcBtn.onclick = () => {
+    hideSelector();
+    startMCDrill(elements, drillPhrases, topic, lesson, srsSentences, gamification, returnToActiveTopic);
+  };
+
+  // Word Order mode
+  woBtn.onclick = () => {
+    hideSelector();
+    startWordOrderDrill(elements, drillPhrases, topic, lesson, srsSentences, gamification, returnToActiveTopic);
+  };
 }
 
 // ========================
@@ -347,6 +410,28 @@ if (elements.themeSelect) {
 }
 
 initDashboard();
+
+// Re-engagement check for returning users
+checkAndShowReengagement(
+  gamification,
+  srsSentences,
+  srsWords,
+  phraseBank,
+  wordBank,
+  () => {
+    // onRefresher: start a review drill with overdue phrases (capped at 20)
+    const duePhrases = srsSentences.getDuePhrases(phraseBank).slice(0, 20);
+    if (duePhrases.length > 0) {
+      const reviewLesson = { id: 'refresher_review', title: 'Quick Refresher', exam: false };
+      startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE, gamification);
+    } else {
+      initDashboard();
+    }
+  },
+  () => {
+    // onDismiss: dashboard is already shown, nothing extra needed
+  }
+);
 
 // Dynamic Revision Injection
 const revisionTag = document.getElementById('revisionTag');

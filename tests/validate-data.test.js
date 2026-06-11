@@ -8,9 +8,10 @@ import week2 from '../data/sentences/week_2.js';
 import week3 from '../data/sentences/week_3.js';
 import week4 from '../data/sentences/week_4.js';
 import week5 from '../data/sentences/week_5.js';
+import week6 from '../data/sentences/week_6.js';
 import topicsCore from '../data/sentences/topics_core.js';
 
-const allTopics = [week1, week2, week3, week4, week5, topicsCore];
+const allTopics = [week1, week2, week3, week4, week5, week6, topicsCore];
 
 describe('Data file structure', () => {
   test('each topic has required fields', () => {
@@ -68,6 +69,13 @@ describe('Phrase validation', () => {
 
     if (exceptions.length > 0) {
       console.log(`  ⚠️ Under-sized lessons: ${exceptions.join(', ')}`);
+    }
+  });
+
+  test('week 6 lessons have exactly 6 phrases', () => {
+    for (const lesson of week6.lessons) {
+      if (lesson.exam) continue;
+      assert.strictEqual(lesson.phrases.length, 6, `Lesson ${lesson.id} must have exactly 6 phrases, got ${lesson.phrases.length}`);
     }
   });
 });

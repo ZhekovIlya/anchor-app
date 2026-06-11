@@ -9,6 +9,8 @@ import { createDrillEngine } from '../core/engine.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
 import { showOnly, calcProgressPercent, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
 import { incrementCompletion, getCompletionCount } from './storage.js';
+import { XP_REWARDS } from '../core/gamification.js';
+import { launchConfetti, animateXPGain, showLevelUpNotification, celebrateStreakMilestone, renderEndScreenXP } from './gamification-ui.js';
 
 let activeEngine = null;
 let isHandlingCorrect = false;
@@ -27,7 +29,7 @@ let isHandlingCorrect = false;
  * @param {boolean} isTabExam - Is this a tab-scoped exam?
  * @param {string}  mode      - 'sentence' or 'word'
  */
-export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE) {
+export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText,
@@ -171,6 +173,43 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         elements.endScreenSubtitle.textContent = subtitle;
         elements.endScreenIcon.textContent = icon;
         elements.endScreenIconBox.className += ` ${iconColorClass}`;
+
+        // === Gamification wiring ===
+        if (gamification) {
+          // Record daily activity and check streak
+          const streakResult = gamification.recordActivity();
+
+          // Determine XP reward based on drill type
+          let xpAmount = XP_REWARDS.lesson;
+          if (isExam) xpAmount = XP_REWARDS.exam;
+          else if (isReview) xpAmount = XP_REWARDS.review;
+
+          // Add XP
+          const xpResult = gamification.addXP(xpAmount);
+
+          // Show XP on end screen
+          renderEndScreenXP(xpAmount, xpResult.totalXP, xpResult.levelName);
+
+          // Launch confetti for first completion
+          if (previousCount === 0) {
+            const confettiContainer = document.getElementById('confettiContainer');
+            if (confettiContainer) launchConfetti(confettiContainer);
+          }
+
+          // Check for level-up
+          if (xpResult.leveledUp) {
+            showLevelUpNotification(xpResult.levelName);
+          }
+
+          // Check for streak milestone
+          if (streakResult.milestone) {
+            celebrateStreakMilestone(streakResult.milestone);
+          }
+        } else {
+          // Hide XP container when gamification is not available
+          const xpContainer = document.getElementById('endScreenXPContainer');
+          if (xpContainer) xpContainer.classList.add('hidden');
+        }
       },
     },
   });
@@ -213,7 +252,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   // End screen buttons
   restartBtn.onclick = () => {
-    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode);
+    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode, gamification);
   };
   dashboardReturnBtn.onclick = onQuit;
 

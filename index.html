@@ -112,7 +112,7 @@
   <main id="drillView" class="hidden w-full max-w-4xl mx-auto flex-col items-center pt-24 gap-12 text-center transition-all duration-300 flex-grow px-4 relative">
     
     <div class="absolute top-24 right-8 flex flex-col items-end z-30">
-      <div class="text-xl text-on-surface-variant dark:text-stone-400 font-label tracking-widest uppercase mb-1 transition-colors duration-300">Streak</div>
+      <div id="streakLabel" class="text-xl text-on-surface-variant dark:text-stone-400 font-label tracking-widest uppercase mb-1 transition-colors duration-300">Streak</div>
       <div id="streakCounter" class="text-4xl font-mono font-bold text-primary dark:text-emerald-400 transition-colors duration-300">0 / 20</div>
     </div>
 
@@ -124,7 +124,8 @@
       </div>
     </div>
 
-    <div class="relative w-[90%] md:w-full max-w-3xl mt-6 rounded-2xl md:rounded-none bg-surface-variant/50 dark:bg-stone-850 md:bg-transparent py-4 md:py-0 transition-colors duration-300 h-20 md:h-24">
+    <!-- Type Input Area (hidden during MC / word-order modes) -->
+    <div id="typeInputArea" class="relative w-[90%] md:w-full max-w-3xl mt-6 rounded-2xl md:rounded-none bg-surface-variant/50 dark:bg-stone-850 md:bg-transparent py-4 md:py-0 transition-colors duration-300 h-20 md:h-24">
       <div id="successLoader" class="hidden absolute -top-12 inset-x-0 mx-auto w-max flex items-center justify-center gap-2 text-[#15803d] dark:text-emerald-400 font-label font-bold bg-[#f0fdf4] dark:bg-stone-800 border border-[#dcfce7] dark:border-emerald-600/30 px-4 py-2 rounded-full shadow-sm z-20 transition-opacity duration-300">
         <span class="material-symbols-outlined animate-spin text-[#15803d] dark:text-emerald-400">sync</span>
         <span>Repeat aloud</span>
@@ -141,6 +142,23 @@
         autocorrect="off"
         autocapitalize="off"
       />
+    </div>
+
+    <!-- Multiple Choice Options Container (hidden by default) -->
+    <div id="mcOptionsContainer" class="hidden w-full max-w-xl flex flex-col gap-3 mt-6 px-4"></div>
+
+    <!-- Word-Order Puzzle Container (hidden by default) -->
+    <div id="wordOrderContainer" class="hidden w-full max-w-xl flex flex-col items-center gap-6 mt-6 px-4">
+      <!-- Answer area: user's arranged words -->
+      <div id="woAnswerArea" class="w-full min-h-[56px] flex flex-wrap gap-2 items-center justify-center p-4 rounded-xl border-2 border-dashed border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 transition-all duration-200">
+        <span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap words below to build your answer</span>
+      </div>
+      <!-- Word pool: available shuffled words -->
+      <div id="woPoolArea" class="w-full flex flex-wrap gap-2 items-center justify-center p-2"></div>
+      <!-- Check button -->
+      <button id="woCheckBtn" disabled class="w-full max-w-sm px-6 py-3 rounded-xl font-label font-bold text-base uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface-variant/50 dark:text-stone-600 cursor-not-allowed transition-all duration-200">
+        Check Order
+      </button>
     </div>
 
     <button id="revealAnswerBtn" class="hidden mt-8 px-6 py-3 bg-error-container dark:bg-red-950/40 text-on-error-container dark:text-red-300 rounded-xl font-label font-bold hover:opacity-90 transition-all duration-300 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
@@ -160,7 +178,40 @@
 
   </main>
 
-
+  <!-- Drill Mode Selector Overlay (Week 6 only) -->
+  <div id="drillModeSelector" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-all duration-200" style="background:rgba(0,0,0,0.5)">
+    <div class="bg-surface dark:bg-stone-850 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md p-8 transition-all duration-300 animate-[slideUp_0.2s_ease-out]">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">Choose Drill Mode</h3>
+        <button id="drillModeSelectorClose" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-stone-800 transition-all duration-300 cursor-pointer">
+          <span class="material-symbols-outlined text-on-surface-variant dark:text-stone-400">close</span>
+        </button>
+      </div>
+      <div class="flex flex-col gap-3">
+        <button id="drillModeType" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
+          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">keyboard</span>
+          <div>
+            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Type</div>
+            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Type the translation from memory</div>
+          </div>
+        </button>
+        <button id="drillModeMC" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
+          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">quiz</span>
+          <div>
+            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Multiple Choice</div>
+            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Pick the correct translation from 4 options</div>
+          </div>
+        </button>
+        <button id="drillModeWordOrder" class="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 hover:border-primary/50 dark:hover:border-emerald-500/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500">
+          <span class="material-symbols-outlined text-2xl text-primary dark:text-emerald-400" style="font-variation-settings: 'FILL' 1;">reorder</span>
+          <div>
+            <div class="font-label font-bold text-on-surface dark:text-stone-100 text-base">Word Order</div>
+            <div class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Arrange scrambled words in the right order</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Drill Legend Overlay (body-level) -->
   <div id="drillLegendOverlay" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 dark:bg-black/70 backdrop-blur-sm transition-all duration-300">
