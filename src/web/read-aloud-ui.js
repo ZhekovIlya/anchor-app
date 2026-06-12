@@ -5,6 +5,7 @@
 
 import { SpeechRecognitionService } from '../core/speech-recognition.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
+import { speakAnswer } from './speech.js';
 
 let activeParagraph = null;
 let wordObjects = [];
@@ -179,7 +180,17 @@ function renderReadingView() {
   `;
 
   const textContainer = activeContainer.querySelector('#raTextContainer');
-  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-colors duration-300 ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : ''}">${wo.original}</span>`).join(' ');
+  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-colors duration-300 cursor-pointer hover:underline hover:text-primary dark:hover:text-emerald-400 ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : ''}">${wo.original}</span>`).join(' ');
+
+  textContainer.addEventListener('click', (e) => {
+    if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
+      const wordId = parseInt(e.target.id.replace('ra-word-', ''));
+      const wo = wordObjects.find(w => w.id === wordId);
+      if (wo) {
+        speakAnswer(wo.original, () => {});
+      }
+    }
+  });
 
   // Cleanup when container is removed from DOM
   const observer = new MutationObserver(() => {

@@ -75,7 +75,11 @@ export class SpeechRecognitionService {
     }
 
     if (this.recognition) {
-      this.recognition.stop();
+      try {
+        this.recognition.stop();
+      } catch (e) {
+        // Ignore InvalidStateError if already stopped
+      }
     }
   }
 

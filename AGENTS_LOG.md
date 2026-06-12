@@ -1,6 +1,20 @@
 # AGENTS LOG
 
-## Current Task: Bugfix - Read Aloud Finisher & Custom Text
+## Current Task: Bugfix - Finish Button Crash & Word Pronunciation
+
+### **[DEV] (The Builder):**
+- Fixed a silent crash triggered by `speechService.stop()`. If the Web Speech API was not actively recording when the Finish button was pressed, it threw an `InvalidStateError`, aborting the Victory Modal display. Wrapped `this.recognition.stop()` in a `try...catch`.
+- Implemented the "click a word to hear it pronounced" feature. Wrapped words in `span` elements with hover styles, and added an event listener that passes the clicked word to `speakAnswer` using the browser's TTS.
+
+### **[AQA] (Technical QA):**
+- Verified test suite passes locally.
+
+### **Status:**
+- [X] Caught `InvalidStateError` exception.
+- [X] Built click-to-pronounce TTS feature.
+- [X] Committed to `task/read-aloud-fixes`.
+
+---## Current Task: Bugfix - Read Aloud Finisher & Custom Text
 
 ### **[DEV] (The Builder):**
 - Fixed a bug where `updateGamificationDisplay` was passed the engine instance instead of `stats`, causing it to render "undefined XP".
