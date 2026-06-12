@@ -266,11 +266,21 @@ function onWordReviewClick() {
 // ========================
 
 function onReadAloudTabClick(container, readAloudData, gamification, phraseBank) {
-  renderReadAloudList(container, readAloudData, gamification, phraseBank, (item) => {
-    startReadAloud(container, item, gamification, phraseBank, () => {
-      // On back
+  renderReadAloudList(container, readAloudData, gamification, phraseBank, null, (savedWords) => {
+    const drillLesson = {
+      id: 'saved_words_practice',
+      title: 'Practice Saved Words',
+      exam: false
+    };
+    
+    const drillItems = savedWords.map(sw => ({
+      es: sw.es,
+      ru: sw.prompt
+    }));
+    
+    startDrill(elements, drillItems, null, drillLesson, false, true, srsWords, () => {
       onReadAloudTabClick(container, readAloudData, gamification, phraseBank);
-    });
+    }, false, DRILL_MODE.WORD);
   });
 }
 

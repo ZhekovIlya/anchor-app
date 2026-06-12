@@ -6,6 +6,7 @@
 import { SpeechRecognitionService } from '../core/speech-recognition.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
 import { speakAnswer, getPromptLang } from './speech.js';
+import { localStorageAdapter } from './storage.js';
 
 let activeParagraph = null;
 let wordObjects = [];
@@ -21,7 +22,7 @@ function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
 }
 
-export function renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading) {
+export function renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick) {
   container.innerHTML = `
     <div class="mb-4">
       <h2 class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100">Read Aloud</h2>
@@ -45,38 +46,31 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
       </div>
       <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
     `;
-    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
+    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick));
     listContainer.appendChild(card);
   });
 
-  // Custom Text Card
-  const customCard = document.createElement('div');
-  customCard.className = 'group bg-surface-container-highest dark:bg-stone-800 rounded-xl p-6 border border-dashed border-outline-variant/50 dark:border-stone-700 shadow-sm transition-colors duration-300 mt-4';
-  customCard.innerHTML = `
-    <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100 mb-2 flex items-center gap-2">
-      <span class="material-symbols-outlined text-primary dark:text-emerald-400">edit_document</span> Custom Text
-    </h3>
-    <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4">Paste any Spanish text here to practice reading it.</p>
-    <textarea id="raCustomInput" class="w-full h-32 p-4 rounded-xl bg-surface-container-lowest dark:bg-stone-900 border border-outline-variant/30 dark:border-stone-700 text-on-surface dark:text-stone-200 font-body text-base resize-y mb-4 focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 outline-none transition-all" placeholder="Escribe o pega texto en español aquí..."></textarea>
-    <button id="raCustomStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-6 py-2.5 rounded-xl font-label font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto">
-      Start Practice
-    </button>
-  `;
-  listContainer.appendChild(customCard);
-
-  const customBtn = customCard.querySelector('#raCustomStartBtn');
-  const customInput = customCard.querySelector('#raCustomInput');
-  customBtn.onclick = () => {
-    const text = customInput.value.trim();
-    if (!text) return;
-    const customItem = {
-      id: 'custom',
-      title: 'Custom Text',
-      difficulty: 'Custom',
-      text: text
+  // Saved Words Practice Card
+  const savedWords = localStorageAdapter.load('anchor_saved_words') || [];
+  if (savedWords.length > 0) {
+    const practiceCard = document.createElement('div');
+    practiceCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden mt-4';
+    practiceCard.innerHTML = `
+      <div class="flex justify-between items-center mb-2 relative z-10">
+        <h3 class="font-headline text-xl font-bold text-primary dark:text-emerald-400 flex items-center gap-2">
+          <span class="material-symbols-outlined">school</span> Practice Saved Words
+        </h3>
+        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-primary dark:bg-emerald-600 text-on-primary shadow-sm">${savedWords.length} Words</span>
+      </div>
+      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4 relative z-10">
+        You have saved ${savedWords.length} words from your reading sessions. Click to practice them in a Word Drill!
+      </p>
+    `;
+    practiceCard.onclick = () => {
+      if (onSavedWordsDrillClick) onSavedWordsDrillClick(savedWords);
     };
-    startReadAloud(container, customItem, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
-  };
+    listContainer.appendChild(practiceCard);
+  }
 }
 
 export function startReadAloud(container, item, gamification, phraseBank, onBack, customText = null) {
@@ -158,6 +152,22 @@ function renderReadingView() {
       Listening... Speak clearly. You can skip words and return to them.
     </div>
 
+    <!-- Add to Vocab Banner (Fixed Bottom) -->
+    <div id="raAddVocabBanner" class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-stone-900 border-t border-primary/20 dark:border-emerald-500/30 p-4 transform translate-y-full transition-transform duration-300 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+      <div class="flex-1 text-center sm:text-left">
+        <p id="raBannerWord" class="font-headline text-lg sm:text-xl font-bold text-on-surface dark:text-stone-100"></p>
+        <p id="raBannerTrans" class="font-body text-sm sm:text-base text-primary dark:text-emerald-400 mt-1"></p>
+      </div>
+      <div class="flex gap-3 justify-center w-full sm:w-auto">
+        <button id="raBannerAddBtn" class="px-6 py-3 bg-primary dark:bg-emerald-600 text-on-primary rounded-xl font-label font-bold hover:opacity-90 transition-opacity flex items-center justify-center shadow-md gap-2">
+          <span class="material-symbols-outlined">add</span> Add to Vocab
+        </button>
+        <button id="raBannerCloseVocabBtn" class="p-3 bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Victory Modal Overlay -->
     <div id="raVictoryModal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
       <div class="bg-surface-container-lowest dark:bg-stone-900 rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-outline-variant/20 dark:border-stone-800 scale-95 transition-transform duration-300 relative overflow-hidden">
@@ -196,12 +206,50 @@ function renderReadingView() {
   textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text">${wo.original}</span>`).join(' ');
   updateFocusVisuals();
 
+  const addBanner = activeContainer.querySelector('#raAddVocabBanner');
+  const bannerWord = activeContainer.querySelector('#raBannerWord');
+  const bannerTrans = activeContainer.querySelector('#raBannerTrans');
+  const bannerAddBtn = activeContainer.querySelector('#raBannerAddBtn');
+  const bannerCloseBtn = activeContainer.querySelector('#raBannerCloseVocabBtn');
+
+  if (bannerCloseBtn) {
+    bannerCloseBtn.onclick = () => addBanner.classList.add('translate-y-full');
+  }
+
   textContainer.addEventListener('click', (e) => {
     if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
       const wordId = parseInt(e.target.id.replace('ra-word-', ''));
       const wo = wordObjects.find(w => w.id === wordId);
       if (wo) {
         speakAnswer(wo.original, () => {});
+
+        // Find translation
+        let trans = null;
+        if (activeParagraph.vocabulary) {
+          trans = activeParagraph.vocabulary[wo.clean];
+        }
+        
+        if (trans && addBanner) {
+          bannerWord.textContent = wo.original;
+          bannerTrans.textContent = trans;
+          
+          bannerAddBtn.innerHTML = `<span class="material-symbols-outlined">add</span> Add to Vocab`;
+          bannerAddBtn.disabled = false;
+          
+          bannerAddBtn.onclick = () => {
+            const saved = localStorageAdapter.load('anchor_saved_words') || [];
+            if (!saved.find(sw => sw.es === wo.clean)) {
+              saved.push({ es: wo.clean, prompt: trans });
+              localStorageAdapter.save('anchor_saved_words', saved);
+            }
+            bannerAddBtn.innerHTML = `<span class="material-symbols-outlined">check</span> Added!`;
+            bannerAddBtn.disabled = true;
+          };
+          
+          addBanner.classList.remove('translate-y-full');
+        } else if (addBanner) {
+          addBanner.classList.add('translate-y-full');
+        }
       }
     }
   });
@@ -331,12 +379,12 @@ function updateFocusVisuals() {
     const el = document.getElementById(`ra-word-${wo.id}`);
     if (!el) return;
     
-    if (wo.phraseIndex > activePhraseIndex) {
-      el.className = `transition-all duration-500 cursor-pointer p-0.5 rounded inline-block select-text blur-sm opacity-40 hover:blur-none hover:opacity-80 text-on-surface-variant dark:text-stone-400`;
-    } else if (wo.phraseIndex < activePhraseIndex) {
+    if (wo.phraseIndex < activePhraseIndex) {
       el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface-variant dark:text-stone-400'}`;
-    } else {
+    } else if (wo.phraseIndex === activePhraseIndex) {
       el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface dark:text-stone-100'}`;
+    } else {
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text text-on-surface-variant dark:text-stone-400`;
     }
   });
 }
@@ -363,6 +411,9 @@ function finishReading() {
       // Ignore
     }
   }
+
+  const addBanner = document.getElementById('raAddVocabBanner');
+  if (addBanner) addBanner.classList.add('translate-y-full');
 
   const readCount = wordObjects.filter(wo => wo.isRead).length;
   const totalCount = wordObjects.length;
