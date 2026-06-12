@@ -113,12 +113,20 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
 
 function generateVocabStory(phraseBank) {
   const phraseArray = Object.values(phraseBank);
-  const shuffled = [...phraseArray].sort(() => Math.random() - 0.5);
-  const count = Math.floor(Math.random() * 4) + 5; // 5 to 8 phrases
-  const selected = shuffled.slice(0, count);
+  const seedCandidates = ['perro', 'mañana', 'comer', 'casa', 'amigo', 'gato', 'trabajo', 'familia', 'tarde', 'siempre', 'nunca'];
+  const seed = seedCandidates[Math.floor(Math.random() * seedCandidates.length)];
+  
+  // Find phrases containing the seed
+  const matchingPhrases = phraseArray.filter(p => cleanWord(p.es).includes(seed));
+  let selected = [...matchingPhrases].sort(() => Math.random() - 0.5).slice(0, 3);
+  
+  // Pad with random phrases to reach 5-6 total
+  const remaining = phraseArray.filter(p => !selected.includes(p)).sort(() => Math.random() - 0.5);
+  const padCount = Math.max(0, 5 - selected.length);
+  selected = [...selected, ...remaining.slice(0, padCount)].sort(() => Math.random() - 0.5);
   
   const storyWords = [];
-  const promptLang = getPromptLang(); // 'ru' or 'uk'
+  const promptLang = getPromptLang();
   
   selected.forEach(p => {
     const promptText = p[promptLang] || p.ru;
@@ -132,9 +140,10 @@ function generateVocabStory(phraseBank) {
     });
   });
   
+  const capitalizedSeed = seed.charAt(0).toUpperCase() + seed.slice(1);
   return {
     id: 'vocab-story',
-    title: 'Vocab Review Story',
+    title: `Vocab Story: ${capitalizedSeed}`,
     difficulty: 'Dynamic',
     text: storyWords.map(sw => sw.word).join(' '),
     isVocabStory: true,
@@ -151,24 +160,37 @@ export function startReadAloud(container, item, gamification, phraseBank, onBack
   wordObjects = [];
   
   if (customText) {
-    wordObjects = customText.split(/\s+/).map((w, index) => ({
-      id: index, original: w, clean: cleanWord(w), isRead: false
-    }));
+    let pIdx = 0;
+    wordObjects = customText.split(/\s+/).map((w, index) => {
+      const wo = { id: index, original: w, clean: cleanWord(w), isRead: false, phraseIndex: pIdx };
+      if (w.match(/[.!?]+$/)) pIdx++;
+      return wo;
+    });
   } else if (item.isVocabStory) {
+    let pIdx = 0;
+    let lastPhraseEs = null;
     item.storyWords.forEach((sw, index) => {
+      if (lastPhraseEs !== null && sw.phraseEs !== lastPhraseEs) {
+        pIdx++;
+      }
+      lastPhraseEs = sw.phraseEs;
       wordObjects.push({
         id: index,
         original: sw.word,
         clean: cleanWord(sw.word),
         isRead: false,
+        phraseIndex: pIdx,
         contextEs: sw.phraseEs,
         contextPrompt: sw.phrasePrompt
       });
     });
   } else {
-    wordObjects = item.text.split(/\s+/).map((w, index) => ({
-      id: index, original: w, clean: cleanWord(w), isRead: false
-    }));
+    let pIdx = 0;
+    wordObjects = item.text.split(/\s+/).map((w, index) => {
+      const wo = { id: index, original: w, clean: cleanWord(w), isRead: false, phraseIndex: pIdx };
+      if (w.match(/[.!?]+$/)) pIdx++;
+      return wo;
+    });
   }
   
   lastMatchedTranscriptIndex = -1;
@@ -213,6 +235,9 @@ function renderReadingView() {
     <div class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-16">
       <button id="raStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-8 py-3 rounded-xl font-label font-bold text-lg hover:opacity-90 transition-all shadow-sm flex items-center gap-2">
         <span class="material-symbols-outlined">mic</span> Start Recording
+      </button>
+      <button id="raSkipBtn" class="bg-amber-500 text-white px-6 py-3 rounded-xl font-label font-bold text-lg hover:bg-amber-600 transition-all shadow-sm flex items-center gap-2 hidden">
+        <span class="material-symbols-outlined">skip_next</span> Skip Word
       </button>
       <button id="raMockBtn" class="bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-200 px-6 py-3 rounded-xl font-label font-bold text-lg hover:bg-surface-container-high transition-all shadow-sm flex items-center gap-2">
         <span class="material-symbols-outlined">bug_report</span> Mock Speech
@@ -274,7 +299,8 @@ function renderReadingView() {
   `;
 
   const textContainer = activeContainer.querySelector('#raTextContainer');
-  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-colors duration-300 cursor-pointer hover:underline hover:text-primary dark:hover:text-emerald-400 p-0.5 rounded ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : ''}">${wo.original}</span>`).join(' ');
+  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text">${wo.original}</span>`).join(' ');
+  updateFocusVisuals();
 
   // Popover Banner Elements
   const banner = activeContainer.querySelector('#raTranslationBanner');
@@ -350,6 +376,7 @@ function renderReadingView() {
       statusEl.classList.add('hidden');
       startBtn.disabled = false;
       startBtn.innerHTML = `<span class="material-symbols-outlined">mic</span> Start Recording`;
+      activeContainer.querySelector('#raSkipBtn').classList.add('hidden');
     }
   });
 
@@ -362,16 +389,30 @@ function renderReadingView() {
     finishReading();
   };
 
+  const skipBtn = activeContainer.querySelector('#raSkipBtn');
+  
+  skipBtn.onclick = () => {
+    const nextUnread = wordObjects.find(wo => !wo.isRead);
+    if (nextUnread) {
+      nextUnread.isRead = true;
+      updateFocusVisuals();
+      updateProgressBar();
+      if (wordObjects.every(wo => wo.isRead)) finishReading();
+    }
+  };
+
   startBtn.onclick = () => {
     if (speechService.isRecording) {
       speechService.stop();
+      skipBtn.classList.add('hidden');
     } else {
       speechService.start(false);
       startBtn.disabled = true;
       startBtn.innerHTML = `<span class="material-symbols-outlined animate-pulse">mic</span> Recording...`;
       statusEl.classList.remove('hidden');
       statusEl.classList.remove('text-error', 'dark:text-red-400');
-      statusEl.textContent = "Listening... Speak clearly. You can skip words.";
+      statusEl.textContent = "Listening... Speak clearly. Skip words you don't know.";
+      skipBtn.classList.remove('hidden');
     }
   };
 
@@ -382,6 +423,7 @@ function renderReadingView() {
       startBtn.innerHTML = `<span class="material-symbols-outlined">mic</span> Mock Mode Active`;
       statusEl.classList.remove('hidden');
       statusEl.textContent = "Mock Speech Mode. Simulating next word...";
+      skipBtn.classList.remove('hidden');
     }
     
     // Simulate speaking the first unread word
@@ -407,24 +449,41 @@ function handleTranscript(transcript) {
   for (let t = lastMatchedTranscriptIndex + 1; t < spokenWords.length; t++) {
     const spoken = spokenWords[t];
     
-    // Non-linear matching: find the FIRST unread word in the entire text that matches
-    const matchIndex = wordObjects.findIndex(wo => !wo.isRead && wo.clean === spoken);
+    // STRICT MATCHING: Find the EXACT NEXT unread word
+    const nextUnreadIndex = wordObjects.findIndex(wo => !wo.isRead);
+    if (nextUnreadIndex === -1) break; // All done
     
-    if (matchIndex !== -1) {
-      wordObjects[matchIndex].isRead = true;
-      const wordEl = document.getElementById(`ra-word-${wordObjects[matchIndex].id}`);
-      if (wordEl) {
-        wordEl.classList.add('text-primary', 'dark:text-emerald-400', 'font-bold');
-      }
+    const targetWord = wordObjects[nextUnreadIndex];
+    if (targetWord.clean === spoken) {
+      targetWord.isRead = true;
       lastMatchedTranscriptIndex = t;
     }
   }
 
-  updateProgressBar();
+  updateFocusVisuals();
 
   if (wordObjects.every(wo => wo.isRead)) {
     finishReading();
   }
+}
+
+function updateFocusVisuals() {
+  if (wordObjects.length === 0) return;
+  const firstUnread = wordObjects.find(wo => !wo.isRead);
+  const activePhraseIndex = firstUnread ? firstUnread.phraseIndex : wordObjects[wordObjects.length - 1].phraseIndex;
+  
+  wordObjects.forEach(wo => {
+    const el = document.getElementById(`ra-word-${wo.id}`);
+    if (!el) return;
+    
+    if (wo.phraseIndex > activePhraseIndex) {
+      el.className = `transition-all duration-500 cursor-pointer p-0.5 rounded inline-block select-text blur-sm opacity-40 hover:blur-none hover:opacity-80 text-on-surface-variant dark:text-stone-400`;
+    } else if (wo.phraseIndex < activePhraseIndex) {
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface-variant dark:text-stone-400'}`;
+    } else {
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface dark:text-stone-100'}`;
+    }
+  });
 }
 
 function updateProgressBar() {
