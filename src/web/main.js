@@ -265,24 +265,8 @@ function onWordReviewClick() {
 // NAVIGATION — READ ALOUD
 // ========================
 
-function onReadAloudTabClick(container, readAloudData, gamification, phraseBankArg) {
-  const combinedBank = { ...phraseBank, ...wordBank };
-  renderReadAloudList(container, readAloudData, gamification, combinedBank, null, (savedWords) => {
-    const drillLesson = {
-      id: 'saved_words_practice',
-      title: 'Practice Saved Words',
-      exam: false
-    };
-    
-    const drillItems = savedWords.map(sw => ({
-      es: sw.es,
-      ru: sw.prompt
-    }));
-    
-    startDrill(elements, drillItems, null, drillLesson, false, true, srsWords, () => {
-      onReadAloudTabClick(container, readAloudData, gamification, combinedBank);
-    }, false, DRILL_MODE.WORD);
-  });
+function onReadAloudTabClick(container, readAloudData, gamification) {
+  renderReadAloudList(container, readAloudData, gamification, null);
 }
 
 // ========================

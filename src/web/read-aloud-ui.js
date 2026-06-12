@@ -22,7 +22,7 @@ function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
 }
 
-export function renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick) {
+export function renderReadAloudList(container, readAloudData, gamification, onStartReading) {
   container.innerHTML = `
     <div class="mb-4">
       <h2 class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100">Read Aloud</h2>
@@ -35,28 +35,6 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
 
   const listContainer = container.querySelector('#readAloudListContainer');
 
-  // Saved Words Practice Card
-  const savedWords = localStorageAdapter.load('anchor_saved_words') || [];
-  if (savedWords.length > 0) {
-    const practiceCard = document.createElement('div');
-    practiceCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden mb-6';
-    practiceCard.innerHTML = `
-      <div class="flex justify-between items-center mb-2 relative z-10">
-        <h3 class="font-headline text-xl font-bold text-primary dark:text-emerald-400 flex items-center gap-2">
-          <span class="material-symbols-outlined">school</span> Practice Saved Words
-        </h3>
-        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-primary dark:bg-emerald-600 text-on-primary shadow-sm">${savedWords.length} Words</span>
-      </div>
-      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4 relative z-10">
-        You have saved ${savedWords.length} words from your reading sessions. Click to practice them in a Word Drill!
-      </p>
-    `;
-    practiceCard.onclick = () => {
-      if (onSavedWordsDrillClick) onSavedWordsDrillClick(savedWords);
-    };
-    listContainer.appendChild(practiceCard);
-  }
-
   // Hardcoded Data Cards
   readAloudData.forEach((item) => {
     const card = document.createElement('div');
@@ -68,72 +46,39 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
       </div>
       <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
     `;
-    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick));
+    card.onclick = () => startReadAloud(container, item, gamification, () => renderReadAloudList(container, readAloudData, gamification, onStartReading));
     listContainer.appendChild(card);
   });
 }
 
-export function startReadAloud(container, item, gamification, phraseBank, onBack, customText = null) {
+export function startReadAloud(container, item, gamification, onBack, customText = null) {
   activeParagraph = item;
   currentGamification = gamification;
   activeContainer = container;
   onBackCallback = onBack;
-  
-  const vocabLookup = {};
-  if (phraseBank) {
-    Object.values(phraseBank).forEach(phrase => {
-      if (phrase && phrase.es && phrase.ru) {
-        vocabLookup[cleanWord(phrase.es)] = phrase.ru;
-      }
-    });
-  }
-  item.vocabularyLookup = vocabLookup;
-  
-  let maxPhraseLength = 1;
-  Object.keys(vocabLookup).forEach(k => {
-    const len = k.split(' ').length;
-    if (len > maxPhraseLength) maxPhraseLength = len;
-  });
   
   wordObjects = [];
   const rawText = customText ? customText : item.text;
   const rawWords = rawText.split(/\s+/);
   
   let pIdx = 0;
-  let i = 0;
-  let wordId = 0;
   
-  while (i < rawWords.length) {
-    let matchedLength = 1;
-    let combinedOriginal = rawWords[i];
-    let combinedClean = cleanWord(rawWords[i]);
-    
-    for (let len = maxPhraseLength; len > 1; len--) {
-      if (i + len <= rawWords.length) {
-        const slice = rawWords.slice(i, i + len);
-        const testClean = slice.map(cleanWord).join(' ');
-        if (item.vocabularyLookup[testClean]) {
-          matchedLength = len;
-          combinedOriginal = slice.join(' ');
-          combinedClean = testClean;
-          break;
-        }
-      }
-    }
+  for (let i = 0; i < rawWords.length; i++) {
+    const original = rawWords[i];
+    const clean = cleanWord(original);
     
     const wo = {
-      id: wordId++,
-      original: combinedOriginal,
-      clean: combinedClean,
+      id: i,
+      original: original,
+      clean: clean,
       isRead: false,
       phraseIndex: pIdx,
-      wordCount: matchedLength
+      wordCount: 1
     };
     
-    if (rawWords[i + matchedLength - 1].match(/[.!?]+$/)) pIdx++;
+    if (original.match(/[.!?]+$/)) pIdx++;
     
     wordObjects.push(wo);
-    i += matchedLength;
   }
   
   lastMatchedTranscriptIndex = -1;
@@ -206,15 +151,7 @@ function renderReadingView() {
           </div>
         </div>
 
-        <div id="raMissedWordsSection" class="hidden mb-6 text-left bg-surface-container-low dark:bg-stone-850 p-4 rounded-xl border border-outline-variant/50 dark:border-stone-800">
-          <p class="font-label text-xs font-bold text-on-surface-variant dark:text-stone-400 uppercase tracking-wide mb-2">Missed Words</p>
-          <p id="raMissedWordsText" class="font-body text-sm text-on-surface dark:text-stone-200 line-clamp-3"></p>
-        </div>
-
         <div class="flex flex-col gap-3 relative z-10">
-          <button id="raPracticeMissedBtn" class="hidden w-full bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-100 px-4 py-3 rounded-xl font-label font-bold hover:bg-surface-container-highest dark:hover:bg-stone-700 transition-colors shadow-sm">
-            Practice Missed Words
-          </button>
           <button id="raCompleteBtn" class="w-full bg-primary dark:bg-emerald-600 text-on-primary px-4 py-3 rounded-xl font-label font-bold hover:opacity-90 transition-opacity shadow-md">
             Done
           </button>
@@ -227,14 +164,7 @@ function renderReadingView() {
   textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text relative">${wo.original}</span>`).join(' ');
   updateFocusVisuals();
 
-  let activeTooltip = null;
-
   textContainer.addEventListener('click', (e) => {
-    if (activeTooltip) {
-      activeTooltip.remove();
-      activeTooltip = null;
-    }
-
     if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
       const wordId = parseInt(e.target.id.replace('ra-word-', ''));
       const wo = wordObjects.find(w => w.id === wordId);
@@ -242,77 +172,6 @@ function renderReadingView() {
         // Speak just the clean version or original without punctuation
         const textToSpeak = wo.original.replace(/[.,;:"'!?¿¡-]/g, '');
         speakAnswer(textToSpeak, () => {});
-
-        // Find translation
-        let trans = null;
-        let matchedEs = textToSpeak;
-        if (activeParagraph.vocabularyLookup) {
-          trans = activeParagraph.vocabularyLookup[wo.clean];
-          if (!trans) {
-            // Fuzzy match: Find first phrase in dictionary that contains this word
-            const matchKey = Object.keys(activeParagraph.vocabularyLookup).find(k => k.split(' ').includes(wo.clean));
-            if (matchKey) {
-              trans = activeParagraph.vocabularyLookup[matchKey];
-              matchedEs = matchKey;
-            }
-          }
-        }
-        
-        if (trans) {
-          // Create tooltip
-          const tooltip = document.createElement('div');
-          tooltip.className = 'absolute z-50 bg-surface-container-highest dark:bg-stone-800 rounded-xl shadow-xl border border-outline-variant/30 dark:border-stone-700 p-3 flex flex-col gap-2 min-w-[160px] max-w-[280px] animate-in fade-in zoom-in duration-200 cursor-default';
-          
-          tooltip.innerHTML = `
-            <div class="flex justify-between items-start gap-4">
-              <div>
-                <p class="font-headline text-base font-bold text-on-surface dark:text-stone-100 leading-tight mb-1">${matchedEs}</p>
-                <p class="font-body text-sm text-primary dark:text-emerald-400 leading-tight">${trans}</p>
-              </div>
-              <button class="ra-tooltip-close p-1 -mr-2 -mt-2 text-on-surface-variant hover:text-on-surface dark:text-stone-400 dark:hover:text-stone-200">
-                <span class="material-symbols-outlined text-sm">close</span>
-              </button>
-            </div>
-            <button class="ra-tooltip-add w-full mt-1 bg-surface-variant dark:bg-stone-700 hover:bg-primary hover:text-on-primary dark:hover:bg-emerald-600 dark:text-stone-200 text-xs font-label font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1">
-              <span class="material-symbols-outlined text-sm">add</span> Add to Practice
-            </button>
-          `;
-          
-          textContainer.appendChild(tooltip);
-          activeTooltip = tooltip;
-          
-          // Positioning inside textContainer
-          const rect = e.target.getBoundingClientRect();
-          const containerRect = textContainer.getBoundingClientRect();
-          
-          tooltip.style.top = `${rect.bottom - containerRect.top + textContainer.scrollTop + 8}px`;
-          
-          let leftPos = rect.left - containerRect.left + (rect.width / 2) - (160 / 2); // approximate tooltip width
-          // clamp to edges
-          if (leftPos < 0) leftPos = 0;
-          if (leftPos + 160 > containerRect.width) leftPos = containerRect.width - 160;
-          
-          tooltip.style.left = `${leftPos}px`;
-          
-          tooltip.querySelector('.ra-tooltip-close').onclick = (ev) => {
-            ev.stopPropagation();
-            tooltip.remove();
-            activeTooltip = null;
-          };
-          
-          const addBtn = tooltip.querySelector('.ra-tooltip-add');
-          addBtn.onclick = (ev) => {
-            ev.stopPropagation();
-            const saved = localStorageAdapter.load('anchor_saved_words') || [];
-            if (!saved.find(sw => sw.es === matchedEs)) {
-              saved.push({ es: matchedEs, prompt: trans });
-              localStorageAdapter.save('anchor_saved_words', saved);
-            }
-            addBtn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span> Added!`;
-            addBtn.className = 'ra-tooltip-add w-full mt-1 bg-primary text-on-primary dark:bg-emerald-600 text-xs font-label font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors';
-            setTimeout(() => { if (activeTooltip === tooltip) { tooltip.remove(); activeTooltip = null; } }, 1500);
-          };
-        }
       }
     }
   });
@@ -499,33 +358,10 @@ function finishReading() {
   const modalInner = modal.querySelector('div');
   const scoreEl = document.getElementById('raVictoryScore');
   const xpEl = document.getElementById('raVictoryXp');
-  const missedSection = document.getElementById('raMissedWordsSection');
-  const missedTextEl = document.getElementById('raMissedWordsText');
-  const practiceBtn = document.getElementById('raPracticeMissedBtn');
   const completeBtn = document.getElementById('raCompleteBtn');
   
   scoreEl.textContent = `You hit ${accuracy}% accuracy.`;
   xpEl.textContent = `+${xpAwarded} XP`;
-  
-  const unreadWords = wordObjects.filter(wo => !wo.isRead).map(wo => wo.original);
-  
-  if (unreadWords.length > 0) {
-    missedSection.classList.remove('hidden');
-    missedTextEl.textContent = unreadWords.join(' ');
-    practiceBtn.classList.remove('hidden');
-    
-    practiceBtn.onclick = () => {
-      // Start a new read aloud session with ONLY the missed words
-      modal.classList.add('opacity-0');
-      modal.classList.add('pointer-events-none');
-      setTimeout(() => {
-        startReadAloud(activeContainer, activeParagraph, currentGamification, null, onBackCallback, unreadWords.join(' '));
-      }, 300);
-    };
-  } else {
-    missedSection.classList.add('hidden');
-    practiceBtn.classList.add('hidden');
-  }
   
   completeBtn.onclick = () => {
     modal.classList.add('opacity-0');
