@@ -265,8 +265,9 @@ function onWordReviewClick() {
 // NAVIGATION — READ ALOUD
 // ========================
 
-function onReadAloudTabClick(container, readAloudData, gamification, phraseBank) {
-  renderReadAloudList(container, readAloudData, gamification, phraseBank, null, (savedWords) => {
+function onReadAloudTabClick(container, readAloudData, gamification, phraseBankArg) {
+  const combinedBank = { ...phraseBank, ...wordBank };
+  renderReadAloudList(container, readAloudData, gamification, combinedBank, null, (savedWords) => {
     const drillLesson = {
       id: 'saved_words_practice',
       title: 'Practice Saved Words',
@@ -279,7 +280,7 @@ function onReadAloudTabClick(container, readAloudData, gamification, phraseBank)
     }));
     
     startDrill(elements, drillItems, null, drillLesson, false, true, srsWords, () => {
-      onReadAloudTabClick(container, readAloudData, gamification, phraseBank);
+      onReadAloudTabClick(container, readAloudData, gamification, combinedBank);
     }, false, DRILL_MODE.WORD);
   });
 }
