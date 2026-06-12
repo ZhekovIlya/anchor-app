@@ -58,5 +58,65 @@ export default [
     title: "Mi Profesión",
     difficulty: "A2 (Avanzado)",
     text: "Trabajo como ingeniero en una empresa grande. Mi trabajo es interesante pero a veces es estresante. Empiezo a las nueve y termino a las cinco. Mis compañeros de trabajo son muy amables y siempre me ayudan."
+  },
+  {
+    id: "ra_11",
+    title: "El Restaurante",
+    difficulty: "A1 (Fácil)",
+    text: "El restaurante de mi barrio es muy bueno. Hacen pizzas deliciosas y ensaladas frescas. Los camareros son simpáticos y siempre sonríen. Voy allí todos los viernes con mi familia."
+  },
+  {
+    id: "ra_12",
+    title: "Mi Gato Luna",
+    difficulty: "A1 (Muy Fácil)",
+    text: "Tengo una gata. Se llama Luna. Es blanca y muy suave. A Luna le gusta dormir en el sofá. Por la noche, juega con una pelota pequeña. La quiero mucho."
+  },
+  {
+    id: "ra_13",
+    title: "La Escuela",
+    difficulty: "A1 (Intermedio)",
+    text: "Estudio español en la escuela de idiomas. Mi clase es pequeña, solo somos diez estudiantes. El profesor explica muy bien la gramática. Hacemos muchos ejercicios y hablamos en español."
+  },
+  {
+    id: "ra_14",
+    title: "El Supermercado",
+    difficulty: "A2 (Fácil)",
+    text: "Los sábados por la mañana voy al supermercado. Compro frutas, verduras, leche y pan. Siempre hago una lista antes de salir de casa para no olvidar nada importante."
+  },
+  {
+    id: "ra_15",
+    title: "Un Día en la Playa",
+    difficulty: "A2 (Intermedio)",
+    text: "Ayer hizo mucho sol, así que fuimos a la playa. Nadamos en el mar y construimos castillos de arena. Comimos unos bocadillos bajo la sombrilla para protegernos del sol fuerte."
+  },
+  {
+    id: "ra_16",
+    title: "La Ciudad de Madrid",
+    difficulty: "B1 (Fácil)",
+    text: "Madrid es la capital de España y es una ciudad enorme. Tiene museos famosos, parques hermosos y mucha historia. Me encanta pasear por el Parque del Retiro cuando hace buen tiempo."
+  },
+  {
+    id: "ra_17",
+    title: "Mi Deporte Favorito",
+    difficulty: "A2 (Intermedio)",
+    text: "Juego al baloncesto tres veces por semana. Es un deporte muy rápido y divertido. Mi equipo entrena los lunes y los miércoles por la tarde, y jugamos partidos los domingos."
+  },
+  {
+    id: "ra_18",
+    title: "Preparando la Cena",
+    difficulty: "A2 (Avanzado)",
+    text: "Esta noche voy a preparar la cena para mis amigos. Voy a cocinar una sopa de tomate y una ensalada mixta. De postre, he comprado una tarta de chocolate en la pastelería."
+  },
+  {
+    id: "ra_19",
+    title: "El Viaje en Tren",
+    difficulty: "B1 (Fácil)",
+    text: "Me gusta mucho viajar en tren. Es más cómodo que el autobús y puedes ver el paisaje por la ventana. Siempre llevo un buen libro para leer durante el viaje."
+  },
+  {
+    id: "ra_20",
+    title: "Aprender Idiomas",
+    difficulty: "B1 (Intermedio)",
+    text: "Aprender un nuevo idioma es un desafío, pero también es muy gratificante. Requiere mucha paciencia y práctica diaria. Lo mejor es poder comunicarte con personas de diferentes culturas cuando viajas."
   }
 ];

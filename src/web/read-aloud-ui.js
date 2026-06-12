@@ -30,7 +30,7 @@ export function renderReadAloudList(container, readAloudData, gamification, onSt
         Practice your pronunciation. Read the text aloud, skip difficult words if you need to, and earn XP!
       </p>
     </div>
-    <div class="flex flex-col gap-4" id="readAloudListContainer"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="readAloudListContainer"></div>
   `;
 
   const listContainer = container.querySelector('#readAloudListContainer');
@@ -60,14 +60,18 @@ export function renderReadAloudList(container, readAloudData, gamification, onSt
     }
 
     const card = document.createElement('div');
-    card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300';
+    card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300 flex flex-col h-full';
     card.innerHTML = `
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">${item.title}</h3>
-        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-surface-variant dark:bg-stone-800 text-on-surface-variant dark:text-stone-400">${item.difficulty}</span>
+      <div class="flex flex-col flex-grow">
+        <div class="flex justify-between items-start gap-2 mb-3">
+          <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100 leading-tight">${item.title}</h3>
+          <span class="font-label text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-surface-variant dark:bg-stone-800 text-on-surface-variant dark:text-stone-400 whitespace-nowrap shrink-0">${item.difficulty}</span>
+        </div>
+        <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-3 mb-4">${item.text}</p>
       </div>
-      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
-      ${badgeHtml}
+      <div class="mt-auto shrink-0">
+        ${badgeHtml}
+      </div>
     `;
     card.onclick = () => startReadAloud(container, item, gamification, () => renderReadAloudList(container, readAloudData, gamification, onStartReading));
     listContainer.appendChild(card);
