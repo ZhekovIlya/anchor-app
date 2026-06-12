@@ -29,13 +29,13 @@ export class SpeechRecognitionService {
       
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
+          finalTranscript += event.results[i][0].transcript + ' ';
         } else {
-          interimTranscript += event.results[i][0].transcript;
+          interimTranscript += event.results[i][0].transcript + ' ';
         }
       }
       
-      this.onResult(finalTranscript.trim() || interimTranscript.trim());
+      this.onResult((finalTranscript + interimTranscript).trim());
     };
 
     this.recognition.onerror = (event) => {
