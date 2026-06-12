@@ -35,26 +35,11 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
 
   const listContainer = container.querySelector('#readAloudListContainer');
 
-  // Hardcoded Data Cards
-  readAloudData.forEach((item) => {
-    const card = document.createElement('div');
-    card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300';
-    card.innerHTML = `
-      <div class="flex justify-between items-center mb-2">
-        <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">${item.title}</h3>
-        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-surface-variant dark:bg-stone-800 text-on-surface-variant dark:text-stone-400">${item.difficulty}</span>
-      </div>
-      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
-    `;
-    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick));
-    listContainer.appendChild(card);
-  });
-
   // Saved Words Practice Card
   const savedWords = localStorageAdapter.load('anchor_saved_words') || [];
   if (savedWords.length > 0) {
     const practiceCard = document.createElement('div');
-    practiceCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden mt-4';
+    practiceCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden mb-6';
     practiceCard.innerHTML = `
       <div class="flex justify-between items-center mb-2 relative z-10">
         <h3 class="font-headline text-xl font-bold text-primary dark:text-emerald-400 flex items-center gap-2">
@@ -71,6 +56,21 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
     };
     listContainer.appendChild(practiceCard);
   }
+
+  // Hardcoded Data Cards
+  readAloudData.forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300';
+    card.innerHTML = `
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">${item.title}</h3>
+        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-surface-variant dark:bg-stone-800 text-on-surface-variant dark:text-stone-400">${item.difficulty}</span>
+      </div>
+      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
+    `;
+    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading, onSavedWordsDrillClick));
+    listContainer.appendChild(card);
+  });
 }
 
 export function startReadAloud(container, item, gamification, phraseBank, onBack, customText = null) {
@@ -80,10 +80,11 @@ export function startReadAloud(container, item, gamification, phraseBank, onBack
   onBackCallback = onBack;
   
   const vocabLookup = {};
-  if (item.vocabulary) {
-    Object.keys(item.vocabulary).forEach(k => {
-      vocabLookup[cleanWord(k)] = item.vocabulary[k];
-      vocabLookup[k] = item.vocabulary[k];
+  if (phraseBank) {
+    Object.values(phraseBank).forEach(phrase => {
+      if (phrase && phrase.es && phrase.ru) {
+        vocabLookup[cleanWord(phrase.es)] = phrase.ru;
+      }
     });
   }
   item.vocabularyLookup = vocabLookup;
@@ -264,7 +265,7 @@ function renderReadingView() {
               </button>
             </div>
             <button class="ra-tooltip-add w-full mt-1 bg-surface-variant dark:bg-stone-700 hover:bg-primary hover:text-on-primary dark:hover:bg-emerald-600 dark:text-stone-200 text-xs font-label font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1">
-              <span class="material-symbols-outlined text-sm">add</span> Add to Vocab
+              <span class="material-symbols-outlined text-sm">add</span> Add to Practice
             </button>
           `;
           
