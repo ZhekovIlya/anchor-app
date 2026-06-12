@@ -508,6 +508,14 @@ function finishReading() {
       // Ignore
     }
   }
+
+  const banner = document.getElementById('raTranslationBanner');
+  if (banner) banner.classList.add('translate-y-full');
+  
+  wordObjects.forEach(w => {
+    const el = document.getElementById(`ra-word-${w.id}`);
+    if (el) el.classList.remove('bg-primary/20', 'dark:bg-emerald-500/30');
+  });
   
   const readCount = wordObjects.filter(wo => wo.isRead).length;
   const totalCount = wordObjects.length;
