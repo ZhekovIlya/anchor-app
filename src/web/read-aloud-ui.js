@@ -5,7 +5,7 @@
 
 import { SpeechRecognitionService } from '../core/speech-recognition.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
-import { speakAnswer } from './speech.js';
+import { speakAnswer, getPromptLang } from './speech.js';
 
 let activeParagraph = null;
 let wordObjects = [];
@@ -21,7 +21,7 @@ function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
 }
 
-export function renderReadAloudList(container, readAloudData, gamification) {
+export function renderReadAloudList(container, readAloudData, gamification, phraseBank, onStartReading) {
   container.innerHTML = `
     <div class="mb-4">
       <h2 class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100">Read Aloud</h2>
@@ -34,6 +34,39 @@ export function renderReadAloudList(container, readAloudData, gamification) {
 
   const listContainer = container.querySelector('#readAloudListContainer');
 
+  // Vocab Story Generator Card
+  if (phraseBank && phraseBank.length > 0) {
+    const vocabCard = document.createElement('div');
+    vocabCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden';
+    vocabCard.innerHTML = `
+      <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 dark:bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+      <div class="flex justify-between items-center mb-2 relative z-10">
+        <h3 class="font-headline text-xl font-bold text-primary dark:text-emerald-400 flex items-center gap-2">
+          <span class="material-symbols-outlined">auto_awesome</span> Dynamic Vocab Story
+        </h3>
+        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-primary dark:bg-emerald-600 text-on-primary shadow-sm">AI Story</span>
+      </div>
+      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4 relative z-10">
+        A dynamically generated paragraph built entirely from phrases you've already learned. Click any word while reading to see its full sentence translation!
+      </p>
+      <button id="raVocabStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-6 py-2.5 rounded-xl font-label font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto shadow-md relative z-10">
+        Generate & Read
+      </button>
+    `;
+    listContainer.appendChild(vocabCard);
+
+    vocabCard.querySelector('#raVocabStartBtn').onclick = (e) => {
+      e.stopPropagation();
+      const generated = generateVocabStory(phraseBank);
+      startReadAloud(container, generated, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
+    };
+    vocabCard.onclick = () => {
+      const generated = generateVocabStory(phraseBank);
+      startReadAloud(container, generated, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
+    };
+  }
+
+  // Hardcoded Data Cards
   readAloudData.forEach((item) => {
     const card = document.createElement('div');
     card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300';
@@ -44,7 +77,7 @@ export function renderReadAloudList(container, readAloudData, gamification) {
       </div>
       <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
     `;
-    card.onclick = () => startReadAloud(container, item, gamification, () => renderReadAloudList(container, readAloudData, gamification));
+    card.onclick = () => startReadAloud(container, item, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
     listContainer.appendChild(card);
   });
 
@@ -74,24 +107,68 @@ export function renderReadAloudList(container, readAloudData, gamification) {
       difficulty: 'Custom',
       text: text
     };
-    startReadAloud(container, customItem, gamification, () => renderReadAloudList(container, readAloudData, gamification));
+    startReadAloud(container, customItem, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
   };
 }
 
-export function startReadAloud(container, item, gamification, onBack, customText = null) {
+function generateVocabStory(phraseBank) {
+  const shuffled = [...phraseBank].sort(() => Math.random() - 0.5);
+  const count = Math.floor(Math.random() * 4) + 5; // 5 to 8 phrases
+  const selected = shuffled.slice(0, count);
+  
+  const storyWords = [];
+  const promptLang = getPromptLang(); // 'ru' or 'uk'
+  
+  selected.forEach(p => {
+    const promptText = p[promptLang] || p.ru;
+    const words = p.es.split(/\s+/);
+    words.forEach(w => {
+      storyWords.push({
+        word: w,
+        phraseEs: p.es,
+        phrasePrompt: promptText
+      });
+    });
+  });
+  
+  return {
+    id: 'vocab-story',
+    title: 'Vocab Review Story',
+    difficulty: 'Dynamic',
+    text: storyWords.map(sw => sw.word).join(' '),
+    isVocabStory: true,
+    storyWords: storyWords
+  };
+}
+
+export function startReadAloud(container, item, gamification, phraseBank, onBack, customText = null) {
   activeParagraph = item;
   currentGamification = gamification;
   activeContainer = container;
   onBackCallback = onBack;
   
-  const textToRead = customText || item.text;
+  wordObjects = [];
   
-  wordObjects = textToRead.split(/\s+/).map((w, index) => ({
-    id: index,
-    original: w,
-    clean: cleanWord(w),
-    isRead: false
-  }));
+  if (customText) {
+    wordObjects = customText.split(/\s+/).map((w, index) => ({
+      id: index, original: w, clean: cleanWord(w), isRead: false
+    }));
+  } else if (item.isVocabStory) {
+    item.storyWords.forEach((sw, index) => {
+      wordObjects.push({
+        id: index,
+        original: sw.word,
+        clean: cleanWord(sw.word),
+        isRead: false,
+        contextEs: sw.phraseEs,
+        contextPrompt: sw.phrasePrompt
+      });
+    });
+  } else {
+    wordObjects = item.text.split(/\s+/).map((w, index) => ({
+      id: index, original: w, clean: cleanWord(w), isRead: false
+    }));
+  }
   
   lastMatchedTranscriptIndex = -1;
   prevSpokenWords = [];
@@ -128,11 +205,11 @@ function renderReadingView() {
     </div>
 
     <!-- Text Container -->
-    <div id="raTextContainer" class="font-body text-2xl md:text-3xl leading-relaxed text-on-surface-variant dark:text-stone-400 mb-8 p-6 bg-surface-container-lowest dark:bg-stone-850 rounded-xl border border-outline-variant/20 dark:border-stone-800">
+    <div id="raTextContainer" class="font-body text-2xl md:text-3xl leading-relaxed text-on-surface-variant dark:text-stone-400 mb-8 p-6 bg-surface-container-lowest dark:bg-stone-850 rounded-xl border border-outline-variant/20 dark:border-stone-800 transition-all relative">
     </div>
 
     <!-- Controls -->
-    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-16">
       <button id="raStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-8 py-3 rounded-xl font-label font-bold text-lg hover:opacity-90 transition-all shadow-sm flex items-center gap-2">
         <span class="material-symbols-outlined">mic</span> Start Recording
       </button>
@@ -145,8 +222,24 @@ function renderReadingView() {
       Listening... Speak clearly. You can skip words and return to them.
     </div>
 
+    <!-- Translation Popover Banner (Fixed Bottom) -->
+    <div id="raTranslationBanner" class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-stone-900 border-t border-primary/20 dark:border-emerald-500/30 p-4 transform translate-y-full transition-transform duration-300 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+      <div class="flex-1 text-center sm:text-left">
+        <p id="raBannerEs" class="font-headline text-lg sm:text-xl font-bold text-on-surface dark:text-stone-100"></p>
+        <p id="raBannerPrompt" class="font-body text-sm sm:text-base text-primary dark:text-emerald-400 mt-1"></p>
+      </div>
+      <div class="flex gap-3 justify-center w-full sm:w-auto">
+        <button id="raBannerReplayBtn" class="px-6 py-3 bg-primary dark:bg-emerald-600 text-on-primary rounded-xl font-label font-bold hover:opacity-90 transition-opacity flex items-center justify-center shadow-md gap-2">
+          <span class="material-symbols-outlined">volume_up</span> Replay
+        </button>
+        <button id="raBannerCloseBtn" class="p-3 bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Victory Modal Overlay -->
-    <div id="raVictoryModal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+    <div id="raVictoryModal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
       <div class="bg-surface-container-lowest dark:bg-stone-900 rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-outline-variant/20 dark:border-stone-800 scale-95 transition-transform duration-300 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent dark:from-emerald-500/10 pointer-events-none"></div>
         <div class="w-20 h-20 rounded-full bg-primary/20 dark:bg-emerald-900/40 text-primary dark:text-emerald-400 flex items-center justify-center mx-auto mb-4 border-4 border-surface-container-lowest dark:border-stone-900">
@@ -167,7 +260,7 @@ function renderReadingView() {
           <p id="raMissedWordsText" class="font-body text-sm text-on-surface dark:text-stone-200 line-clamp-3"></p>
         </div>
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 relative z-10">
           <button id="raPracticeMissedBtn" class="hidden w-full bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-100 px-4 py-3 rounded-xl font-label font-bold hover:bg-surface-container-highest dark:hover:bg-stone-700 transition-colors shadow-sm">
             Practice Missed Words
           </button>
@@ -180,13 +273,52 @@ function renderReadingView() {
   `;
 
   const textContainer = activeContainer.querySelector('#raTextContainer');
-  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-colors duration-300 cursor-pointer hover:underline hover:text-primary dark:hover:text-emerald-400 ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : ''}">${wo.original}</span>`).join(' ');
+  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-colors duration-300 cursor-pointer hover:underline hover:text-primary dark:hover:text-emerald-400 p-0.5 rounded ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : ''}">${wo.original}</span>`).join(' ');
+
+  // Popover Banner Elements
+  const banner = activeContainer.querySelector('#raTranslationBanner');
+  const bannerEs = activeContainer.querySelector('#raBannerEs');
+  const bannerPrompt = activeContainer.querySelector('#raBannerPrompt');
+  const bannerReplayBtn = activeContainer.querySelector('#raBannerReplayBtn');
+  const bannerCloseBtn = activeContainer.querySelector('#raBannerCloseBtn');
+
+  const closeBanner = () => {
+    banner.classList.add('translate-y-full');
+    // Remove highlight from all words
+    wordObjects.forEach(w => {
+      const el = document.getElementById(`ra-word-${w.id}`);
+      if (el) el.classList.remove('bg-primary/20', 'dark:bg-emerald-500/30');
+    });
+  };
+
+  bannerCloseBtn.onclick = closeBanner;
 
   textContainer.addEventListener('click', (e) => {
     if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
       const wordId = parseInt(e.target.id.replace('ra-word-', ''));
       const wo = wordObjects.find(w => w.id === wordId);
-      if (wo) {
+      
+      if (!wo) return;
+
+      closeBanner(); // Clear existing highlights
+
+      if (wo.contextEs && wo.contextPrompt) {
+        // Highlight the full sentence
+        wordObjects.forEach(w => {
+          if (w.contextEs === wo.contextEs) {
+            const el = document.getElementById(`ra-word-${w.id}`);
+            if (el) el.classList.add('bg-primary/20', 'dark:bg-emerald-500/30');
+          }
+        });
+
+        bannerEs.textContent = wo.contextEs;
+        bannerPrompt.textContent = wo.contextPrompt;
+        bannerReplayBtn.onclick = () => speakAnswer(wo.contextEs, () => {});
+        
+        banner.classList.remove('translate-y-full');
+        speakAnswer(wo.contextEs, () => {});
+      } else {
+        // Fallback: Just pronounce the single word
         speakAnswer(wo.original, () => {});
       }
     }
@@ -309,7 +441,13 @@ function updateProgressBar() {
 }
 
 function finishReading() {
-  if (speechService) speechService.stop();
+  if (speechService) {
+    try {
+      speechService.stop();
+    } catch(e) {
+      // Ignore
+    }
+  }
   
   const readCount = wordObjects.filter(wo => wo.isRead).length;
   const totalCount = wordObjects.length;
@@ -345,8 +483,9 @@ function finishReading() {
     practiceBtn.onclick = () => {
       // Start a new read aloud session with ONLY the missed words
       modal.classList.add('opacity-0');
+      modal.classList.add('pointer-events-none');
       setTimeout(() => {
-        startReadAloud(activeContainer, activeParagraph, currentGamification, onBackCallback, unreadWords.join(' '));
+        startReadAloud(activeContainer, activeParagraph, currentGamification, null, onBackCallback, unreadWords.join(' '));
       }, 300);
     };
   } else {
@@ -356,13 +495,14 @@ function finishReading() {
   
   completeBtn.onclick = () => {
     modal.classList.add('opacity-0');
+    modal.classList.add('pointer-events-none');
     setTimeout(() => {
       onBackCallback();
     }, 300);
   };
   
-  // Animate in
-  modal.classList.remove('hidden');
+  // Animate in using pointer-events-none removal instead of toggling display
+  modal.classList.remove('pointer-events-none');
   // force reflow
   void modal.offsetWidth;
   modal.classList.remove('opacity-0');

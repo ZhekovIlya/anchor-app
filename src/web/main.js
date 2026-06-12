@@ -265,11 +265,11 @@ function onWordReviewClick() {
 // NAVIGATION — READ ALOUD
 // ========================
 
-function onReadAloudTabClick(container, readAloudData, gamification) {
-  renderReadAloudList(container, readAloudData, (item) => {
-    startReadAloud(container, item, gamification, () => {
+function onReadAloudTabClick(container, readAloudData, gamification, phraseBank) {
+  renderReadAloudList(container, readAloudData, gamification, phraseBank, (item) => {
+    startReadAloud(container, item, gamification, phraseBank, () => {
       // On back
-      onReadAloudTabClick(container, readAloudData, gamification);
+      onReadAloudTabClick(container, readAloudData, gamification, phraseBank);
     });
   });
 }
