@@ -35,7 +35,7 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
   const listContainer = container.querySelector('#readAloudListContainer');
 
   // Vocab Story Generator Card
-  if (phraseBank && phraseBank.length > 0) {
+  if (phraseBank && Object.keys(phraseBank).length > 0) {
     const vocabCard = document.createElement('div');
     vocabCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden';
     vocabCard.innerHTML = `
@@ -112,7 +112,8 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
 }
 
 function generateVocabStory(phraseBank) {
-  const shuffled = [...phraseBank].sort(() => Math.random() - 0.5);
+  const phraseArray = Object.values(phraseBank);
+  const shuffled = [...phraseArray].sort(() => Math.random() - 0.5);
   const count = Math.floor(Math.random() * 4) + 5; // 5 to 8 phrases
   const selected = shuffled.slice(0, count);
   
