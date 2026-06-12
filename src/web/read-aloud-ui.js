@@ -15,9 +15,9 @@ let currentGamification = null;
 let activeContainer = null;
 let onBackCallback = null;
 
-// Clean text for comparison (remove punctuation, lower case)
+// Clean text for comparison (remove punctuation, lower case, strip accents)
 function cleanWord(word) {
-  return word.replace(/[.,;:"'!?¿¡]/g, '').toLowerCase().trim();
+  return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
 }
 
 export function renderReadAloudList(container, readAloudData, gamification) {
@@ -46,6 +46,35 @@ export function renderReadAloudList(container, readAloudData, gamification) {
     card.onclick = () => startReadAloud(container, item, gamification, () => renderReadAloudList(container, readAloudData, gamification));
     listContainer.appendChild(card);
   });
+
+  // Custom Text Card
+  const customCard = document.createElement('div');
+  customCard.className = 'group bg-surface-container-highest dark:bg-stone-800 rounded-xl p-6 border border-dashed border-outline-variant/50 dark:border-stone-700 shadow-sm transition-colors duration-300 mt-4';
+  customCard.innerHTML = `
+    <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100 mb-2 flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary dark:text-emerald-400">edit_document</span> Custom Text
+    </h3>
+    <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4">Paste any Spanish text here to practice reading it.</p>
+    <textarea id="raCustomInput" class="w-full h-32 p-4 rounded-xl bg-surface-container-lowest dark:bg-stone-900 border border-outline-variant/30 dark:border-stone-700 text-on-surface dark:text-stone-200 font-body text-base resize-y mb-4 focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 outline-none transition-all" placeholder="Escribe o pega texto en español aquí..."></textarea>
+    <button id="raCustomStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-6 py-2.5 rounded-xl font-label font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto">
+      Start Practice
+    </button>
+  `;
+  listContainer.appendChild(customCard);
+
+  const customBtn = customCard.querySelector('#raCustomStartBtn');
+  const customInput = customCard.querySelector('#raCustomInput');
+  customBtn.onclick = () => {
+    const text = customInput.value.trim();
+    if (!text) return;
+    const customItem = {
+      id: 'custom',
+      title: 'Custom Text',
+      difficulty: 'Custom',
+      text: text
+    };
+    startReadAloud(container, customItem, gamification, () => renderReadAloudList(container, readAloudData, gamification));
+  };
 }
 
 export function startReadAloud(container, item, gamification, onBack, customText = null) {
@@ -279,7 +308,7 @@ function finishReading() {
   const xpAwarded = Math.max(5, Math.round((readCount / 2))); // 1 XP per 2 words, min 5
   if (currentGamification) {
     currentGamification.addXP(xpAwarded);
-    updateGamificationDisplay(currentGamification);
+    updateGamificationDisplay(currentGamification.getStats());
   }
   
   // Show Modal

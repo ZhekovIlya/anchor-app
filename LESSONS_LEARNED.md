@@ -47,9 +47,70 @@
 - **Word Drill Mode**: Engine accepts `mode: 'sentence' | 'word'`. Word mode uses streak 48 (12 words × 4 loops) and copy threshold 24. Word drills do NOT use the tokenizer — `renderWordInput` shows plain primary-colored text.
 - **Word Lesson Size**: Exactly 12 unique words per lesson (not 6 like sentences). Word exams use 50 words from all topic lessons.
 - **Theory Content Structure**: Theory topics use a `sections` array with typed items (heading, paragraph, callout, table, image, video). Theory is read-only — no drill, no completion tracking.
+# LESSONS LEARNED
+> Auto-populated by the [AQA]/[QA] agents when [DEV] makes a mistake.
+
+## Rules
+- Each entry is a concrete, actionable rule.
+- [DEV] MUST read this file before writing any new code.
+- **Missing Data Files (Reported by USER):** Whenever a new data file is created (e.g., `data/week_X.js`), it MUST be imported in `src/core/data-loader.js`. Otherwise, the app will not detect the new week's data.
+- **PowerShell Execution (Reported by USER):** The `&&` operator is not universally supported in local Windows PowerShell instances. Always use `;` to chain shell commands instead (e.g. `git add . ; git commit -m "msg"`) to prevent parse errors.
+- **Script Cleanup (Reported by USER):** If a temporary script (e.g., Python or Node) is executed to refactor or seed data, the agent MUST explicitly delete it from the codebase immediately after verifying the data was successfully created. Do not leave `.py` or `.js` utility scripts in the project directory.
+- **Core/Web Separation:** All new logic must go into `src/core/` (DOM-free, reusable by Telegram bot) or `src/web/` (DOM-dependent, browser only). Never put DOM code in core modules.
+- **ES Module Imports:** Use `import`/`export` — never `window.AnchorData` or other globals. Data files use `export default { ... }`.
+- **Storage Adapter Pattern:** Storage must go through the adapter interface `{ load(key), save(key, data) }`. Never call `localStorage` directly from core modules.
+- **Test Before Commit:** Run `npm test` to validate data integrity before committing data changes.
+- **NPM Flag Passing (Reported by USER):** When passing flags like `--host` to an npm script (e.g., `npm run dev`), you MUST use the double-dash syntax: `npm run dev -- --host`. Otherwise, the flag is consumed by npm and never reaches the underlying tool (Vite).
+- **Background Servers (Reported by USER):** Do not leave processes like Vite (`npm run dev`) running indefinitely in the background. After verifying the dev environment, terminate the process.
+- **Strict Lesson Sizing (Reported by [AQA]):** Every standard sub-lesson MUST contain exactly 6 phrases. This is mathematically required to ensure the `targetStreak=24` (exactly 4 loops) completes symmetrically without orphaned reviews. Never output an 8-phrase or 4-phrase lesson under any circumstances.
+- **The Task Branch Lifecycle (STRICT USER REQUIREMENT):** [DEV] MUST create a new task branch (e.g., `git checkout -b task/description`) and switch to it BEFORE making ANY file changes. All development and iterative follow-ups occur on this branch. The agent MUST NOT merge into `main` or push to `origin` autonomously in the first Turn. The agent will propose edits, commit them locally to the branch, and then STOP for user review/testing. Only when the USER explicitly provides a signal like "Done", "Merge", or "Deploy" will the agent perform the final deployment turn. **CRITICAL:** Do NOT combine the work and the merge in the same turn. Wait for the user's explicit OK. Before merging to `main`, the agent MUST squash all commits on the task branch into a single, clean, descriptive commit (e.g., via `git merge --squash` or `git rebase -i`) to prevent feature-branch pollution of the `main` history. Finally, push to `origin main` and delete the task branch. To maintain zero-friction, the agent should use `SafeToAutoRun: true` in the final Deployment turn. Violation of this isolation and squashing lifecycle is a failure of the agent workflow.
+- **Tailwind Config Order (Reported by USER):** When importing Tailwind via CDN, the `tailwind.config` assignment script block MUST appear before the CDN `<script>` tag. Otherwise, custom colors and font families will fail to load.
+- **Verb-Adjective Homonym Collisions (Reported by USER):** NEVER combine a verb with its own adjective form in the same phrase (e.g., "Yo limpio la cocina limpia" is nonsense). If the verb and adjective share a root (limpiar/limpio, secar/seco), drop the adjective or restructure the sentence.
+- **Ser vs Estar for Prices (Reported by [QA]):** Use `ser` (es/son) for inherent, permanent qualities like price ("El alquiler es caro"). Use `estar` only for temporary, contextual states ("El perro está sucio" — dirty right now). Mixing them up is a grammar error.
+- **RU/UK ↔ ES Semantic Alignment (Reported by USER):** ALWAYS verify that every RU and UK translation matches the actual ES meaning — not just a plausible interpretation. Example: "del parque" = "парка" (of the park), NOT "после парка" (after the park). Each preposition must be checked individually.
+- **Missing Initializers (Reported by USER):** When importing new modules into the entry point (`main.js`), verify that their required instances (like `gamification = createGamification(...)`) are explicitly instantiated before being passed to rendering functions. Failing to do so causes a silent `ReferenceError` that aborts JS execution and leaves the entire application blank.
+
+---
+
+## UI & Logic Fixes (Reported by User)
+- **Drill Stage Text Opacity**: When toggling Spanish text visibility in Stage 2 drills, ensure native opacity baseline classes (e.g., opacity-30) are actively removed, not just substituting opacity-100 with opacity-0, as tailwind retains the cascade. 
+- **Fake Input Alignment**: When layering transparent strict inputs over colored fake inputs, explicitly match all standard box model and typography tokens (font-size, paddings, rounded borders, flex/line-heights) to prevent caret offset on mobile screens.
+- **Mastered vs Completed Limits**: 'Mastered' states apply at exact thresholds (>= 3 completions) not simply boolean presence (>0). Intermediate completions reflect as 'In Progress'.
+- **Sanitization of Redundant Titles**: Always trim repetitive prefixes in display lists (e.g. mapping week topic titles without redundant 'Week X:' headers).
+
+## Hard-Earned Knowledge (Revisions & Retries)
+- **DOM Lifecycle on Class Switches**: Changing innerHTML and toggling opacity from 0 to 100 consecutively within the same execution frame prevents the browser from generating the CSS transition (because transition relies on layout/paint reflow states). A ~50ms timeout ensures frame decoupling to let the 0-opacity layout calc state sink in BEFORE the 100-opacity class attaches, permitting visual fade.
+- **white-space pre tokenizing**: For character-level colorful token injections into a pseudo-input container, applying \whitespace-nowrap\ will dangerously truncate multiple spaces between words if not careful. Always use \whitespace-pre\ to safeguard semantic spacing intervals requested by users.
+
+## Lesson Completion Layout Constraints
+- **Iconography vs Text Labels**: Users strongly prefer intuitive dashboard status tracking. Avoid spamming text tags like 'In Progress' or 'Mastered' repeatedly on item grids. Favor minimalist icons on the right edge (e.g. \check_circle\ for completed, \workspace_premium\ for mastered).
+- **Strict States**: Completion requires strictly meeting thresholds. Week logic -> Lesson logic.
+- **Context-Aware Mastery Thresholds**: When determining mastery status (e.g., `getLessonStatus`), always check if the item is an Exam or a standard Lesson. Standard lessons master at 3 completions, while Exams require 5. Using a hardcoded single threshold leads to premature 'Mastered' states in the UI.
+
+## Curriculum Content Purity (Reported by USER)
+- **Tab Topic Discipline:** When a tab is focused on a specific grammar point (e.g., "Past -AR"), ALL phrases in that tab MUST use that grammar point. NEVER pad lessons with random present-tense filler sentences from old weeks. If the tab is "Pasado: -AR", every phrase must contain at least one past-tense -AR verb. Old-week review content belongs EXCLUSIVELY in the dedicated Review/Repaso tab, not sprinkled as filler into new-grammar tabs.
+
+## Technical UI Fixes (Reported by USER)
+- **CSS Transition Ghosting**: When updating text in a fading element (e.g., `transition-opacity`) and hiding it concurrently, the browser will animate the fade-out of the *newly injected text*. To prevent the next item from Ghosting/fading-out visibly, disable the transition (e.g., `el.style.transition = 'none'`) during the instant hide/reset, update the text, and then restore the transition (`el.style.transition = ''`) before triggering a reflow (`void el.offsetHeight;`) for subsequent reveal fades.
+- **Tailwind v4 vs v3 Play CDN Hybrid Conflicts**: Never load both the Tailwind v3 Play CDN script (`https://cdn.tailwindcss.com`) and Vite-compiled Tailwind v4 styles (`@tailwindcss/vite`) in the same application. This creates severe clashes in dark-mode behavior because Tailwind v4 defaults to media query-based dark mode, ignoring class-based toggles, and custom colors defined only in `tailwind.config` inside `index.html` fail to register under Tailwind v4. Always define custom colors in Tailwind v4's `@theme` block in the main CSS file and remove the Play CDN script entirely.
+- **Premium Modal Depth in Dark Mode**: To prevent modals from appearing flat or blending completely into dark backgrounds, always style the modal panel with a slightly lighter background (e.g., `dark:bg-stone-850`) than the main body (e.g., `dark:bg-stone-900`). Elevate header and footer elements with nested backgrounds (e.g., `dark:bg-stone-900`) and borders (e.g., `dark:border-stone-800`), and use a clean glassmorphic backdrop (`bg-black/60 dark:bg-black/70 backdrop-blur-sm`).
+- **Modal Positioning & Layout Shifts (Reported by USER)**: When creating floating alerts/modals at the bottom of the screen, avoid using `absolute bottom-0` mapped to expanding DOM elements (like `drillView`) because it can clash with sibling elements (like the footer). Use `fixed bottom-X left-1/2 -translate-x-1/2` for safe centered layouts that don't shift relative sibling elements.
+- **Modal Auto-Dismiss & Audio Replays (Reported by USER)**: Always ensure temporary success modals transition smoothly off the screen (e.g. using `opacity-0 pointer-events-none`) when their audio callback finishes. For failure modals that show correct answers, ALWAYS provide an explicit UI button allowing the user to replay the audio pronunciation.
+
+## Multi-Activity Architecture (2026-05-15)
+- **Three Pillars**: App has 3 content types: Sentences (phrase drills), Theory (read-only articles), Words (single-word drills). Each lives in its own data directory: `data/sentences/`, `data/theory/`, `data/words/`.
+- **Data Loader Returns Object**: `loadAllData()` returns `{ sentences, theory, words }` — not a flat array. Code that needs only sentences should use `loadAllData().sentences`.
+- **Separate SRS Pools**: Sentences use `srs_sentences` key, Words use `srs_words` key. NEVER mix them. `createSRS` now requires a `storageKey` parameter.
+- **Word Drill Mode**: Engine accepts `mode: 'sentence' | 'word'`. Word mode uses streak 48 (12 words × 4 loops) and copy threshold 24. Word drills do NOT use the tokenizer — `renderWordInput` shows plain primary-colored text.
+- **Word Lesson Size**: Exactly 12 unique words per lesson (not 6 like sentences). Word exams use 50 words from all topic lessons.
+- **Theory Content Structure**: Theory topics use a `sections` array with typed items (heading, paragraph, callout, table, image, video). Theory is read-only — no drill, no completion tracking.
 - **Word Topic Theory**: Word topics can have an optional `theory` property with embedded pattern explanations. This renders as a clickable card at the top of the word lessons view.
 
 ## Read Aloud Technical Requirements (Reported by [AQA])
 - **Speech Interim Results Token Matching:** The Web Speech API emits `interimResults` cumulatively (e.g. "el", then "el perro"). Token matching logic must track the index of the *last matched word* in the transcript, and only evaluate *newly appended* words against the expected text to prevent jumping ahead when encountering duplicate words (like "el" ... "el").
 - **Resource Leaks on Navigation:** When integrating hardware APIs like `SpeechRecognition`, you MUST bind a cleanup function to the navigation event. If a user navigates away from the Read Aloud tab, the microphone must be explicitly stopped.
 - **Robust Punctuation Stripping:** When comparing spoken words to expected text, the regex for stripping punctuation must be comprehensive, including colons, semicolons, quotes, question marks, and exclamation points (e.g., `word.replace(/[.,;:"'!?¿¡]/g, '')`).
+- **SpeechRecognition Transcript Concatenation (Reported by USER):** When concatenating transcripts inside a loop processing Web Speech API results, remember that `event.results` contains everything, but you only iterate from `resultIndex`. Accumulate `finalTranscript` by string concatenation `+=`, rather than the logical OR `||`, to avoid dropping earlier strings in the same loop execution.
+
+### Spanish Text Matching
+- **Rule 1:** When comparing spoken transcripts from the Web Speech API to hardcoded Spanish text, ALWAYS strip accents and diacritics using `.normalize('NFD').replace(/[\u0300-\u036f]/g, '')`. The Web Speech API and the hardcoded text may differ slightly in accent placement or usage, which breaks strict string matching.

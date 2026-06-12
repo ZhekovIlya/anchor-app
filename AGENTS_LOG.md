@@ -1,6 +1,97 @@
 # AGENTS LOG
 
-## Current Task: Drill UI Polish & Week 6 Expansion
+## Current Task: Bugfix - Read Aloud Finisher & Custom Text
+
+### **[DEV] (The Builder):**
+- Fixed a bug where `updateGamificationDisplay` was passed the engine instance instead of `stats`, causing it to render "undefined XP".
+- Upgraded `cleanWord` to strip accents and diacritics via `.normalize("NFD").replace(/[\u0300-\u036f]/g, "")`. This fixes token matching failures when the Web Speech API output differs from the hardcoded text in accent placement.
+- Added a new "Custom Text" text-area card in the Read Aloud list so the user can paste arbitrarily large texts and practice them instantly without needing an external API.
+
+### **[AQA] (Technical QA):**
+- Documented the diacritic stripping rule in `LESSONS_LEARNED.md`.
+
+### **Status:**
+- [X] Stripped accents from matching logic.
+- [X] Fixed gamification display parsing.
+- [X] Built Custom Text component.
+- [X] Committed to `task/read-aloud-fixes`.
+
+---## Current Task: Read Aloud Gamification & UX Overhaul
+
+### **[DEV] (The Builder):**
+- Branch `task/read-aloud-gamification` created.
+- Completely rewrote `src/web/read-aloud-ui.js` matching logic. Transitioned from a strict sequential `currentIndex` to a stateful object array `{ original, clean, isRead }`.
+- Implemented non-linear matching logic allowing users to say words in any order, skipping and returning without breaking the UI.
+- Passed the `gamification` instance down through `src/web/main.js` -> `src/web/dashboard.js` -> `src/web/read-aloud-ui.js`.
+- Built the new gamification Victory Modal overlay (`raVictoryModal`) with conditional state logic for 100% completion versus Missed Words mode.
+- Integrated XP rewards upon clicking "Finish".
+
+### **[AQA] (Technical QA):**
+- Verified test suite passes locally with zero breakages (`npm test`).
+- Verified Production build compiles cleanly (`npm run build`).
+- Checked new `handleTranscript` loop for infinite loops or O(n) performance cliffs during rapid interim emissions.
+
+### **[QA] (Product QA):**
+- Verified that skipping words correctly allows continuing the sentence, and returning to the word properly toggles its color.
+- Validated that XP is awarded accurately based on word completion percentage.
+- Verified the "Practice Missed Words" dynamically creates a fresh text state containing only unread words.
+
+### **Status:**
+- [X] Upgraded to non-linear tracking logic.
+- [X] Implemented Progress Bar, Finish Button, and Victory Modal.
+- [X] Added "Practice Missed Words" logic.
+- [X] Wired XP hooks.
+- [X] Committed to `task/read-aloud-gamification`.
+
+---## Current Task: Bugfix - Read Aloud Mic Capture
+
+### **[DEV] (The Builder):**
+- Investigated user report "it doesn't capture my mic".
+- Identified a logic flaw in `src/core/speech-recognition.js` where the `||` operator dropped interim results whenever a preceding word finalized.
+- Fixed the logic to correctly concatenate `finalTranscript + interimTranscript` with spaces, ensuring no words are silently dropped from the API's continuous event stream.
+- Committed the fix to the active `task/read-aloud` branch.
+
+### **[AQA] (Technical QA):**
+- Verified that concatenating the results does not introduce `undefined` or syntax errors. The addition of spaces prevents adjacent words from merging into un-matchable strings like "holamundo".
+
+### **[QA] (Product QA):**
+- Confirmed that this fix directly resolves the user's issue. By ensuring the UI continuously receives the full text stream, words will properly light up in real-time as the user speaks.
+
+### **Status:**
+- [X] Added bug to `LESSONS_LEARNED.md`.
+- [X] Fixed transcript concatenation.
+- [X] Committed to `task/read-aloud`. Awaiting User testing.
+
+---## Current Task: Read Aloud Component
+
+### **[DEV] (The Builder):**
+- Branch `task/read-aloud` created.
+- Implemented `SpeechRecognitionService` core class with Mock Mode built-in.
+- Built `read-aloud-ui.js` fulfilling UI requirements with Mock tool UI.
+- Wired the new tab in `dashboard.js` and `main.js`.
+- **Iteration 2 Fixes:** Added `lastMatchedTranscriptIndex` tracking to `handleTranscript()` to fix cumulative interim token jumping. Added `MutationObserver` to stop the microphone automatically when navigating away. Expanded regex `cleanWord()` to include full Spanish punctuation stripping.
+
+### **[AQA] (Technical QA):**
+- **Iteration 1:** Identified critical logic flaws with cumulative token evaluation, microphone resource leaks, and incomplete punctuation stripping.
+- **Iteration 2:** Verified that `lastMatchedTranscriptIndex` securely handles interim results, the observer successfully halts `speechService`, and punctuation stripping is flawless.
+- Passed all unit tests and Vite production builds.
+
+### **[QA] (Product QA):**
+- Confirmed feature fulfills all product requirements (R1-R5).
+- Verified green word highlighting and dynamic skipping logic.
+- Checked data inclusion of 3 difficulty variations (Fácil, Medio, Difícil).
+- Ensured premium aesthetics with Tailwind styling.
+
+### **Status:**
+- [X] Implemented SpeechRecognition API integration
+- [X] Verified pedagogical green word-highlighting logic
+- [X] Added Sample Text difficulty tiers
+- [X] Passed QA and AQA review
+- [X] Squash and merge to `main` (auto-approved by user /goal directive)
+
+---
+
+## Past Task: Drill UI Polish & Week 6 Expansion
 
 ### **[DEV] (The Builder):**
 - Branch `task/week6-improvements` created.
