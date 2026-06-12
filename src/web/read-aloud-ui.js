@@ -79,22 +79,60 @@ export function startReadAloud(container, item, gamification, phraseBank, onBack
   activeContainer = container;
   onBackCallback = onBack;
   
-  wordObjects = [];
+  const vocabLookup = {};
+  if (item.vocabulary) {
+    Object.keys(item.vocabulary).forEach(k => {
+      vocabLookup[cleanWord(k)] = item.vocabulary[k];
+      vocabLookup[k] = item.vocabulary[k];
+    });
+  }
+  item.vocabularyLookup = vocabLookup;
   
-  if (customText) {
-    let pIdx = 0;
-    wordObjects = customText.split(/\s+/).map((w, index) => {
-      const wo = { id: index, original: w, clean: cleanWord(w), isRead: false, phraseIndex: pIdx };
-      if (w.match(/[.!?]+$/)) pIdx++;
-      return wo;
-    });
-  } else {
-    let pIdx = 0;
-    wordObjects = item.text.split(/\s+/).map((w, index) => {
-      const wo = { id: index, original: w, clean: cleanWord(w), isRead: false, phraseIndex: pIdx };
-      if (w.match(/[.!?]+$/)) pIdx++;
-      return wo;
-    });
+  let maxPhraseLength = 1;
+  Object.keys(vocabLookup).forEach(k => {
+    const len = k.split(' ').length;
+    if (len > maxPhraseLength) maxPhraseLength = len;
+  });
+  
+  wordObjects = [];
+  const rawText = customText ? customText : item.text;
+  const rawWords = rawText.split(/\s+/);
+  
+  let pIdx = 0;
+  let i = 0;
+  let wordId = 0;
+  
+  while (i < rawWords.length) {
+    let matchedLength = 1;
+    let combinedOriginal = rawWords[i];
+    let combinedClean = cleanWord(rawWords[i]);
+    
+    for (let len = maxPhraseLength; len > 1; len--) {
+      if (i + len <= rawWords.length) {
+        const slice = rawWords.slice(i, i + len);
+        const testClean = slice.map(cleanWord).join(' ');
+        if (item.vocabularyLookup[testClean]) {
+          matchedLength = len;
+          combinedOriginal = slice.join(' ');
+          combinedClean = testClean;
+          break;
+        }
+      }
+    }
+    
+    const wo = {
+      id: wordId++,
+      original: combinedOriginal,
+      clean: combinedClean,
+      isRead: false,
+      phraseIndex: pIdx,
+      wordCount: matchedLength
+    };
+    
+    if (rawWords[i + matchedLength - 1].match(/[.!?]+$/)) pIdx++;
+    
+    wordObjects.push(wo);
+    i += matchedLength;
   }
   
   lastMatchedTranscriptIndex = -1;
@@ -104,8 +142,6 @@ export function startReadAloud(container, item, gamification, phraseBank, onBack
 }
 
 function renderReadingView() {
-  const progressPercent = 0;
-  
   activeContainer.innerHTML = `
     <!-- Header -->
     <div class="flex items-center justify-between mb-4 pb-4 border-b border-surface-container-highest dark:border-stone-800">
@@ -132,7 +168,7 @@ function renderReadingView() {
     </div>
 
     <!-- Text Container -->
-    <div id="raTextContainer" class="font-body text-2xl md:text-3xl leading-relaxed text-on-surface-variant dark:text-stone-400 mb-8 p-6 bg-surface-container-lowest dark:bg-stone-850 rounded-xl border border-outline-variant/20 dark:border-stone-800 transition-all relative">
+    <div id="raTextContainer" class="font-body text-2xl md:text-3xl leading-relaxed text-on-surface-variant dark:text-stone-400 mb-8 p-6 bg-surface-container-lowest dark:bg-stone-850 rounded-xl border border-outline-variant/20 dark:border-stone-800 transition-all relative z-10">
     </div>
 
     <!-- Controls -->
@@ -150,22 +186,6 @@ function renderReadingView() {
     
     <div id="raStatus" class="mt-4 text-center font-label text-sm text-on-surface-variant dark:text-stone-400 hidden">
       Listening... Speak clearly. You can skip words and return to them.
-    </div>
-
-    <!-- Add to Vocab Banner (Fixed Bottom) -->
-    <div id="raAddVocabBanner" class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-stone-900 border-t border-primary/20 dark:border-emerald-500/30 p-4 transform translate-y-full transition-transform duration-300 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
-      <div class="flex-1 text-center sm:text-left">
-        <p id="raBannerWord" class="font-headline text-lg sm:text-xl font-bold text-on-surface dark:text-stone-100"></p>
-        <p id="raBannerTrans" class="font-body text-sm sm:text-base text-primary dark:text-emerald-400 mt-1"></p>
-      </div>
-      <div class="flex gap-3 justify-center w-full sm:w-auto">
-        <button id="raBannerAddBtn" class="px-6 py-3 bg-primary dark:bg-emerald-600 text-on-primary rounded-xl font-label font-bold hover:opacity-90 transition-opacity flex items-center justify-center shadow-md gap-2">
-          <span class="material-symbols-outlined">add</span> Add to Vocab
-        </button>
-        <button id="raBannerCloseVocabBtn" class="p-3 bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-center">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
     </div>
 
     <!-- Victory Modal Overlay -->
@@ -203,52 +223,85 @@ function renderReadingView() {
   `;
 
   const textContainer = activeContainer.querySelector('#raTextContainer');
-  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text">${wo.original}</span>`).join(' ');
+  textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text relative">${wo.original}</span>`).join(' ');
   updateFocusVisuals();
 
-  const addBanner = activeContainer.querySelector('#raAddVocabBanner');
-  const bannerWord = activeContainer.querySelector('#raBannerWord');
-  const bannerTrans = activeContainer.querySelector('#raBannerTrans');
-  const bannerAddBtn = activeContainer.querySelector('#raBannerAddBtn');
-  const bannerCloseBtn = activeContainer.querySelector('#raBannerCloseVocabBtn');
-
-  if (bannerCloseBtn) {
-    bannerCloseBtn.onclick = () => addBanner.classList.add('translate-y-full');
-  }
+  let activeTooltip = null;
 
   textContainer.addEventListener('click', (e) => {
+    if (activeTooltip) {
+      activeTooltip.remove();
+      activeTooltip = null;
+    }
+
     if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
       const wordId = parseInt(e.target.id.replace('ra-word-', ''));
       const wo = wordObjects.find(w => w.id === wordId);
       if (wo) {
-        speakAnswer(wo.original, () => {});
+        // Speak just the clean version or original without punctuation
+        const textToSpeak = wo.original.replace(/[.,;:"'!?¿¡-]/g, '');
+        speakAnswer(textToSpeak, () => {});
 
         // Find translation
         let trans = null;
-        if (activeParagraph.vocabulary) {
-          trans = activeParagraph.vocabulary[wo.clean];
+        if (activeParagraph.vocabularyLookup) {
+          trans = activeParagraph.vocabularyLookup[wo.clean];
         }
         
-        if (trans && addBanner) {
-          bannerWord.textContent = wo.original;
-          bannerTrans.textContent = trans;
+        if (trans) {
+          // Create tooltip
+          const tooltip = document.createElement('div');
+          tooltip.className = 'absolute z-50 bg-surface-container-highest dark:bg-stone-800 rounded-xl shadow-xl border border-outline-variant/30 dark:border-stone-700 p-3 flex flex-col gap-2 min-w-[160px] animate-in fade-in zoom-in duration-200 cursor-default';
           
-          bannerAddBtn.innerHTML = `<span class="material-symbols-outlined">add</span> Add to Vocab`;
-          bannerAddBtn.disabled = false;
+          tooltip.innerHTML = `
+            <div class="flex justify-between items-start gap-4">
+              <div>
+                <p class="font-headline text-base font-bold text-on-surface dark:text-stone-100">${textToSpeak}</p>
+                <p class="font-body text-sm text-primary dark:text-emerald-400">${trans}</p>
+              </div>
+              <button class="ra-tooltip-close p-1 -mr-2 -mt-2 text-on-surface-variant hover:text-on-surface dark:text-stone-400 dark:hover:text-stone-200">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+            <button class="ra-tooltip-add w-full mt-1 bg-surface-variant dark:bg-stone-700 hover:bg-primary hover:text-on-primary dark:hover:bg-emerald-600 dark:text-stone-200 text-xs font-label font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">add</span> Add to Vocab
+            </button>
+          `;
           
-          bannerAddBtn.onclick = () => {
+          textContainer.appendChild(tooltip);
+          activeTooltip = tooltip;
+          
+          // Positioning inside textContainer
+          const rect = e.target.getBoundingClientRect();
+          const containerRect = textContainer.getBoundingClientRect();
+          
+          tooltip.style.top = `${rect.bottom - containerRect.top + textContainer.scrollTop + 8}px`;
+          
+          let leftPos = rect.left - containerRect.left + (rect.width / 2) - (160 / 2); // approximate tooltip width
+          // clamp to edges
+          if (leftPos < 0) leftPos = 0;
+          if (leftPos + 160 > containerRect.width) leftPos = containerRect.width - 160;
+          
+          tooltip.style.left = `${leftPos}px`;
+          
+          tooltip.querySelector('.ra-tooltip-close').onclick = (ev) => {
+            ev.stopPropagation();
+            tooltip.remove();
+            activeTooltip = null;
+          };
+          
+          const addBtn = tooltip.querySelector('.ra-tooltip-add');
+          addBtn.onclick = (ev) => {
+            ev.stopPropagation();
             const saved = localStorageAdapter.load('anchor_saved_words') || [];
             if (!saved.find(sw => sw.es === wo.clean)) {
               saved.push({ es: wo.clean, prompt: trans });
               localStorageAdapter.save('anchor_saved_words', saved);
             }
-            bannerAddBtn.innerHTML = `<span class="material-symbols-outlined">check</span> Added!`;
-            bannerAddBtn.disabled = true;
+            addBtn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span> Added!`;
+            addBtn.className = 'ra-tooltip-add w-full mt-1 bg-primary text-on-primary dark:bg-emerald-600 text-xs font-label font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors';
+            setTimeout(() => { if (activeTooltip === tooltip) { tooltip.remove(); activeTooltip = null; } }, 1500);
           };
-          
-          addBanner.classList.remove('translate-y-full');
-        } else if (addBanner) {
-          addBanner.classList.add('translate-y-full');
         }
       }
     }
@@ -350,16 +403,24 @@ function handleTranscript(transcript) {
   prevSpokenWords = spokenWords;
   
   for (let t = lastMatchedTranscriptIndex + 1; t < spokenWords.length; t++) {
-    const spoken = spokenWords[t];
-    
-    // STRICT MATCHING: Find the EXACT NEXT unread word
     const nextUnreadIndex = wordObjects.findIndex(wo => !wo.isRead);
     if (nextUnreadIndex === -1) break; // All done
     
     const targetWord = wordObjects[nextUnreadIndex];
-    if (targetWord.clean === spoken) {
+    const targetCleanWords = targetWord.clean.split(' ');
+    
+    let match = true;
+    for (let j = 0; j < targetCleanWords.length; j++) {
+      if (t + j >= spokenWords.length || spokenWords[t + j] !== targetCleanWords[j]) {
+        match = false;
+        break;
+      }
+    }
+    
+    if (match) {
       targetWord.isRead = true;
-      lastMatchedTranscriptIndex = t;
+      lastMatchedTranscriptIndex = t + targetCleanWords.length - 1;
+      t = lastMatchedTranscriptIndex; // advance
     }
   }
 
@@ -380,11 +441,11 @@ function updateFocusVisuals() {
     if (!el) return;
     
     if (wo.phraseIndex < activePhraseIndex) {
-      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface-variant dark:text-stone-400'}`;
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text relative ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface-variant dark:text-stone-400'}`;
     } else if (wo.phraseIndex === activePhraseIndex) {
-      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface dark:text-stone-100'}`;
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text relative ${wo.isRead ? 'text-primary dark:text-emerald-400 font-bold' : 'text-on-surface dark:text-stone-100'}`;
     } else {
-      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text text-on-surface-variant dark:text-stone-400`;
+      el.className = `transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text relative text-on-surface-variant dark:text-stone-400`;
     }
   });
 }
@@ -411,9 +472,6 @@ function finishReading() {
       // Ignore
     }
   }
-
-  const addBanner = document.getElementById('raAddVocabBanner');
-  if (addBanner) addBanner.classList.add('translate-y-full');
 
   const readCount = wordObjects.filter(wo => wo.isRead).length;
   const totalCount = wordObjects.length;
