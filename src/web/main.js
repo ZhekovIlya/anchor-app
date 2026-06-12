@@ -12,6 +12,7 @@ import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHom
 import { startDrill } from './drill-ui.js';
 import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
 import { renderReadAloudList, startReadAloud } from './read-aloud-ui.js';
+import { renderStatsTab } from './stats-dashboard.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 import { createGamification } from '../core/gamification.js';
@@ -107,6 +108,12 @@ const elements = {
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
   themeSelect: document.getElementById('themeSelect'),
+
+  // Profile Modal
+  profileBtn: document.getElementById('profileBtn'),
+  profileModal: document.getElementById('profileModal'),
+  closeProfileBtn: document.getElementById('closeProfileBtn'),
+  profileStatsContainer: document.getElementById('profileStatsContainer'),
 
   // Theory Modal (legacy — for sentence week theory images)
   theoryModal: document.getElementById('theoryModal'),
@@ -342,6 +349,32 @@ function closeTheoryModal() {
 elements.closeTheoryModalBtn.addEventListener('click', closeTheoryModal);
 elements.theoryModal.addEventListener('click', (e) => {
   if (e.target === elements.theoryModal) closeTheoryModal();
+});
+
+// ========================
+// PROFILE MODAL
+// ========================
+
+function openProfileModal() {
+  renderStatsTab(elements.profileStatsContainer, gamification, srsSentences, srsWords, phraseBank, wordBank, data, localStorageAdapter);
+  elements.profileModal.classList.remove('pointer-events-none');
+  void elements.profileModal.offsetWidth; // force reflow
+  elements.profileModal.classList.remove('opacity-0');
+  const innerDiv = elements.profileModal.querySelector('div');
+  if (innerDiv) innerDiv.classList.remove('translate-x-full');
+}
+
+function closeProfileModal() {
+  elements.profileModal.classList.add('opacity-0');
+  elements.profileModal.classList.add('pointer-events-none');
+  const innerDiv = elements.profileModal.querySelector('div');
+  if (innerDiv) innerDiv.classList.add('translate-x-full');
+}
+
+elements.profileBtn.addEventListener('click', openProfileModal);
+elements.closeProfileBtn.addEventListener('click', closeProfileModal);
+elements.profileModal.addEventListener('click', (e) => {
+  if (e.target === elements.profileModal) closeProfileModal();
 });
 
 // ========================

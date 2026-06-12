@@ -35,8 +35,30 @@ export function renderReadAloudList(container, readAloudData, gamification, onSt
 
   const listContainer = container.querySelector('#readAloudListContainer');
 
+  // Load read progress from storage
+  const history = localStorageAdapter.load('anchor_read_progress') || {};
+
   // Hardcoded Data Cards
   readAloudData.forEach((item) => {
+    const itemHistory = history[item.id] || { maxScore: 0, perfectCount: 0 };
+    let badgeHtml = '';
+    
+    if (itemHistory.perfectCount >= 5) {
+      badgeHtml = `
+        <div class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#fef08a] dark:bg-yellow-600/30 text-[#ca8a04] dark:text-amber-400 mt-2 w-fit">
+          <span class="font-label text-[10px] font-bold uppercase tracking-wider">Mastered</span>
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+        </div>
+      `;
+    } else if (itemHistory.maxScore >= 90) {
+      badgeHtml = `
+        <div class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#dcfce7] dark:bg-emerald-600/30 text-[#16a34a] dark:text-emerald-400 mt-2 w-fit">
+          <span class="font-label text-[10px] font-bold uppercase tracking-wider">Completed</span>
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        </div>
+      `;
+    }
+
     const card = document.createElement('div');
     card.className = 'group bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 cursor-pointer border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 transition-colors duration-300';
     card.innerHTML = `
@@ -45,6 +67,7 @@ export function renderReadAloudList(container, readAloudData, gamification, onSt
         <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-surface-variant dark:bg-stone-800 text-on-surface-variant dark:text-stone-400">${item.difficulty}</span>
       </div>
       <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 line-clamp-2">${item.text}</p>
+      ${badgeHtml}
     `;
     card.onclick = () => startReadAloud(container, item, gamification, () => renderReadAloudList(container, readAloudData, gamification, onStartReading));
     listContainer.appendChild(card);
@@ -353,12 +376,37 @@ function finishReading() {
     updateGamificationDisplay(currentGamification.getStats());
   }
   
+  // Save Progress
+  const history = localStorageAdapter.load('anchor_read_progress') || {};
+  if (!history[activeParagraph.id]) history[activeParagraph.id] = { maxScore: 0, perfectCount: 0 };
+  
+  const textHist = history[activeParagraph.id];
+  if (accuracy > textHist.maxScore) {
+    textHist.maxScore = accuracy;
+  }
+  if (accuracy === 100) {
+    textHist.perfectCount++;
+  }
+  localStorageAdapter.save('anchor_read_progress', history);
+  
   // Show Modal
   const modal = document.getElementById('raVictoryModal');
   const modalInner = modal.querySelector('div');
+  const titleEl = modal.querySelector('h3');
   const scoreEl = document.getElementById('raVictoryScore');
   const xpEl = document.getElementById('raVictoryXp');
   const completeBtn = document.getElementById('raCompleteBtn');
+  
+  if (accuracy >= 90) {
+    titleEl.textContent = 'Great Job!';
+    titleEl.className = 'font-headline text-3xl font-bold text-primary dark:text-emerald-400 mb-1';
+  } else if (accuracy >= 60) {
+    titleEl.textContent = 'Good Practice!';
+    titleEl.className = 'font-headline text-3xl font-bold text-on-surface dark:text-stone-100 mb-1';
+  } else {
+    titleEl.textContent = 'Keep Trying!';
+    titleEl.className = 'font-headline text-3xl font-bold text-amber-500 dark:text-amber-400 mb-1';
+  }
   
   scoreEl.textContent = `You hit ${accuracy}% accuracy.`;
   xpEl.textContent = `+${xpAwarded} XP`;
