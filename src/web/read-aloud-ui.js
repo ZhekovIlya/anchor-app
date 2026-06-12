@@ -34,38 +34,6 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
 
   const listContainer = container.querySelector('#readAloudListContainer');
 
-  // Vocab Story Generator Card
-  if (phraseBank && Object.keys(phraseBank).length > 0) {
-    const vocabCard = document.createElement('div');
-    vocabCard.className = 'group bg-gradient-to-r from-primary/10 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 rounded-xl p-6 cursor-pointer border border-primary/30 dark:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden';
-    vocabCard.innerHTML = `
-      <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 dark:bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
-      <div class="flex justify-between items-center mb-2 relative z-10">
-        <h3 class="font-headline text-xl font-bold text-primary dark:text-emerald-400 flex items-center gap-2">
-          <span class="material-symbols-outlined">auto_awesome</span> Dynamic Vocab Story
-        </h3>
-        <span class="font-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-primary dark:bg-emerald-600 text-on-primary shadow-sm">AI Story</span>
-      </div>
-      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-4 relative z-10">
-        A dynamically generated paragraph built entirely from phrases you've already learned. Click any word while reading to see its full sentence translation!
-      </p>
-      <button id="raVocabStartBtn" class="bg-primary dark:bg-emerald-600 text-on-primary px-6 py-2.5 rounded-xl font-label font-bold tracking-wide hover:opacity-90 transition-opacity flex items-center justify-center gap-2 w-full sm:w-auto shadow-md relative z-10">
-        Generate & Read
-      </button>
-    `;
-    listContainer.appendChild(vocabCard);
-
-    vocabCard.querySelector('#raVocabStartBtn').onclick = (e) => {
-      e.stopPropagation();
-      const generated = generateVocabStory(phraseBank);
-      startReadAloud(container, generated, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
-    };
-    vocabCard.onclick = () => {
-      const generated = generateVocabStory(phraseBank);
-      startReadAloud(container, generated, gamification, phraseBank, () => renderReadAloudList(container, readAloudData, gamification, phraseBank));
-    };
-  }
-
   // Hardcoded Data Cards
   readAloudData.forEach((item) => {
     const card = document.createElement('div');
@@ -111,46 +79,6 @@ export function renderReadAloudList(container, readAloudData, gamification, phra
   };
 }
 
-function generateVocabStory(phraseBank) {
-  const phraseArray = Object.values(phraseBank);
-  const seedCandidates = ['perro', 'mañana', 'comer', 'casa', 'amigo', 'gato', 'trabajo', 'familia', 'tarde', 'siempre', 'nunca'];
-  const seed = seedCandidates[Math.floor(Math.random() * seedCandidates.length)];
-  
-  // Find phrases containing the seed
-  const matchingPhrases = phraseArray.filter(p => cleanWord(p.es).includes(seed));
-  let selected = [...matchingPhrases].sort(() => Math.random() - 0.5).slice(0, 3);
-  
-  // Pad with random phrases to reach 5-6 total
-  const remaining = phraseArray.filter(p => !selected.includes(p)).sort(() => Math.random() - 0.5);
-  const padCount = Math.max(0, 5 - selected.length);
-  selected = [...selected, ...remaining.slice(0, padCount)].sort(() => Math.random() - 0.5);
-  
-  const storyWords = [];
-  const promptLang = getPromptLang();
-  
-  selected.forEach(p => {
-    const promptText = p[promptLang] || p.ru;
-    const words = p.es.split(/\s+/);
-    words.forEach(w => {
-      storyWords.push({
-        word: w,
-        phraseEs: p.es,
-        phrasePrompt: promptText
-      });
-    });
-  });
-  
-  const capitalizedSeed = seed.charAt(0).toUpperCase() + seed.slice(1);
-  return {
-    id: 'vocab-story',
-    title: `Vocab Story: ${capitalizedSeed}`,
-    difficulty: 'Dynamic',
-    text: storyWords.map(sw => sw.word).join(' '),
-    isVocabStory: true,
-    storyWords: storyWords
-  };
-}
-
 export function startReadAloud(container, item, gamification, phraseBank, onBack, customText = null) {
   activeParagraph = item;
   currentGamification = gamification;
@@ -165,24 +93,6 @@ export function startReadAloud(container, item, gamification, phraseBank, onBack
       const wo = { id: index, original: w, clean: cleanWord(w), isRead: false, phraseIndex: pIdx };
       if (w.match(/[.!?]+$/)) pIdx++;
       return wo;
-    });
-  } else if (item.isVocabStory) {
-    let pIdx = 0;
-    let lastPhraseEs = null;
-    item.storyWords.forEach((sw, index) => {
-      if (lastPhraseEs !== null && sw.phraseEs !== lastPhraseEs) {
-        pIdx++;
-      }
-      lastPhraseEs = sw.phraseEs;
-      wordObjects.push({
-        id: index,
-        original: sw.word,
-        clean: cleanWord(sw.word),
-        isRead: false,
-        phraseIndex: pIdx,
-        contextEs: sw.phraseEs,
-        contextPrompt: sw.phrasePrompt
-      });
     });
   } else {
     let pIdx = 0;
@@ -248,22 +158,6 @@ function renderReadingView() {
       Listening... Speak clearly. You can skip words and return to them.
     </div>
 
-    <!-- Translation Popover Banner (Fixed Bottom) -->
-    <div id="raTranslationBanner" class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest dark:bg-stone-900 border-t border-primary/20 dark:border-emerald-500/30 p-4 transform translate-y-full transition-transform duration-300 z-40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
-      <div class="flex-1 text-center sm:text-left">
-        <p id="raBannerEs" class="font-headline text-lg sm:text-xl font-bold text-on-surface dark:text-stone-100"></p>
-        <p id="raBannerPrompt" class="font-body text-sm sm:text-base text-primary dark:text-emerald-400 mt-1"></p>
-      </div>
-      <div class="flex gap-3 justify-center w-full sm:w-auto">
-        <button id="raBannerReplayBtn" class="px-6 py-3 bg-primary dark:bg-emerald-600 text-on-primary rounded-xl font-label font-bold hover:opacity-90 transition-opacity flex items-center justify-center shadow-md gap-2">
-          <span class="material-symbols-outlined">volume_up</span> Replay
-        </button>
-        <button id="raBannerCloseBtn" class="p-3 bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-center">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-    </div>
-
     <!-- Victory Modal Overlay -->
     <div id="raVictoryModal" class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
       <div class="bg-surface-container-lowest dark:bg-stone-900 rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-outline-variant/20 dark:border-stone-800 scale-95 transition-transform duration-300 relative overflow-hidden">
@@ -302,50 +196,11 @@ function renderReadingView() {
   textContainer.innerHTML = wordObjects.map(wo => `<span id="ra-word-${wo.id}" class="transition-all duration-500 cursor-pointer hover:underline p-0.5 rounded inline-block select-text">${wo.original}</span>`).join(' ');
   updateFocusVisuals();
 
-  // Popover Banner Elements
-  const banner = activeContainer.querySelector('#raTranslationBanner');
-  const bannerEs = activeContainer.querySelector('#raBannerEs');
-  const bannerPrompt = activeContainer.querySelector('#raBannerPrompt');
-  const bannerReplayBtn = activeContainer.querySelector('#raBannerReplayBtn');
-  const bannerCloseBtn = activeContainer.querySelector('#raBannerCloseBtn');
-
-  const closeBanner = () => {
-    banner.classList.add('translate-y-full');
-    // Remove highlight from all words
-    wordObjects.forEach(w => {
-      const el = document.getElementById(`ra-word-${w.id}`);
-      if (el) el.classList.remove('bg-primary/20', 'dark:bg-emerald-500/30');
-    });
-  };
-
-  bannerCloseBtn.onclick = closeBanner;
-
   textContainer.addEventListener('click', (e) => {
     if (e.target.tagName === 'SPAN' && e.target.id.startsWith('ra-word-')) {
       const wordId = parseInt(e.target.id.replace('ra-word-', ''));
       const wo = wordObjects.find(w => w.id === wordId);
-      
-      if (!wo) return;
-
-      closeBanner(); // Clear existing highlights
-
-      if (wo.contextEs && wo.contextPrompt) {
-        // Highlight the full sentence
-        wordObjects.forEach(w => {
-          if (w.contextEs === wo.contextEs) {
-            const el = document.getElementById(`ra-word-${w.id}`);
-            if (el) el.classList.add('bg-primary/20', 'dark:bg-emerald-500/30');
-          }
-        });
-
-        bannerEs.textContent = wo.contextEs;
-        bannerPrompt.textContent = wo.contextPrompt;
-        bannerReplayBtn.onclick = () => speakAnswer(wo.contextEs, () => {});
-        
-        banner.classList.remove('translate-y-full');
-        speakAnswer(wo.contextEs, () => {});
-      } else {
-        // Fallback: Just pronounce the single word
+      if (wo) {
         speakAnswer(wo.original, () => {});
       }
     }
@@ -509,20 +364,12 @@ function finishReading() {
     }
   }
 
-  const banner = document.getElementById('raTranslationBanner');
-  if (banner) banner.classList.add('translate-y-full');
-  
-  wordObjects.forEach(w => {
-    const el = document.getElementById(`ra-word-${w.id}`);
-    if (el) el.classList.remove('bg-primary/20', 'dark:bg-emerald-500/30');
-  });
-  
   const readCount = wordObjects.filter(wo => wo.isRead).length;
   const totalCount = wordObjects.length;
   const accuracy = totalCount === 0 ? 0 : Math.round((readCount / totalCount) * 100);
   
   // Award XP
-  const xpAwarded = Math.max(5, Math.round((readCount / 2))); // 1 XP per 2 words, min 5
+  const xpAwarded = readCount === 0 ? 0 : Math.max(5, Math.round((readCount / 2))); // 1 XP per 2 words, min 5 if > 0
   if (currentGamification) {
     currentGamification.addXP(xpAwarded);
     updateGamificationDisplay(currentGamification.getStats());
