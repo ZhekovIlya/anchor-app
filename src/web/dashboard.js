@@ -193,7 +193,7 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
   } else if (activeHomeTab === 'words') {
     renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick);
   } else if (activeHomeTab === 'readAloud') {
-    callbacks.onReadAloudTabClick(topicsContainer, data.readAloud);
+    callbacks.onReadAloudTabClick(topicsContainer, data.readAloud, callbacks.gamification);
   } else if (activeHomeTab === 'stats') {
     renderStatsTab(topicsContainer, callbacks.gamification, srsSentences, srsWords, phraseBank, wordBank, data, callbacks.storageAdapter);
   }
