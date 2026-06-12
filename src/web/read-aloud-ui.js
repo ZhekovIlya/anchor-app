@@ -245,20 +245,29 @@ function renderReadingView() {
 
         // Find translation
         let trans = null;
+        let matchedEs = textToSpeak;
         if (activeParagraph.vocabularyLookup) {
           trans = activeParagraph.vocabularyLookup[wo.clean];
+          if (!trans) {
+            // Fuzzy match: Find first phrase in dictionary that contains this word
+            const matchKey = Object.keys(activeParagraph.vocabularyLookup).find(k => k.split(' ').includes(wo.clean));
+            if (matchKey) {
+              trans = activeParagraph.vocabularyLookup[matchKey];
+              matchedEs = matchKey;
+            }
+          }
         }
         
         if (trans) {
           // Create tooltip
           const tooltip = document.createElement('div');
-          tooltip.className = 'absolute z-50 bg-surface-container-highest dark:bg-stone-800 rounded-xl shadow-xl border border-outline-variant/30 dark:border-stone-700 p-3 flex flex-col gap-2 min-w-[160px] animate-in fade-in zoom-in duration-200 cursor-default';
+          tooltip.className = 'absolute z-50 bg-surface-container-highest dark:bg-stone-800 rounded-xl shadow-xl border border-outline-variant/30 dark:border-stone-700 p-3 flex flex-col gap-2 min-w-[160px] max-w-[280px] animate-in fade-in zoom-in duration-200 cursor-default';
           
           tooltip.innerHTML = `
             <div class="flex justify-between items-start gap-4">
               <div>
-                <p class="font-headline text-base font-bold text-on-surface dark:text-stone-100">${textToSpeak}</p>
-                <p class="font-body text-sm text-primary dark:text-emerald-400">${trans}</p>
+                <p class="font-headline text-base font-bold text-on-surface dark:text-stone-100 leading-tight mb-1">${matchedEs}</p>
+                <p class="font-body text-sm text-primary dark:text-emerald-400 leading-tight">${trans}</p>
               </div>
               <button class="ra-tooltip-close p-1 -mr-2 -mt-2 text-on-surface-variant hover:text-on-surface dark:text-stone-400 dark:hover:text-stone-200">
                 <span class="material-symbols-outlined text-sm">close</span>
@@ -295,8 +304,8 @@ function renderReadingView() {
           addBtn.onclick = (ev) => {
             ev.stopPropagation();
             const saved = localStorageAdapter.load('anchor_saved_words') || [];
-            if (!saved.find(sw => sw.es === wo.clean)) {
-              saved.push({ es: wo.clean, prompt: trans });
+            if (!saved.find(sw => sw.es === matchedEs)) {
+              saved.push({ es: matchedEs, prompt: trans });
               localStorageAdapter.save('anchor_saved_words', saved);
             }
             addBtn.innerHTML = `<span class="material-symbols-outlined text-sm">check</span> Added!`;
