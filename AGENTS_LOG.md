@@ -1,6 +1,43 @@
 # AGENTS LOG
 
-## Current Task: Bugfix - Finish Button Crash & Word Pronunciation
+## Current Task: Centralized Vocabulary Unification
+
+### **[DEV] (The Builder):**
+- **Strict Central Vocab:** Completely stripped out the custom `vocabulary` dictionaries from the 10 graded texts. The reading feature now dynamically extracts known words *exclusively* from the app's central `data.js` (`phraseBank`).
+- **Ignored Words:** If a word in a text isn't in your main `phraseBank`, it is strictly ignored for translation/practice purposes (no tooltip).
+- **UI Tweaks:** Renamed tooltip button to "Add to Practice".
+- **Dynamic Practice Card:** Moved the "Practice Saved Words" card to the very top of the Read Aloud list so you can immediately practice the words you saved.
+
+### **[AQA] (Technical QA):**
+- Verified dynamic phrase generation from `phraseBank`.
+- Verified `practiceCard` renders at `firstChild` index.
+- Tests passed. Build successful.
+
+### **Status:**
+- [X] Global `phraseBank` unified.
+- [X] Unknown words skipped.
+- [X] UI buttons renamed.
+- [X] Card moved to top.
+- [X] Committed to `task/read-aloud-story-generator`.
+
+---
+
+### **[DEV] (The Builder):**
+- Resolved the Finish button UI conflict by replacing Tailwind's `hidden` with `pointer-events-none` mapping during opacity transitions. The modal is no longer invisibly blocking the screen.
+- Built a `generateVocabStory` factory that dynamically stitches 5-8 random phrases from the user's `phraseBank` into a continuous reading paragraph.
+- Engineered a Translation Popover Banner fixed to the bottom of the screen. When a word inside an AI Story is clicked, it highlights the *entire source sentence* in the text, displays its precise contextual translation, and offers a Replay button.
+
+### **[AQA] (Technical QA):**
+- Verified object mappings between `storyWords` and sentence-level highlights. All translations resolve successfully.
+- Tests passed. `npm run build` compiled cleanly.
+
+### **Status:**
+- [X] Finish Button fully unblocked and verified.
+- [X] Vocab Story Card deployed.
+- [X] Contextual Translation Popover deployed.
+- [X] Committed to `task/read-aloud-story-generator`.
+
+---## Current Task: Bugfix - Finish Button Crash & Word Pronunciation
 
 ### **[DEV] (The Builder):**
 - Fixed a silent crash triggered by `speechService.stop()`. If the Web Speech API was not actively recording when the Finish button was pressed, it threw an `InvalidStateError`, aborting the Victory Modal display. Wrapped `this.recognition.stop()` in a `try...catch`.
