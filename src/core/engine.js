@@ -22,6 +22,27 @@ function arraysEqual(a, b) {
   return true;
 }
 
+function levenshtein(a, b) {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+        );
+      }
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
 export function createDrillEngine(options) {
   const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE } = options;
 
@@ -70,28 +91,30 @@ export function createDrillEngine(options) {
 
     const isCopyStage = getStage();
     if (isCopyStage) {
-      currentInteractionMode = 'TYPE';
+      const hasSpeechAPI = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+      if (hasSpeechAPI && Math.random() < 0.3) {
+        currentInteractionMode = 'SPEECH';
+      } else {
+        currentInteractionMode = 'TYPE';
+      }
       currentQuestionData = null;
       return;
     }
 
-    // Recall stage: 70% Type, 15% MC, 15% Word Order
-    const r = Math.random();
-    if (r < 0.70) {
-      currentInteractionMode = 'TYPE';
+    // Recall Stage: Mix of typing, multiple choice, word order, and listening
+    const rand = Math.random();
+    if (rand < 0.15) {
+      currentInteractionMode = 'LISTENING';
       currentQuestionData = null;
-    } else if (r < 0.85) {
+    } else if (rand < 0.35) {
+      currentInteractionMode = 'WORD_ORDER';
+      currentQuestionData = generateWOData(currentPhrase);
+    } else if (rand < 0.5) {
       currentInteractionMode = 'MC';
       currentQuestionData = generateMCData(currentPhrase);
     } else {
-      const words = currentPhrase.es.split(' ');
-      if (words.length > 1) {
-        currentInteractionMode = 'WORD_ORDER';
-        currentQuestionData = generateWOData(currentPhrase);
-      } else {
-        currentInteractionMode = 'TYPE';
-        currentQuestionData = null;
-      }
+      currentInteractionMode = 'TYPE';
+      currentQuestionData = null;
     }
   }
 
@@ -122,7 +145,25 @@ export function createDrillEngine(options) {
 
   function generateWOData(correctPhrase) {
     const correctOrder = correctPhrase.es.split(' ');
-    const shuffledWords = [...correctOrder];
+    
+    // Build a pool of distractors from all phrases
+    const allWords = [];
+    phrases.forEach(p => {
+      if (p.es !== correctPhrase.es) {
+        allWords.push(...p.es.split(' '));
+      }
+    });
+    
+    // Pick 2 random distractors
+    const extraWords = [];
+    for (let i = 0; i < 2; i++) {
+      if (allWords.length > 0) {
+        const randWord = allWords[Math.floor(Math.random() * allWords.length)];
+        extraWords.push(randWord);
+      }
+    }
+
+    const shuffledWords = [...correctOrder, ...extraWords];
     let attempts = 0;
     do {
       shuffle(shuffledWords);
@@ -152,9 +193,26 @@ export function createDrillEngine(options) {
       });
     },
 
-    checkAnswer(userInput) {
-      const correct = userInput.trim().toLowerCase() === currentPhrase.es.toLowerCase();
-      return { correct, phrase: currentPhrase };
+    checkAnswer(userInput, isSubmit = false) {
+      const cleanInput = userInput.trim().toLowerCase();
+      const cleanTarget = currentPhrase.es.trim().toLowerCase();
+      
+      const exactMatch = cleanInput === cleanTarget;
+      if (exactMatch) return { correct: true, phrase: currentPhrase, exact: true };
+      
+      if (isSubmit) {
+        const superCleanInput = cleanInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').replace(/\s+/g, ' ').trim();
+        const superCleanTarget = cleanTarget.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').replace(/\s+/g, ' ').trim();
+        
+        const dist = levenshtein(superCleanInput, superCleanTarget);
+        const threshold = Math.max(1, Math.floor(superCleanTarget.length / 6));
+        
+        if (dist <= threshold) {
+          return { correct: true, phrase: currentPhrase, exact: false, typo: true };
+        }
+      }
+      
+      return { correct: false, phrase: currentPhrase };
     },
 
     submitMCAnswer(selectedIndex) {

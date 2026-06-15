@@ -92,10 +92,21 @@ export function speakAnswer(text, onDone) {
   const selectedUri = localStorage.getItem(SELECTED_VOICE_KEY);
   if (selectedUri) {
     const voice = voices.find(v => v.voiceURI === selectedUri);
-    if (voice) utterance.voice = voice;
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    }
+  } else {
+    const esEsVoice = voices.find(v => v.lang === 'es-ES' || v.lang === 'es_ES');
+    if (esEsVoice) {
+      utterance.voice = esEsVoice;
+      utterance.lang = 'es-ES';
+    } else {
+      utterance.lang = 'es-ES';
+    }
   }
 
-  utterance.lang = 'es-ES';
+  if (!utterance.lang) utterance.lang = 'es-ES';
   utterance.rate = getSpanishRate();
 
   let isFired = false;
@@ -109,6 +120,37 @@ export function speakAnswer(text, onDone) {
   utterance.onend = finish;
   utterance.onerror = finish;
   setTimeout(finish, Math.max(2000, text.length * 100));
+  window.speechSynthesis.speak(utterance);
+}
+
+/**
+ * Speak the given text slowly (for individual word tap).
+ */
+export function speakSlowly(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  
+  const voices = window.speechSynthesis.getVoices();
+  const selectedUri = localStorage.getItem(SELECTED_VOICE_KEY);
+  if (selectedUri) {
+    const voice = voices.find(v => v.voiceURI === selectedUri);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    }
+  } else {
+    const esEsVoice = voices.find(v => v.lang === 'es-ES' || v.lang === 'es_ES');
+    if (esEsVoice) {
+      utterance.voice = esEsVoice;
+      utterance.lang = 'es-ES';
+    } else {
+      utterance.lang = 'es-ES';
+    }
+  }
+  
+  if (!utterance.lang) utterance.lang = 'es-ES';
+  utterance.rate = getSpanishRate() * 0.75;
   window.speechSynthesis.speak(utterance);
 }
 
@@ -126,7 +168,7 @@ export function initVoiceSelector(selectElement) {
     const voices = getSpanishVoices();
     const currentUri = localStorage.getItem(SELECTED_VOICE_KEY);
 
-    selectElement.innerHTML = '<option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Spanish Voice</option>';
+    selectElement.innerHTML = '<option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Spanish Voice (es-ES)</option>';
     voices.forEach(voice => {
       const option = document.createElement('option');
       option.value = voice.voiceURI;

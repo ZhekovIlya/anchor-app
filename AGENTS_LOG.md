@@ -255,3 +255,291 @@
 - [x] Upgrade Modal Backdrops & Layered Surface Contrast
 - [x] Fix Windows Select Dropdown Contrast
 - [x] squash branch and merge to main
+
+---
+
+## Current Task: Week 7 Content Creation
+
+### **[DEV] (The Builder):**
+- Branch `task/week-7` created.
+- Created `data/sentences/week_7.js` featuring functional Spanish contexts (Bar, Supermarket, Pharmacy, Appointments, Neighbors, Post Office).
+- Ensured exactly 6 phrases per lesson to satisfy the targetStreak math.
+- Maintained the 80/20 rule (new Peninsular Spanish vocabulary like *caña*, *guay*, *tío*, mixed with 80% recycled verbs from Week 4-6).
+- Exported the data module and imported it cleanly in `src/core/data-loader.js`.
+
+### **[AQA] (Technical QA):**
+- Verified strict 6-phrases-per-lesson rule is maintained.
+- Confirmed `export default` format and lack of verb-adjective homonym collisions.
+- No missing imports; `data-loader.js` was updated correctly.
+
+### **[QA] (Product QA):**
+- Validated the 80/20 vocabulary decay distribution.
+- Confirmed grammar strictly utilizes Present tense.
+- Validated Spain expressions and vocabulary per feature requirements.
+
+### **Status:**
+- [X] Branch `task/week-7` created.
+- [X] Created `week_7.js`.
+- [X] Updated `data-loader.js`.
+- [X] Needs testing before commit.
+- [X] Tests passed, committed.
+
+---
+
+## Current Task: Settings & Audio Polish
+
+### **[DEV] (The Builder):**
+- Updated `initVoiceSelector` and `speakAnswer` in `src/web/speech.js` to proactively default to an `es-ES` or `es_ES` voice if the user hasn't explicitly selected one.
+- Implemented `speakSlowly(text)` which forces `rate = 0.5`.
+- Updated `drill-ui.js` to wrap the `ghostText` (during Copy stage/Reveal) and the `feedbackBarSubtitle` (during incorrect answer review) into interactive `<span>` tags.
+- Bound `onclick` to these spans to trigger `speakSlowly(word)`.
+
+### **[AQA] (Technical QA):**
+- Verified DOM rendering of spans; logic explicitly avoids adding `pointer-events-none` to the individual words.
+- Confirmed no syntax errors; `npm test` passes.
+
+### **[QA] (Product QA):**
+- Ensures pedagogical alignment: Peninsular Spanish sounds are prioritized.
+- Provides immediate phonetic correction via tap-to-listen without having to replay the entire sentence.
+
+### **Status:**
+- [X] Default voice logic added.
+- [X] Tap-to-pronounce spans added to UI.
+- [X] Tested and committed to `task/week-7`.
+
+---
+
+## Current Task: "Speak it" Mode (Feature A)
+
+### **[DEV] (The Builder):**
+- Introduced a `SPEECH` interaction mode in `src/core/engine.js` that triggers dynamically during the Copy Stage (~30% probability) if the browser supports `SpeechRecognition`.
+- Updated `index.html` to include a new `speechContainer` overlay featuring a prominent Microphone button and an italicized instructional prompt.
+- Modified `src/web/drill-ui.js` to handle `SPEECH` mode: hiding the type/mc inputs, surfacing the Mic button, and orchestrating `SpeechRecognitionService`.
+- Added word-by-word green/red diffing logic (`handleSpeechResult`) that triggers when the user finishes speaking, with an auto-advance upon 100% success or a "Retry" button upon failure.
+
+### **[AQA] (Technical QA):**
+- Verified `SpeechRecognition` graceful degradation logic (checks `window` context before assigning mode).
+- Verified memory leak prevention by ensuring `speechService.stop()` is explicitly called on correct answers and modal exits.
+- Verified `npm test` and `vite build` complete successfully.
+
+### **[QA] (Product QA):**
+- Confirmed feature meets "100% free to run" constraint by avoiding external TTS APIs.
+- Verified UX: the target phrase is shown (`ghostText`), and the user simply taps the mic to mimic it.
+- Confirmed word-by-word highlighting correctly skips punctuation and accents via `cleanWord` normalization.
+
+### **Status:**
+- [X] Added `SPEECH` mode to engine.
+- [X] Built dedicated Mic UI.
+- [X] Wired diffing/retry logic.
+- [X] Tested and committed to `task/week-7`.
+
+---
+
+## Current Task: Item-Level SRS Enhancements (Feature B)
+
+### **[DEV] (The Builder):**
+- Updated `src/core/srs.js` to attach `isMistake: true` to a phrase's entry when `srs.demote()` is called, and `isMistake: false` when `srs.promote()` is called.
+- Added `getMistakesPhrases()` and `getMistakesCount()` to `srs.js` to query for mistake items.
+- Added a "Practice Mistakes" button next to "Start Session" in `index.html`.
+- Updated `src/web/dashboard.js` and `src/web/main.js` to display the "Practice Mistakes" button only when mistake count > 0, and to wire `onMistakesClick` and `onWordMistakesClick` into the drill engine.
+
+### **[AQA] (Technical QA):**
+- Verified the backwards compatibility of `srs.js` modifications (old local storage entries will just be treated as `isMistake: undefined`, resolving safely to false).
+- Verified `npm test` and `npm run build` succeed with no layout breaks in Vite.
+- Verified handlers successfully construct standalone `mistakes_review` lessons that run safely through `engine.js`.
+
+### **[QA] (Product QA):**
+- Validated UI logic: when there are 0 reviews due but there *are* mistakes, the user sees a specific message ("No reviews due right now, but you have X phrases that need extra practice.") and only the "Practice Mistakes" button.
+- Validated feature aligns with the Leitner SRS constraints cleanly.
+
+### **Status:**
+- [X] Add `isMistake` flag to Leitner buckets.
+- [X] Add "Practice Mistakes" button to Active Recall cards.
+- [X] Wire up sentence/word level UI logic.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: Free-Production Typing Mode (Feature C)
+
+### **[DEV] (The Builder):**
+- Wrote a standard `levenshtein` algorithm inside `src/core/engine.js`.
+- Refactored `activeEngine.checkAnswer(userInput, isSubmit)` to support an explicit "submission" path. 
+- On explicit submission, `userInput` and `target` are stripped of accents, diacritics, and punctuation (`cleanInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "")`).
+- A dynamically calculated threshold (`Math.max(1, Math.floor(target.length / 6))`) dictates how many typos are acceptable.
+- Added a `keydown` listener on `inputField` in `src/web/drill-ui.js` that catches the `Enter` key.
+
+### **[AQA] (Technical QA):**
+- Verified the algorithm prevents out-of-bounds checks and doesn't interfere with the instantaneous strict-matching `oninput` handler.
+- Verified tests and build complete cleanly.
+
+### **[QA] (Product QA):**
+- Validated UX: minor typos (like missing an 'h' or typing 'v' instead of 'b') are gracefully accepted if the user hits `Enter`, flashing an amber corrected text.
+
+### **Status:**
+- [X] Add fuzzy match algorithm.
+- [X] Update engine checker.
+- [X] Bind `Enter` key in UI.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: Listening-First Mode (Feature G)
+
+### **[DEV] (The Builder):**
+- Added a `LISTENING` interaction mode to `src/core/engine.js`, assigning it a 15% probability during the Recall Stage.
+- Modified `src/web/drill-ui.js` to handle `LISTENING` mode:
+  - Bypasses rendering the Russian prompt (`phrase.ru`).
+  - Hides the `ghostText` DOM elements completely.
+  - Replaces the prompt block with a clickable "Listen and type in Spanish" button (featuring a pulsating speaker icon).
+  - Skips `speakPrompt()` and instantly invokes `speakAnswer(phrase.es)` to play the target Spanish audio.
+  - Re-uses the newly built Free-Production Typing module (with fuzzy-matching) for input validation.
+
+### **[AQA] (Technical QA):**
+- Verified the state machine seamlessly transitions into and out of `LISTENING` mode without leaving DOM artifacts.
+- Verified audio invocation avoids collisions with the standard translation prompt audio.
+- Verified `npm test` and `npm run build` succeed.
+
+### **[QA] (Product QA):**
+- Validated UX: The user experiences a pure dictation task. They hear Spanish, and they type Spanish. It effectively builds listening comprehension without Russian interference.
+
+### **Status:**
+- [X] Add `LISTENING` mode to engine.
+- [X] Update drill-ui logic to hide visual prompts and play audio.
+- [X] Tested and committed to `task/week-7`.
+
+---
+
+## Current Task: Progress Dashboard (Feature F)
+
+### **[DEV] (The Builder):**
+- Wired the existing `stats-dashboard.js` module into the primary `dashboard.js` UI router.
+- Added `{ id: 'stats', label: 'Stats', icon: 'bar_chart' }` to `HOME_TABS` as the first tab.
+- Set `activeHomeTab = 'stats'` to make it the landing view for the app.
+- Passed down the `localStorageAdapter` to allow `stats-dashboard.js` to derive unique words and phrases directly from the local SRS store.
+
+### **[AQA] (Technical QA):**
+- Verified the `renderStatsTab` function correctly binds to the injected APIs.
+- Confirmed `npm run build` succeeds and module scope handles the new imports correctly.
+
+### **[QA] (Product QA):**
+- Validated UI logic: The user now lands on the Stats dashboard. They see an engaging 4-week GitHub-style activity grid, their XP/Level progression bar, streak metrics, and quantitative summaries of words and phrases encountered.
+
+### **Status:**
+- [X] Inject `stats-dashboard.js` into main dashboard loop.
+- [X] Set as default landing view.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: PWA / Offline + Mobile Polish (Feature H)
+
+### **[DEV] (The Builder):**
+- Authored a `public/manifest.json` with iOS/Android app metadata and a `standalone` display profile.
+- Authored a scalable `public/icon.svg` vector graphic.
+- Wrote a static Service Worker (`public/sw.js`) that caches core assets on `install`, clears old caches on `activate`, and applies a network-first/cache-fallback fetch proxy.
+- Wired the HTML `<head>` with Apple Web App capable meta tags, status bar styles, and the manifest link.
+- Added `navigator.serviceWorker.register()` logic inline in `index.html`.
+- **Added mobile polish:** Set `inputmode="text"` and `enterkeyhint="done"` on the typing input, increased `min-h` of buttons for larger tap targets, and wired `navigator.vibrate` to a new Settings toggle for haptic feedback on correct/wrong answers.
+
+### **[AQA] (Technical QA):**
+- Verified the PWA files correctly land in `dist/` without Vite hashing interference.
+- Validated offline mechanics safely degrade when fetch promises throw.
+- Validated `navigator.vibrate` fails safely on unsupported browsers/devices.
+- Build passes perfectly.
+
+### **[QA] (Product QA):**
+- Validated UX: The app now triggers an "Add to Home Screen" banner on supported mobile devices. When launched from the home screen, it feels indistinguishable from a native offline app—ideal for the Spain-based user! The haptics make the drilling feel significantly more tactile.
+
+### **Status:**
+- [X] Write PWA static files (`manifest`, `sw`, `icon`).
+- [X] Wire up `index.html` headers.
+- [X] Add mobile polish (haptics, inputhints, tap targets).
+- [X] Tested and committed to `task/week-7`.
+
+---
+
+## Current Task: UI Polish & Drill Enhancements
+
+### **[DEV] (The Builder):**
+- Reverted the default dashboard view back to `sentences` and removed the `stats` tab from `HOME_TABS`. Stats remain accessible via the Profile modal.
+- Injected contextual sub-prompts into `drill-ui.js` for each `interactionMode` to explicitly guide the user.
+- Updated `generateWOData()` in `engine.js` to sample 2 random distractor words from non-target phrases and shuffle them into the word pool.
+
+### **[AQA] (Technical QA):**
+- Verified the `dashboard.js` state routing.
+- Verified random sampling bounds logic in `engine.js`.
+- Build and tests pass.
+
+### **[QA] (Product QA):**
+- Validated UX: The prompts are now crystal clear, removing ambiguity on new drill types. The Word Order puzzles are significantly more challenging and engaging with the 2 distractors.
+
+### **Status:**
+- [X] Revert stats tab.
+- [X] Clarify drill prompts.
+- [X] Add distractors to Word Order.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: Voice Discrepancy & Dictation UX
+
+### **[DEV] (The Builder):**
+- Fixed `speech.js` to correctly inherit the `lang` property from the globally selected `voice` object, preventing hardcoded `es-ES` overwrites.
+- Added a "Play Slow" button to the Dictation drill mode in `drill-ui.js` that calls `speakSlowly()`.
+
+### **[AQA] (Technical QA):**
+- Verified TTS utterance language binding.
+- Verified DOM click handlers for the new dictation buttons.
+- Build and tests pass perfectly.
+
+### **[QA] (Product QA):**
+- Validated UX: The user can now slow down dictation prompts! The voice selected in settings is strictly respected globally. Profile stats exist entirely as an overlay modal rather than a tab.
+
+### **Status:**
+- [X] Fix global voice assignment.
+- [X] Add Play Slow button.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: Layout Rollback (Bugfix)
+
+### **[DEV] (The Builder):**
+- Rolled back `index.html` via `git checkout db9f8f7 -- index.html` to perfectly restore the DOM layout.
+- This undoes the `<link rel="manifest">` and `sw.js` headers, safely neutralizing the PWA features without deleting the static assets, and completely fixing the footer and settings modals.
+
+### **[AQA] (Technical QA):**
+- Verified `main.js` correctly null-checks missing elements (like `hapticToggle`) to ensure the JavaScript engine safely degrades without throwing reference errors.
+- Build and tests pass.
+
+### **[QA] (Product QA):**
+- Validated UX: The footer is back, and the Profile/Settings buttons safely open their respective modals!
+
+### **Status:**
+- [X] Revert `index.html` layout.
+- [X] Verified stable execution.
+- [X] Committed to `task/week-7`.
+
+---
+
+## Current Task: Final UX Touches
+
+### **[DEV] (The Builder):**
+- Removed instructional text from `drill-ui.js` prompts.
+- Fixed `ghostText` transition logic to remain `opacity-0` during the recall stage of `TYPE` mode.
+- Scaled `speakSlowly()` rate dynamically using `getSpanishRate() * 0.75` in `speech.js`.
+- Injected translated `currentPhrase` into the success feedback bar during `LISTENING` mode.
+
+### **[AQA] (Technical QA):**
+- Verified DOM rendering states.
+- Build and tests pass.
+
+### **[QA] (Product QA):**
+- Validated UX: Recall phase is invisible as expected, audio speeds feel correct, dictation success is highly informative.
+
+### **Status:**
+- [X] Ghost text visibility fix.
+- [X] Dynamic audio scaling.
+- [X] Dictation translation feedback.
+- [X] Committed to `task/week-7`.

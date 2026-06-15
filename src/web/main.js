@@ -12,6 +12,7 @@ import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHom
 import { startDrill } from './drill-ui.js';
 import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
 import { renderReadAloudList, startReadAloud } from './read-aloud-ui.js';
+import { renderAuditionsTab } from './audition-ui.js';
 import { renderStatsTab } from './stats-dashboard.js';
 import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
@@ -107,6 +108,7 @@ const elements = {
   saveSettingsModalBtn: document.getElementById('saveSettingsModalBtn'),
   spanishSpeedRange: document.getElementById('spanishSpeedRange'),
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
+  hapticToggle: document.getElementById('hapticToggle'),
   themeSelect: document.getElementById('themeSelect'),
 
   // Profile Modal
@@ -140,10 +142,13 @@ function initDashboard() {
   renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
     onTopicClick,
     onReviewClick,
+    onMistakesClick,
     onTheoryTopicClick,
     onWordTopicClick,
     onWordReviewClick,
+    onWordMistakesClick,
     onReadAloudTabClick,
+    onAuditionsTabClick,
     gamification,
     storageAdapter: localStorageAdapter,
   });
@@ -213,6 +218,14 @@ function onReviewClick() {
   startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
 }
 
+function onMistakesClick() {
+  const mistakePhrases = srsSentences.getMistakesPhrases(phraseBank);
+  if (mistakePhrases.length === 0) return;
+
+  const reviewLesson = { id: 'mistakes_review', title: 'Practice Mistakes', exam: false };
+  startDrill(elements, mistakePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
+}
+
 
 
 // ========================
@@ -268,12 +281,34 @@ function onWordReviewClick() {
   }, false, DRILL_MODE.WORD);
 }
 
+function onWordMistakesClick() {
+  const mistakeItems = srsWords.getMistakesPhrases(wordBank);
+  if (mistakeItems.length === 0) return;
+
+  const reviewLesson = { id: 'word_mistakes_review', title: 'Practice Mistakes', exam: false };
+  startDrill(elements, mistakeItems, null, reviewLesson, false, true, srsWords, () => {
+    setActiveHomeTab('words');
+    initDashboard();
+  }, false, DRILL_MODE.WORD);
+}
+
 // ========================
 // NAVIGATION — READ ALOUD
 // ========================
 
 function onReadAloudTabClick(container, readAloudData, gamification) {
   renderReadAloudList(container, readAloudData, gamification, null);
+}
+
+// ========================
+// NAVIGATION — AUDITIONS
+// ========================
+
+function onAuditionsTabClick(container, gamification) {
+  renderAuditionsTab(container, gamification, () => {
+    setActiveHomeTab('auditions');
+    initDashboard();
+  });
 }
 
 // ========================
@@ -316,6 +351,12 @@ if (elements.themeSelect) {
       document.documentElement.classList.remove('dark');
     }
     localStorageAdapter.save('anchor_theme_settings', { theme: value });
+  });
+}
+
+if (elements.hapticToggle) {
+  elements.hapticToggle.addEventListener('change', (e) => {
+    localStorageAdapter.save('anchor_haptics', e.target.checked);
   });
 }
 
@@ -395,6 +436,11 @@ if (theme === 'dark') {
 }
 if (elements.themeSelect) {
   elements.themeSelect.value = theme;
+}
+
+const savedHaptics = localStorageAdapter.load('anchor_haptics');
+if (elements.hapticToggle) {
+  elements.hapticToggle.checked = savedHaptics !== false;
 }
 
 initDashboard();

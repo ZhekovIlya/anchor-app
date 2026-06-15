@@ -6,7 +6,8 @@
 
 import { COLOR_MAP, DRILL_MODE } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
-import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang } from './speech.js';
+import { SpeechRecognitionService } from '../core/speech-recognition.js';
+import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang, speakSlowly } from './speech.js';
 import { showOnly, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
 import { incrementCompletion, getCompletionCount } from './storage.js';
 import { XP_REWARDS } from '../core/gamification.js';
@@ -14,6 +15,13 @@ import { launchConfetti, renderEndScreenXP, showLevelUpNotification, celebrateSt
 
 let activeEngine = null;
 let isHandlingFeedback = false;
+let boundKeydownHandler = null;
+let boundVisibilityHandler = null;
+let speechService = null;
+
+function cleanWord(word) {
+  return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
+}
 
 export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null) {
   const {
@@ -41,11 +49,26 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
   isHandlingFeedback = false;
 
   function showFeedback(isCorrect, correctAnswerText, onCompleteCallback) {
+    function triggerHaptic(type) {
+      if (!('vibrate' in navigator)) return;
+      try {
+        const hapticsEnabled = JSON.parse(localStorage.getItem('anchor_haptics')) !== false;
+        if (!hapticsEnabled) return;
+        if (type === 'success') {
+          navigator.vibrate([10, 30, 10]); // light double tap
+        } else if (type === 'error') {
+          navigator.vibrate([50, 50, 50]); // heavier buzz
+        }
+      } catch (e) {}
+    }
+
     isHandlingFeedback = true;
     feedbackBar.classList.remove('hidden');
     void feedbackBar.offsetWidth; // force reflow
     feedbackBar.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
     feedbackBar.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+
+    triggerHaptic(isCorrect ? 'success' : 'error');
 
     const handleContinue = () => {
       feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
@@ -61,7 +84,14 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       feedbackBarTitle.className = 'font-headline text-xl font-bold text-[#15803d] dark:text-emerald-300';
       feedbackBarTitle.textContent = 'Perfect!';
       feedbackBarSubtitle.className = 'font-body text-sm text-[#166534] dark:text-emerald-400';
-      feedbackBarSubtitle.textContent = 'Repeating aloud...';
+      
+      const state = activeEngine.getState();
+      if (state.interactionMode === 'LISTENING') {
+        const lang = getPromptLang();
+        feedbackBarSubtitle.textContent = lang === 'uk' ? state.currentPhrase.uk : state.currentPhrase.ru;
+      } else {
+        feedbackBarSubtitle.textContent = 'Repeating aloud...';
+      }
       
       feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#16a34a] dark:bg-emerald-600 text-white shadow-sm hover:opacity-90 hidden';
       
@@ -77,8 +107,18 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       feedbackBarIcon.textContent = 'close';
       feedbackBarTitle.className = 'font-headline text-xl font-bold text-[#b91c1c] dark:text-red-300';
       feedbackBarTitle.textContent = 'Correct solution:';
-      feedbackBarSubtitle.className = 'font-body text-sm text-[#991b1b] dark:text-red-400 font-bold mt-1 text-lg';
-      feedbackBarSubtitle.textContent = correctAnswerText;
+      feedbackBarSubtitle.className = 'font-body text-sm text-[#991b1b] dark:text-red-400 font-bold mt-1 text-lg flex flex-wrap gap-1';
+      feedbackBarSubtitle.innerHTML = '';
+      correctAnswerText.split(' ').forEach(word => {
+        const span = document.createElement('span');
+        span.textContent = word;
+        span.className = 'cursor-pointer hover:text-[#dc2626] dark:hover:text-red-300 border-b border-transparent hover:border-current transition-colors';
+        span.onclick = (e) => {
+          e.stopPropagation();
+          speakSlowly(word);
+        };
+        feedbackBarSubtitle.appendChild(span);
+      });
 
       feedbackBarBtn.className = 'w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200 bg-[#dc2626] dark:bg-red-600 text-white shadow-sm hover:opacity-90 block';
       
@@ -133,32 +173,73 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         typeInputArea.classList.add('hidden');
         mcContainer.classList.add('hidden');
         woContainer.classList.add('hidden');
+        const speechContainer = document.getElementById('speechContainer');
+        if (speechContainer) speechContainer.classList.add('hidden');
         revealAnswerBtn.classList.add('hidden');
         ghostText.parentElement.classList.add('hidden');
         
         feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
         feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-
+        
         // Setup correct interaction mode
-        if (interactionMode === 'TYPE') {
+        if (interactionMode === 'TYPE' || interactionMode === 'LISTENING') {
           typeInputArea.classList.remove('hidden');
-          ghostText.parentElement.classList.remove('hidden');
-          ghostText.textContent = phrase.es;
+          
+          if (interactionMode === 'TYPE') {
+            ghostText.parentElement.classList.remove('hidden');
+            ghostText.innerHTML = '';
+            ghostText.classList.remove('pointer-events-none');
+            phrase.es.split(' ').forEach((word, idx, arr) => {
+              const span = document.createElement('span');
+              span.textContent = word;
+              span.className = 'cursor-pointer hover:text-primary dark:hover:text-emerald-400 transition-colors pointer-events-auto';
+              span.onclick = (e) => {
+                e.stopPropagation();
+                speakSlowly(word);
+              };
+              ghostText.appendChild(span);
+              if (idx < arr.length - 1) {
+                ghostText.appendChild(document.createTextNode(' '));
+              }
+            });
+          } else {
+            // LISTENING mode
+            ghostText.parentElement.classList.add('hidden');
+            russianPrompt.innerHTML = `
+              <div class="flex flex-col items-center justify-center gap-3 text-primary dark:text-emerald-400">
+                <span class="material-symbols-outlined text-5xl">headphones</span>
+                <span class="font-bold text-xl">🎧 Dictation Mode</span>
+                <span class="text-sm uppercase tracking-wider font-medium text-on-surface-variant dark:text-stone-400">Listen to the audio and type what you hear</span>
+                <div class="flex gap-4 mt-2">
+                  <button id="listeningAudioBtn" class="flex items-center justify-center gap-2 bg-primary dark:bg-emerald-600 text-on-primary font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity min-h-[48px] shadow-md">
+                    <span class="material-symbols-outlined">play_arrow</span> Play Normal
+                  </button>
+                  <button id="listeningSlowBtn" class="flex items-center justify-center gap-2 bg-surface-variant dark:bg-stone-800 text-on-surface-variant font-bold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity min-h-[48px] border border-outline-variant/30">
+                    <span class="material-symbols-outlined">speed</span> Play Slow
+                  </button>
+                </div>
+              </div>
+            `;
+            setTimeout(() => {
+              const btn = document.getElementById('listeningAudioBtn');
+              if (btn) btn.onclick = () => speakAnswer(phrase.es, () => {});
+              
+              const slowBtn = document.getElementById('listeningSlowBtn');
+              if (slowBtn) slowBtn.onclick = () => speakSlowly(phrase.es);
+            }, 0);
+          }
           
           inputField.value = '';
           fakeInput.innerHTML = '';
           inputField.disabled = false;
           inputField.focus();
 
-          if (isCopyStage) {
+          if (isCopyStage && interactionMode === 'TYPE') {
             ghostText.style.transition = '';
             ghostText.classList.remove('opacity-0');
-            ghostText.classList.add('opacity-30');
-          } else {
-            ghostText.style.transition = 'none';
-            ghostText.classList.remove('opacity-30');
+          } else if (interactionMode === 'TYPE') {
+            ghostText.style.transition = '';
             ghostText.classList.add('opacity-0');
-            revealAnswerBtn.classList.remove('hidden');
           }
         } else if (interactionMode === 'MC') {
           mcContainer.classList.remove('hidden');
@@ -166,9 +247,60 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         } else if (interactionMode === 'WORD_ORDER') {
           woContainer.classList.remove('hidden');
           renderWO(woContainer, questionData, phrase);
+        } else if (interactionMode === 'SPEECH') {
+          const speechContainer = document.getElementById('speechContainer');
+          const speechResultArea = document.getElementById('speechResultArea');
+          const speechMicBtn = document.getElementById('speechMicBtn');
+          const speechRetryBtn = document.getElementById('speechRetryBtn');
+          
+          speechContainer.classList.remove('hidden');
+          ghostText.parentElement.classList.remove('hidden');
+          ghostText.classList.remove('opacity-0');
+          ghostText.textContent = phrase.es;
+          
+          speechResultArea.innerHTML = '<span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap the mic and speak the phrase aloud</span>';
+          speechMicBtn.classList.remove('hidden', 'bg-red-500', 'animate-pulse');
+          speechMicBtn.classList.add('bg-primary', 'dark:bg-emerald-600');
+          speechRetryBtn.classList.add('hidden');
+          
+          if (!speechService) {
+            speechService = new SpeechRecognitionService({
+              onResult: (transcript) => handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn),
+              onError: (err) => {
+                 speechMicBtn.classList.remove('bg-red-500', 'animate-pulse');
+                 speechMicBtn.classList.add('bg-primary', 'dark:bg-emerald-600');
+              },
+              onEnd: () => {
+                 speechMicBtn.classList.remove('bg-red-500', 'animate-pulse');
+                 speechMicBtn.classList.add('bg-primary', 'dark:bg-emerald-600');
+              }
+            });
+          } else {
+            speechService.onResult = (transcript) => handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn);
+          }
+          
+          speechMicBtn.onclick = () => {
+            if (speechService.isRecording) {
+               speechService.stop();
+            } else {
+               speechService.start();
+               speechMicBtn.classList.remove('bg-primary', 'dark:bg-emerald-600');
+               speechMicBtn.classList.add('bg-red-500', 'animate-pulse');
+            }
+          };
+          
+          speechRetryBtn.onclick = () => {
+             speechResultArea.innerHTML = '<span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap the mic and speak the phrase aloud</span>';
+             speechRetryBtn.classList.add('hidden');
+             speechMicBtn.classList.remove('hidden');
+          };
         }
 
-        speakPrompt(promptText);
+        if (interactionMode === 'LISTENING') {
+          speakAnswer(phrase.es, () => {});
+        } else {
+          speakPrompt(promptText);
+        }
       },
 
       onCorrectAnswer(phrase, done) {
@@ -279,7 +411,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
   // Type Mode Input Handlers
   inputField.oninput = () => {
     const state = activeEngine.getState();
-    if (state.interactionMode !== 'TYPE') return;
+    if (state.interactionMode !== 'TYPE' && state.interactionMode !== 'LISTENING') return;
 
     if (isWordMode) {
       fakeInput.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${inputField.value}</span>`;
@@ -290,12 +422,40 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
     if (isHandlingFeedback) return;
 
-    const { correct } = activeEngine.checkAnswer(inputField.value);
+    const { correct } = activeEngine.checkAnswer(inputField.value, false);
     if (correct) {
       inputField.disabled = true;
       showFeedback(true, state.currentPhrase.es, () => {
         activeEngine.handleCorrect();
       });
+    }
+  };
+
+        inputField.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isHandlingFeedback || inputField.value.trim() === '') return;
+      
+      const state = activeEngine.getState();
+      if (state.interactionMode !== 'TYPE' && state.interactionMode !== 'LISTENING') return;
+
+      const { correct, typo } = activeEngine.checkAnswer(inputField.value, true);
+      inputField.disabled = true;
+      
+      if (correct) {
+        // If typo is true, we could optionally show a warning, but for now we just accept it
+        if (typo && !isWordMode) {
+          fakeInput.innerHTML = `<span class="text-[#ca8a04] dark:text-amber-400 transition-colors duration-300">${state.currentPhrase.es}</span>`;
+        }
+        showFeedback(true, state.currentPhrase.es, () => {
+          activeEngine.handleCorrect();
+        });
+      } else {
+        activeEngine.handleWrong();
+        showFeedback(false, state.currentPhrase.es, () => {
+          activeEngine.nextPhraseAfterWrong();
+        });
+      }
     }
   };
 
@@ -472,4 +632,41 @@ function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   }
 
   fakeInputEl.innerHTML = html;
+}
+
+function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speechMicBtn, speechRetryBtn) {
+   const targetWords = targetPhraseEs.split(' ').map(cleanWord);
+   const spokenWords = transcript.split(' ').map(cleanWord);
+   
+   speechResultArea.innerHTML = '';
+   let allCorrect = true;
+   
+   targetPhraseEs.split(' ').forEach((origWord, idx) => {
+     const tClean = targetWords[idx];
+     const span = document.createElement('span');
+     span.textContent = origWord;
+     span.className = 'text-xl font-bold px-1 ';
+     
+     if (spokenWords.includes(tClean)) {
+       span.classList.add('text-[#16a34a]', 'dark:text-emerald-400');
+     } else {
+       span.classList.add('text-[#dc2626]', 'dark:text-red-500');
+       allCorrect = false;
+     }
+     speechResultArea.appendChild(span);
+   });
+   
+   speechMicBtn.classList.add('hidden');
+   if (speechService && speechService.isRecording) {
+     speechService.stop();
+   }
+   
+   if (allCorrect) {
+     speechRetryBtn.classList.add('hidden');
+     setTimeout(() => {
+       if (activeEngine) activeEngine.handleCorrect();
+     }, 1000);
+   } else {
+     speechRetryBtn.classList.remove('hidden');
+   }
 }

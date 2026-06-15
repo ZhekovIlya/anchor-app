@@ -6,9 +6,10 @@
 
 import { getCompletionCount } from './storage.js';
 import { renderStatsTab } from './stats-dashboard.js';
+import { localStorageAdapter } from './storage.js';
 
 let activeTab = null;
-let activeHomeTab = 'sentences'; // 'sentences' | 'theory' | 'words'
+let activeHomeTab = 'sentences'; // Default to sentences
 
 // ========================
 // STATUS THEMES
@@ -151,6 +152,7 @@ const HOME_TABS = [
   { id: 'theory',    label: 'Theory',    icon: 'lightbulb' },
   { id: 'words',     label: 'Words',     icon: 'abc' },
   { id: 'readAloud', label: 'Read',      icon: 'record_voice_over' },
+  { id: 'auditions', label: 'Auditions', icon: 'mic' },
 ];
 
 function renderHomeTabBar(container, activeId, onChange) {
@@ -173,7 +175,7 @@ function renderHomeTabBar(container, activeId, onChange) {
 
 export function renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, callbacks) {
   const { topicsContainer } = elements;
-  const { onTopicClick, onReviewClick, onTheoryTopicClick, onWordTopicClick, onWordReviewClick } = callbacks;
+  const { onTopicClick, onReviewClick, onMistakesClick, onTheoryTopicClick, onWordTopicClick, onWordReviewClick, onWordMistakesClick, onReadAloudTabClick, onAuditionsTabClick, gamification } = callbacks;
 
   showOnly(elements, 'dashboard');
   topicsContainer.innerHTML = '';
@@ -186,26 +188,48 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
   });
 
   if (activeHomeTab === 'sentences') {
-    renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick);
+    renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick, onMistakesClick);
   } else if (activeHomeTab === 'theory') {
     renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick);
   } else if (activeHomeTab === 'words') {
-    renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick);
+    renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick, onWordMistakesClick);
   } else if (activeHomeTab === 'readAloud') {
     callbacks.onReadAloudTabClick(topicsContainer, data.readAloud, callbacks.gamification);
+  } else if (activeHomeTab === 'auditions') {
+    callbacks.onAuditionsTabClick(topicsContainer, callbacks.gamification);
   }
 }
 
-function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick, onReviewClick) {
+function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick, onReviewClick, onMistakesClick) {
   // Daily Review Card
   const dueCount = srs.getDueCount(phraseBank);
+  const mistakesCount = srs.getMistakesCount(phraseBank);
   const reviewSection = document.getElementById('reviewSection');
-  reviewSection.style.display = dueCount > 0 ? 'block' : 'none';
+  reviewSection.style.display = (dueCount > 0 || mistakesCount > 0) ? 'block' : 'none';
 
+  const startReviewBtn = document.getElementById('startReviewBtn');
   if (dueCount > 0) {
     document.getElementById('dueCountText').textContent =
       `${dueCount} phrases ready for review. Consistent practice builds lasting fluency.`;
-    document.getElementById('startReviewBtn').onclick = onReviewClick;
+    startReviewBtn.classList.remove('hidden');
+    startReviewBtn.classList.add('flex');
+    startReviewBtn.onclick = onReviewClick;
+  } else if (mistakesCount > 0) {
+    document.getElementById('dueCountText').textContent =
+      `No reviews due right now, but you have ${mistakesCount} phrases that need extra practice.`;
+    startReviewBtn.classList.add('hidden');
+    startReviewBtn.classList.remove('flex');
+  }
+
+  const practiceMistakesBtn = document.getElementById('practiceMistakesBtn');
+  if (mistakesCount > 0) {
+    practiceMistakesBtn.classList.remove('hidden');
+    practiceMistakesBtn.classList.add('flex');
+    document.getElementById('mistakesCountBadge').textContent = mistakesCount;
+    practiceMistakesBtn.onclick = onMistakesClick;
+  } else {
+    practiceMistakesBtn.classList.add('hidden');
+    practiceMistakesBtn.classList.remove('flex');
   }
 
   // Week cards
@@ -269,16 +293,36 @@ function renderTheoryTab(container, theoryTopics, onTheoryTopicClick) {
   }
 }
 
-function renderWordsTab(container, wordTopics, srs, wordBank, onWordTopicClick, onWordReviewClick) {
+function renderWordsTab(container, wordTopics, srs, wordBank, onWordTopicClick, onWordReviewClick, onWordMistakesClick) {
   // Word Daily Review
   const dueCount = srs.getDueCount(wordBank);
+  const mistakesCount = srs.getMistakesCount(wordBank);
   const reviewSection = document.getElementById('reviewSection');
-  reviewSection.style.display = dueCount > 0 ? 'block' : 'none';
+  reviewSection.style.display = (dueCount > 0 || mistakesCount > 0) ? 'block' : 'none';
 
+  const startReviewBtn = document.getElementById('startReviewBtn');
   if (dueCount > 0) {
     document.getElementById('dueCountText').textContent =
       `${dueCount} words ready for review. Build your vocabulary muscle memory.`;
-    document.getElementById('startReviewBtn').onclick = onWordReviewClick;
+    startReviewBtn.classList.remove('hidden');
+    startReviewBtn.classList.add('flex');
+    startReviewBtn.onclick = onWordReviewClick;
+  } else if (mistakesCount > 0) {
+    document.getElementById('dueCountText').textContent =
+      `No reviews due right now, but you have ${mistakesCount} words that need extra practice.`;
+    startReviewBtn.classList.add('hidden');
+    startReviewBtn.classList.remove('flex');
+  }
+
+  const practiceMistakesBtn = document.getElementById('practiceMistakesBtn');
+  if (mistakesCount > 0) {
+    practiceMistakesBtn.classList.remove('hidden');
+    practiceMistakesBtn.classList.add('flex');
+    document.getElementById('mistakesCountBadge').textContent = mistakesCount;
+    practiceMistakesBtn.onclick = onWordMistakesClick;
+  } else {
+    practiceMistakesBtn.classList.add('hidden');
+    practiceMistakesBtn.classList.remove('flex');
   }
 
   // Word topic cards

@@ -69,10 +69,17 @@
           <div class="font-label text-sm tracking-widest text-on-surface-variant dark:text-stone-400 uppercase mb-4 transition-colors duration-300">Repeat Drill</div>
           <h1 class="font-headline text-4xl md:text-5xl font-bold text-on-surface dark:text-stone-100 leading-tight mb-4 transition-colors duration-300">Active Recall</h1>
           <p class="font-body text-lg text-on-surface-variant dark:text-stone-400 mb-8 border-l-2 border-primary/30 dark:border-emerald-500/30 pl-4 transition-colors duration-300" id="dueCountText">Ready for review. Consistent practice builds lasting fluency.</p>
-          <button id="startReviewBtn" class="bg-primary dark:bg-emerald-600 text-on-primary font-label px-8 py-4 rounded-xl hover:opacity-90 transition-all duration-300 flex items-center gap-2 font-medium tracking-wide shadow-sm dark:hover:bg-emerald-500">
-            <span class="material-symbols-outlined text-lg">play_arrow</span>
-            Start Session
-          </button>
+          <div class="flex flex-wrap gap-4">
+            <button id="startReviewBtn" class="bg-primary dark:bg-emerald-600 text-on-primary font-label px-8 py-4 rounded-xl hover:opacity-90 transition-all duration-300 flex items-center gap-2 font-medium tracking-wide shadow-sm dark:hover:bg-emerald-500">
+              <span class="material-symbols-outlined text-lg">play_arrow</span>
+              Start Session
+            </button>
+            <button id="practiceMistakesBtn" class="hidden bg-error-container dark:bg-red-900/50 text-on-error-container dark:text-red-300 font-label px-8 py-4 rounded-xl hover:opacity-90 transition-all duration-300 flex items-center gap-2 font-medium tracking-wide shadow-sm border border-error/20 dark:border-red-500/30">
+              <span class="material-symbols-outlined text-lg">healing</span>
+              Practice Mistakes
+              <span id="mistakesCountBadge" class="ml-1 bg-error/20 dark:bg-red-500/30 px-2 py-0.5 rounded-md text-xs font-bold"></span>
+            </button>
+          </div>
         </div>
         <div class="w-48 h-48 md:w-64 md:h-64 rounded-xl overflow-hidden shadow-sm flex-shrink-0 z-10 hidden md:block border border-surface-container-highest dark:border-stone-800 transition-colors duration-300">
           <div class="w-full h-full bg-surface-container dark:bg-stone-800 flex items-center justify-center text-primary-container dark:text-stone-700 transition-colors duration-300">
@@ -145,6 +152,19 @@
         autocorrect="off"
         autocapitalize="off"
       />
+    </div>
+
+    <!-- Speech Practice Container (hidden by default) -->
+    <div id="speechContainer" class="hidden w-full max-w-xl flex flex-col items-center gap-6 mt-6 px-4">
+      <div id="speechResultArea" class="w-full min-h-[56px] flex flex-wrap gap-2 items-center justify-center p-4 rounded-xl border-2 border-dashed border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 transition-all duration-200">
+        <span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap the mic and speak the phrase aloud</span>
+      </div>
+      <button id="speechMicBtn" class="w-16 h-16 rounded-full bg-primary dark:bg-emerald-600 text-on-primary dark:text-emerald-50 shadow-md flex items-center justify-center hover:scale-105 transition-transform duration-200">
+        <span class="material-symbols-outlined text-3xl">mic</span>
+      </button>
+      <button id="speechRetryBtn" class="hidden px-6 py-2 rounded-xl font-label font-bold text-sm uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 hover:opacity-90 transition-all">
+        Retry
+      </button>
     </div>
 
     <!-- Multiple Choice Options Container (hidden by default) -->

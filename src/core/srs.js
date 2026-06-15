@@ -36,6 +36,7 @@ export function createSRS(storage, storageKey) {
       data[phraseId] = {
         bucket: newBucket,
         dueDate: Date.now() + BUCKET_INTERVALS[newBucket],
+        isMistake: false,
       };
       saveData(data);
     },
@@ -48,6 +49,7 @@ export function createSRS(storage, storageKey) {
       data[phraseId] = {
         bucket: 0,
         dueDate: Date.now() + BUCKET_INTERVALS[0],
+        isMistake: true,
       };
       saveData(data);
     },
@@ -93,7 +95,33 @@ export function createSRS(storage, storageKey) {
       const now = Date.now();
       let count = 0;
       for (const [id, entry] of Object.entries(data)) {
-        if (entry.dueDate <= now && phraseBank[id]) count++;
+        if (entry.dueDate <= now && phraseBank[id] && !entry.isMistake) count++;
+      }
+      return count;
+    },
+
+    /**
+     * Get all phrases tagged as mistakes.
+     */
+    getMistakesPhrases(phraseBank) {
+      const data = loadData();
+      const mistakes = [];
+      for (const [id, entry] of Object.entries(data)) {
+        if (entry.isMistake && phraseBank[id]) {
+          mistakes.push(phraseBank[id]);
+        }
+      }
+      return mistakes.sort(() => Math.random() - 0.5);
+    },
+
+    /**
+     * Count how many phrases are currently tagged as mistakes.
+     */
+    getMistakesCount(phraseBank) {
+      const data = loadData();
+      let count = 0;
+      for (const [id, entry] of Object.entries(data)) {
+        if (entry.isMistake && phraseBank[id]) count++;
       }
       return count;
     },
