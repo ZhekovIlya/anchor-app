@@ -403,10 +403,20 @@ function handleSpeechResult(transcript) {
   const normalizedTranscript = normalizeWord(transcript);
   const target = normalizeWord(currentDrill.target);
 
-  logDebug(`Evaluating normalized "${normalizedTranscript}" against target "${target}"`);
+  const targetWords = target.split(' ').filter(w => w);
+  const spokenWords = normalizedTranscript.split(' ').filter(w => w);
+  
+  let correctCount = 0;
+  targetWords.forEach(w => {
+    if (spokenWords.includes(w)) correctCount++;
+  });
+  
+  const accuracy = targetWords.length > 0 ? (correctCount / targetWords.length) : 0;
+
+  logDebug(`Evaluating normalized "${normalizedTranscript}" against target "${target}", accuracy: ${accuracy.toFixed(2)}`);
 
   // Loose match for a smoother user experience
-  if (normalizedTranscript.includes(target)) {
+  if (normalizedTranscript.includes(target) || accuracy >= 0.6) {
     logDebug("Match SUCCESS.");
     handleSuccess(transcript);
   } else {

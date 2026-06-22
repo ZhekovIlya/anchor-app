@@ -299,28 +299,47 @@ function handleTranscript(transcript) {
   prevSpokenWords = spokenWords;
   
   for (let t = lastMatchedTranscriptIndex + 1; t < spokenWords.length; t++) {
-    const nextUnreadIndex = wordObjects.findIndex(wo => !wo.isRead);
-    if (nextUnreadIndex === -1) break; // All done
-    
-    const targetWord = wordObjects[nextUnreadIndex];
-    const targetCleanWords = targetWord.clean.split(' ');
-    
-    let match = true;
-    for (let j = 0; j < targetCleanWords.length; j++) {
-      if (t + j >= spokenWords.length || spokenWords[t + j] !== targetCleanWords[j]) {
-        match = false;
-        break;
-      }
-    }
-    
-    if (match) {
-      targetWord.isRead = true;
-      lastMatchedTranscriptIndex = t + targetCleanWords.length - 1;
-      t = lastMatchedTranscriptIndex; // advance
+    let matchFound = false;
+    for (let i = 0; i < wordObjects.length; i++) {
+        if (wordObjects[i].isRead) continue;
+        
+        const targetCleanWords = wordObjects[i].clean.split(' ');
+        let match = true;
+        for (let j = 0; j < targetCleanWords.length; j++) {
+            if (t + j >= spokenWords.length || spokenWords[t + j] !== targetCleanWords[j]) {
+                match = false;
+                break;
+            }
+        }
+        
+        if (match) {
+            wordObjects[i].isRead = true;
+            lastMatchedTranscriptIndex = t + targetCleanWords.length - 1;
+            t = lastMatchedTranscriptIndex; // advance
+            matchFound = true;
+            break;
+        }
     }
   }
 
   updateFocusVisuals();
+
+  const readCount = wordObjects.filter(wo => wo.isRead).length;
+  const totalCount = wordObjects.length;
+  const percent = totalCount === 0 ? 0 : Math.round((readCount / totalCount) * 100);
+
+  if (percent >= 60) {
+    const skipBtn = activeContainer.querySelector('#raSkipBtn');
+    let earlyFinishBtn = activeContainer.querySelector('#raEarlyFinishBtn');
+    if (!earlyFinishBtn && skipBtn) {
+      earlyFinishBtn = document.createElement('button');
+      earlyFinishBtn.id = 'raEarlyFinishBtn';
+      earlyFinishBtn.className = 'bg-primary dark:bg-emerald-600 text-on-primary px-6 py-3 rounded-xl font-label font-bold text-lg hover:opacity-90 transition-all shadow-sm flex items-center gap-2';
+      earlyFinishBtn.innerHTML = '<span class="material-symbols-outlined">done_all</span> Finish Early';
+      earlyFinishBtn.onclick = finishReading;
+      skipBtn.parentElement.appendChild(earlyFinishBtn);
+    }
+  }
 
   if (wordObjects.every(wo => wo.isRead)) {
     finishReading();

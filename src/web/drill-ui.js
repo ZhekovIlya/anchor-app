@@ -18,6 +18,7 @@ let isHandlingFeedback = false;
 let boundKeydownHandler = null;
 let boundVisibilityHandler = null;
 let speechService = null;
+let lastSpokenTranscript = '';
 
 function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}\s]/gu, '').toLowerCase().trim();
@@ -289,7 +290,10 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           
           if (!speechService) {
             speechService = new SpeechRecognitionService({
-              onResult: (transcript) => handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn),
+              onResult: (transcript) => {
+                 lastSpokenTranscript = transcript;
+                 handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn);
+              },
               onError: (err) => {
                  speechMicBtn.classList.remove('bg-red-500', 'animate-pulse');
                  speechMicBtn.classList.add('bg-primary', 'dark:bg-emerald-600');
@@ -300,7 +304,10 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
               }
             });
           } else {
-            speechService.onResult = (transcript) => handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn);
+            speechService.onResult = (transcript) => {
+               lastSpokenTranscript = transcript;
+               handleSpeechResult(transcript, phrase.es, speechResultArea, speechMicBtn, speechRetryBtn);
+            };
           }
           
           speechMicBtn.onclick = () => {
@@ -345,8 +352,14 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
                 }
               });
               
-              inputField.value = '';
-              fakeInput.innerHTML = '';
+              if (lastSpokenTranscript) {
+                inputField.value = lastSpokenTranscript;
+                if (inputField.oninput) inputField.oninput();
+                lastSpokenTranscript = '';
+              } else {
+                inputField.value = '';
+                fakeInput.innerHTML = '';
+              }
               inputField.disabled = false;
               inputField.focus();
               
@@ -710,6 +723,7 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
    
    speechResultArea.innerHTML = '';
    let allCorrect = true;
+   let correctCount = 0;
    
    targetPhraseEs.split(' ').forEach((origWord, idx) => {
      const tClean = targetWords[idx];
@@ -719,6 +733,7 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
      
      if (spokenWords.includes(tClean)) {
        span.classList.add('text-[#16a34a]', 'dark:text-emerald-400');
+       correctCount++;
      } else {
        span.classList.add('text-[#dc2626]', 'dark:text-red-500');
        allCorrect = false;
@@ -726,10 +741,15 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
      speechResultArea.appendChild(span);
    });
    
+   const accuracy = targetWords.length > 0 ? (correctCount / targetWords.length) : 0;
+   
    speechMicBtn.classList.add('hidden');
    if (speechService && speechService.isRecording) {
      speechService.stop();
    }
+
+   const existingBtn = speechResultArea.parentElement.querySelector('#speechMoveForwardBtn');
+   if (existingBtn) existingBtn.remove();
    
    if (allCorrect) {
      speechRetryBtn.classList.add('hidden');
@@ -738,5 +758,19 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
      }, 1000);
    } else {
      speechRetryBtn.classList.remove('hidden');
+     speechRetryBtn.innerHTML = '<span class="material-symbols-outlined">refresh</span> Retry';
+     
+     if (accuracy >= 0.6) {
+       const moveForwardBtn = document.createElement('button');
+       moveForwardBtn.id = 'speechMoveForwardBtn';
+       moveForwardBtn.className = 'px-6 py-2 rounded-xl font-label font-bold text-sm uppercase tracking-wider bg-primary dark:bg-emerald-600 text-on-primary hover:opacity-90 transition-all ml-2 flex items-center gap-1 inline-flex';
+       moveForwardBtn.innerHTML = '<span class="material-symbols-outlined text-sm">skip_next</span> Move Forward';
+       moveForwardBtn.onclick = () => {
+         moveForwardBtn.remove();
+         speechRetryBtn.classList.add('hidden');
+         if (activeEngine) activeEngine.handleCorrect();
+       };
+       speechRetryBtn.parentNode.insertBefore(moveForwardBtn, speechRetryBtn.nextSibling);
+     }
    }
 }
