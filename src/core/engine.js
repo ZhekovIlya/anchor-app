@@ -44,7 +44,7 @@ function levenshtein(a, b) {
 }
 
 export function createDrillEngine(options) {
-  const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE } = options;
+  const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE, disableSpeech = false } = options;
 
   const isWordMode = mode === DRILL_MODE.WORD;
 
@@ -91,8 +91,8 @@ export function createDrillEngine(options) {
 
     const isCopyStage = getStage();
     if (isCopyStage) {
-      const hasSpeechAPI = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
-      if (hasSpeechAPI && Math.random() < 0.3) {
+      const hasSpeechAPI = (typeof window !== 'undefined') && (('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window));
+      if (!disableSpeech && hasSpeechAPI && Math.random() < 0.3) {
         currentInteractionMode = 'SPEECH';
       } else {
         currentInteractionMode = 'TYPE';
@@ -194,15 +194,15 @@ export function createDrillEngine(options) {
     },
 
     checkAnswer(userInput, isSubmit = false) {
-      const cleanInput = userInput.trim().toLowerCase();
-      const cleanTarget = currentPhrase.es.trim().toLowerCase();
+      const cleanInput = userInput.replace(/[^\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim().toLowerCase();
+      const cleanTarget = currentPhrase.es.replace(/[^\p{L}\p{N}\s]/gu, '').replace(/\s+/g, ' ').trim().toLowerCase();
       
       const exactMatch = cleanInput === cleanTarget;
       if (exactMatch) return { correct: true, phrase: currentPhrase, exact: true };
       
       if (isSubmit) {
-        const superCleanInput = cleanInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').replace(/\s+/g, ' ').trim();
-        const superCleanTarget = cleanTarget.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').replace(/\s+/g, ' ').trim();
+        const superCleanInput = cleanInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const superCleanTarget = cleanTarget.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         
         const dist = levenshtein(superCleanInput, superCleanTarget);
         const threshold = Math.max(1, Math.floor(superCleanTarget.length / 6));
@@ -275,6 +275,10 @@ export function createDrillEngine(options) {
         streak,
         targetStreak,
       });
+    },
+
+    setInteractionMode(mode) {
+      currentInteractionMode = mode;
     },
 
     getState() {

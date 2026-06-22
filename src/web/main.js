@@ -110,6 +110,7 @@ const elements = {
   spanishSpeedValue: document.getElementById('spanishSpeedValue'),
   hapticToggle: document.getElementById('hapticToggle'),
   themeSelect: document.getElementById('themeSelect'),
+  disableSpeechToggle: document.getElementById('disableSpeechToggle'),
 
   // Profile Modal
   profileBtn: document.getElementById('profileBtn'),
@@ -360,6 +361,12 @@ if (elements.hapticToggle) {
   });
 }
 
+if (elements.disableSpeechToggle) {
+  elements.disableSpeechToggle.addEventListener('change', (e) => {
+    localStorageAdapter.save('anchor_disable_speech', e.target.checked);
+  });
+}
+
 // ========================
 // DRILL LEGEND
 // ========================
@@ -441,6 +448,11 @@ if (elements.themeSelect) {
 const savedHaptics = localStorageAdapter.load('anchor_haptics');
 if (elements.hapticToggle) {
   elements.hapticToggle.checked = savedHaptics !== false;
+}
+
+const savedDisableSpeech = localStorageAdapter.load('anchor_disable_speech') === true;
+if (elements.disableSpeechToggle) {
+  elements.disableSpeechToggle.checked = savedDisableSpeech;
 }
 
 initDashboard();

@@ -165,6 +165,9 @@
       <button id="speechRetryBtn" class="hidden px-6 py-2 rounded-xl font-label font-bold text-sm uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 hover:opacity-90 transition-all">
         Retry
       </button>
+      <button id="typeInsteadBtn" class="w-full max-w-sm px-6 py-3 rounded-xl font-label font-bold text-sm uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 hover:opacity-90 transition-all border border-outline-variant/30 dark:border-stone-700 flex items-center justify-center gap-2 cursor-pointer">
+        <span>⌨️</span> Type Instead
+      </button>
     </div>
 
     <!-- Multiple Choice Options Container (hidden by default) -->
@@ -187,6 +190,11 @@
     <button id="revealAnswerBtn" class="hidden mt-8 px-6 py-3 bg-error-container dark:bg-red-950/40 text-on-error-container dark:text-red-300 rounded-xl font-label font-bold hover:opacity-90 transition-all duration-300 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2">
       <span class="material-symbols-outlined">visibility</span>
       Reveal Answer
+    </button>
+
+    <button id="hintBtn" class="hidden mt-8 px-6 py-3 bg-tertiary-container dark:bg-stone-850 text-on-tertiary-container dark:text-stone-300 rounded-xl font-label font-bold hover:opacity-90 transition-all duration-300 uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+      <span class="material-symbols-outlined text-sm">lightbulb</span>
+      Hint
     </button>
 
     <button id="quitDrillBtn" class="absolute top-24 left-8 px-4 py-2 bg-surface-container-high dark:bg-stone-800 text-on-surface-variant dark:text-stone-300 rounded-lg font-label font-bold hover:bg-surface-variant dark:hover:bg-stone-700 transition-colors duration-300 uppercase tracking-wider text-sm z-30 flex items-center gap-2">
@@ -426,6 +434,22 @@
             <span>0.5×</span>
             <span>Normal</span>
             <span>2.0×</span>
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
+
+        <!-- Disable Speech Drills Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300" for="disableSpeechToggle">Disable Speech Drills</label>
+          <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Skip microphone-based spoken exercises entirely.</p>
+          <div class="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="disableSpeechToggle"
+              class="w-5 h-5 accent-primary dark:accent-emerald-500 rounded border-outline-variant/40 dark:border-stone-800 cursor-pointer"
+            />
+            <label for="disableSpeechToggle" class="font-body text-sm text-on-surface dark:text-stone-100 select-none cursor-pointer">Disable microphone drills and use typed modes</label>
           </div>
         </div>
       </div>

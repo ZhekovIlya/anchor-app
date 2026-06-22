@@ -9,7 +9,7 @@ import { createDrillEngine } from '../core/engine.js';
 import { SpeechRecognitionService } from '../core/speech-recognition.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang, speakSlowly } from './speech.js';
 import { showOnly, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
-import { incrementCompletion, getCompletionCount } from './storage.js';
+import { incrementCompletion, getCompletionCount, localStorageAdapter } from './storage.js';
 import { XP_REWARDS } from '../core/gamification.js';
 import { launchConfetti, renderEndScreenXP, showLevelUpNotification, celebrateStreakMilestone } from './gamification-ui.js';
 
@@ -20,7 +20,7 @@ let boundVisibilityHandler = null;
 let speechService = null;
 
 function cleanWord(word) {
-  return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[.,;:"'!?¿¡-]/g, '').toLowerCase().trim();
+  return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}\s]/gu, '').toLowerCase().trim();
 }
 
 export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null) {
@@ -31,6 +31,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     revealAnswerBtn, quitDrillBtn,
     restartBtn, dashboardReturnBtn,
   } = elements;
+
+  const hintBtn = document.getElementById('hintBtn');
+  const disableSpeech = localStorageAdapter.load('anchor_disable_speech') === true;
 
   const typeInputArea = document.getElementById('typeInputArea');
   const mcContainer = document.getElementById('mcOptionsContainer');
@@ -154,6 +157,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     isReview,
     srs,
     mode,
+    disableSpeech,
     callbacks: {
       onStreakUpdate(streak, target) {
         streakCounter.textContent = `${streak} / ${target}`;
@@ -176,6 +180,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         const speechContainer = document.getElementById('speechContainer');
         if (speechContainer) speechContainer.classList.add('hidden');
         revealAnswerBtn.classList.add('hidden');
+        if (hintBtn) hintBtn.classList.add('hidden');
         ghostText.parentElement.classList.add('hidden');
         
         feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
@@ -240,6 +245,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           } else if (interactionMode === 'TYPE') {
             ghostText.style.transition = '';
             ghostText.classList.add('opacity-0');
+            if (!isExam) {
+              revealAnswerBtn.classList.remove('hidden');
+            }
           }
         } else if (interactionMode === 'MC') {
           mcContainer.classList.remove('hidden');
@@ -252,11 +260,27 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           const speechResultArea = document.getElementById('speechResultArea');
           const speechMicBtn = document.getElementById('speechMicBtn');
           const speechRetryBtn = document.getElementById('speechRetryBtn');
+          const typeInsteadBtn = document.getElementById('typeInsteadBtn');
           
           speechContainer.classList.remove('hidden');
           ghostText.parentElement.classList.remove('hidden');
-          ghostText.classList.remove('opacity-0');
           ghostText.textContent = phrase.es;
+
+          if (!isCopyStage) {
+            ghostText.classList.add('opacity-0');
+            if (hintBtn) {
+              hintBtn.classList.remove('hidden');
+              hintBtn.onclick = () => {
+                ghostText.classList.remove('opacity-0');
+                hintBtn.classList.add('hidden');
+              };
+            }
+          } else {
+            ghostText.classList.remove('opacity-0');
+            if (hintBtn) {
+              hintBtn.classList.add('hidden');
+            }
+          }
           
           speechResultArea.innerHTML = '<span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap the mic and speak the phrase aloud</span>';
           speechMicBtn.classList.remove('hidden', 'bg-red-500', 'animate-pulse');
@@ -294,6 +318,52 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
              speechRetryBtn.classList.add('hidden');
              speechMicBtn.classList.remove('hidden');
           };
+
+          if (typeInsteadBtn) {
+            typeInsteadBtn.onclick = () => {
+              if (speechService && speechService.isRecording) {
+                speechService.stop();
+              }
+              activeEngine.setInteractionMode('TYPE');
+              speechContainer.classList.add('hidden');
+              
+              typeInputArea.classList.remove('hidden');
+              ghostText.parentElement.classList.remove('hidden');
+              ghostText.innerHTML = '';
+              ghostText.classList.remove('pointer-events-none');
+              phrase.es.split(' ').forEach((word, idx, arr) => {
+                const span = document.createElement('span');
+                span.textContent = word;
+                span.className = 'cursor-pointer hover:text-primary dark:hover:text-emerald-400 transition-colors pointer-events-auto';
+                span.onclick = (e) => {
+                  e.stopPropagation();
+                  speakSlowly(word);
+                };
+                ghostText.appendChild(span);
+                if (idx < arr.length - 1) {
+                  ghostText.appendChild(document.createTextNode(' '));
+                }
+              });
+              
+              inputField.value = '';
+              fakeInput.innerHTML = '';
+              inputField.disabled = false;
+              inputField.focus();
+              
+              if (isCopyStage) {
+                ghostText.style.transition = '';
+                ghostText.classList.remove('opacity-0');
+              } else {
+                ghostText.style.transition = '';
+                ghostText.classList.add('opacity-0');
+                if (!isExam) {
+                  revealAnswerBtn.classList.remove('hidden');
+                }
+              }
+              
+              if (hintBtn) hintBtn.classList.add('hidden');
+            };
+          }
         }
 
         if (interactionMode === 'LISTENING') {
