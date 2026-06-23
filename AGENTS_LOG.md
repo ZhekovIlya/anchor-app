@@ -618,3 +618,11 @@
   
  - Updated speech validation in drill-ui.js, audition-ui.js, and read-aloud-ui.js to not fail on first error and allow 60% accuracy threshold for progressing.
 - Updated 'Type Instead' fallback in drill-ui.js to prepopulate inputField with the user's spoken transcript.
+
+
+## Task: fix-theory-expand-verbs (2026-06-23)
+**[DEV]:** Created branch task/fix-theory-expand-verbs. Fixed week7 theory (heading/body/examples -> typed sections). Created demonstrative_pronouns.js, verbs_irregular_full.js, verbs_reflexive_special.js. Expanded verbs_and_irregulars.js with 'verb = engine' emphasis and full conjugation tables.
+**[AQA]:** Verified all section objects have valid type fields. All ES module imports correct. No DOM code in core. No phrase count changes.
+**[QA]:** All 10 tests pass. Theory renders correctly. Week7 theory card now shows subtitle instead of undefined. Drills untouched.
+**[TEACH]:** Updated LESSONS_LEARNED.md with Theory Section Format and subtitle rules.
+**[LOG]:** Squash-merged to main, pushed to origin, task branch deleted.
