@@ -302,67 +302,133 @@ const week7Lessons = [
 
 // ════════════════════════════════════════════════════════════════════
 // THEORY — "Grammar expansion" for this week.
-// Structured so a viewer can render headings + examples. If your Week 6
-// theory lives in /public/theory as HTML/an image, port this content there.
+// Uses sections array with type fields — rendered by theory-viewer.js
 // ════════════════════════════════════════════════════════════════════
 const week7Theory = {
   id: "w7_theory",
   title: "Grammar expansion: hablar sin bloquearte",
-  intro:
-    "Esta semana no añadimos mucha gramática nueva: te damos las herramientas para SOLTARTE. Hablar con fluidez no es hablar sin errores, es no pararte. Estas estructuras te dejan ganar tiempo, opinar y contar cosas sin quedarte en blanco.",
+  subtitle: "Tres pasados, conectores, opiniones y mentalidad para soltarte",
   sections: [
     {
-      heading: "1. Los tres pasados (sin agobiarte)",
-      body:
-        "Para contar cosas necesitas tres pasados. No busques el perfecto perfecto a mitad de frase: elige uno y sigue. La fluidez gana a la precisión.",
-      examples: [
-        { es: "Hoy he comido fuera.", note: "Pretérito perfecto: hoy / esta semana / algo reciente." },
-        { es: "Ayer fui al cine.", note: "Indefinido: terminado, con momento concreto (ayer, el lunes, en 2022)." },
-        { es: "De pequeño jugaba al fútbol.", note: "Imperfecto: fondo, descripción, costumbres (era, había, estaba)." },
-      ],
+      type: "paragraph",
+      text: "Esta semana no añadimos mucha gramática nueva: te damos las herramientas para SOLTARTE. Hablar con fluidez no es hablar sin errores, es no pararte. Estas estructuras te dejan ganar tiempo, opinar y contar cosas sin quedarte en blanco."
     },
     {
-      heading: "2. Conectores que dan fluidez",
-      body:
-        "Son las 'bisagras' del habla real. Te dan medio segundo para pensar y suenan nativo.",
-      examples: [
-        { es: "pues… / a ver… / bueno…", note: "Empezar a hablar sin frase lista." },
-        { es: "es que… / o sea…", note: "Explicar o reformular." },
-        { es: "así que… / entonces…", note: "Consecuencia: 'estaba cansado, así que me fui'." },
-        { es: "total, que… / resulta que…", note: "Para arrancar o resumir una historia." },
-      ],
+      type: "heading",
+      text: "1. Los tres pasados (sin agobiarte)"
     },
     {
-      heading: "3. Frases para opinar (+ indicativo)",
-      body:
-        "Las opiniones en afirmativo van con indicativo. Memoriza los arranques y rellena lo que quieras.",
-      examples: [
-        { es: "Creo que / Me parece que / Para mí…", note: "+ indicativo: 'Creo que tienes razón'." },
-        { es: "La verdad es que… / Yo diría que…", note: "Suaviza y suena natural." },
-        { es: "No creo que sea buena idea.", note: "OJO: opinión en negativo → subjuntivo (sea). De momento, basta con reconocerlo." },
-      ],
+      type: "paragraph",
+      text: "Para contar cosas necesitas tres pasados. No busques el perfecto perfecto a mitad de frase: elige uno y sigue. La fluidez gana a la precisión."
     },
     {
-      heading: "4. Pronombres para no repetir (lo/la/los/las)",
-      body:
-        "Repetir el objeto suena a principiante. Sustitúyelo y la frase fluye.",
-      examples: [
-        { es: "¿Has visto la peli? — Sí, la vi ayer.", note: "la = la peli." },
-        { es: "¿Tienes el libro? — Sí, lo tengo aquí.", note: "lo = el libro." },
-        { es: "Te lo digo en serio.", note: "Combinar pronombres es muy común al hablar." },
-      ],
+      type: "table",
+      caption: "Los tres pasados — cuándo usar cada uno",
+      headers: ["Tiempo", "Ejemplo", "Cuándo usarlo"],
+      rows: [
+        ["Pretérito perfecto", "Hoy he comido fuera.", "Hoy / esta semana / algo reciente"],
+        ["Pretérito indefinido", "Ayer fui al cine.", "Terminado, con momento concreto (ayer, el lunes, en 2022)"],
+        ["Pretérito imperfecto", "De pequeño jugaba al fútbol.", "Fondo, descripción, costumbres (era, había, estaba)"],
+      ]
     },
     {
-      heading: "5. La mentalidad (la barrera de verdad)",
-      body:
-        "El bloqueo es psicológico, no de vocabulario. Cuatro reglas para romperlo:",
-      examples: [
-        { es: "Habla antes de estar listo.", note: "Si esperas a la frase perfecta, no sale nunca." },
-        { es: "Gana tiempo, no te calles.", note: "Un 'pues… a ver…' mantiene el turno; el silencio lo corta." },
-        { es: "El error es información, no fracaso.", note: "Te corrigen → aprendes. Sigue." },
-        { es: "Apunta a 'que me entiendan', no a 'perfecto'.", note: "Comunicar > acertar la gramática." },
-      ],
+      type: "callout",
+      style: "tip",
+      text: "Truco: si tienes dudas entre indefinido e imperfecto, piensa: ¿acción concreta que terminó? → indefinido. ¿Estado de fondo, descripción, hábito? → imperfecto."
     },
+    {
+      type: "heading",
+      text: "2. Conectores que dan fluidez"
+    },
+    {
+      type: "paragraph",
+      text: "Son las 'bisagras' del habla real. Te dan medio segundo para pensar y suenan nativo."
+    },
+    {
+      type: "table",
+      caption: "Conectores esenciales",
+      headers: ["Conector", "Para qué sirve"],
+      rows: [
+        ["pues… / a ver… / bueno…", "Empezar a hablar sin frase lista"],
+        ["es que… / o sea…", "Explicar o reformular"],
+        ["así que… / entonces…", "Consecuencia: 'estaba cansado, así que me fui'"],
+        ["total, que… / resulta que…", "Para arrancar o resumir una historia"],
+        ["por un lado… / por otro…", "Contrastar ideas"],
+      ]
+    },
+    {
+      type: "heading",
+      text: "3. Frases para opinar (+ indicativo)"
+    },
+    {
+      type: "paragraph",
+      text: "Las opiniones en afirmativo van con indicativo. Memoriza los arranques y rellena lo que quieras."
+    },
+    {
+      type: "table",
+      caption: "Arranques de opinión",
+      headers: ["Estructura", "Ejemplo"],
+      rows: [
+        ["Creo que…", "Creo que tienes razón."],
+        ["Me parece que…", "Me parece que es buena idea."],
+        ["Para mí…", "Para mí, lo más importante es la familia."],
+        ["La verdad es que…", "La verdad es que no me convence."],
+        ["Yo diría que…", "Yo diría que depende."],
+      ]
+    },
+    {
+      type: "callout",
+      style: "warning",
+      text: "OJO: opinión en NEGATIVO → subjuntivo. 'No creo que SEA buena idea.' (sea, no es). De momento, basta con reconocerlo cuando lo escuches."
+    },
+    {
+      type: "heading",
+      text: "4. Pronombres para no repetir (lo / la / los / las)"
+    },
+    {
+      type: "paragraph",
+      text: "Repetir el objeto suena a principiante. Sustitúyelo con un pronombre y la frase fluye."
+    },
+    {
+      type: "table",
+      caption: "Pronombres de objeto directo",
+      headers: ["Pronombre", "Sustituye a…", "Ejemplo"],
+      rows: [
+        ["lo", "sustantivo masculino singular", "¿Tienes el libro? — Sí, lo tengo aquí."],
+        ["la", "sustantivo femenino singular", "¿Has visto la peli? — Sí, la vi ayer."],
+        ["los", "sustantivo masculino plural", "Los platos — ¿Los has fregado?"],
+        ["las", "sustantivo femenino plural", "Las llaves — No las encuentro."],
+      ]
+    },
+    {
+      type: "callout",
+      style: "tip",
+      text: "Te lo digo en serio. / ¿Me lo puedes explicar? — Combinar pronombres (me/te/se + lo/la) es muy común al hablar. No te agobies, empieza con uno."
+    },
+    {
+      type: "heading",
+      text: "5. La mentalidad (la barrera de verdad)"
+    },
+    {
+      type: "paragraph",
+      text: "El bloqueo es psicológico, no de vocabulario. Cuatro reglas para romperlo:"
+    },
+    {
+      type: "table",
+      caption: "Reglas para hablar sin bloqueo",
+      headers: ["Regla", "Por qué funciona"],
+      rows: [
+        ["Habla antes de estar listo.", "Si esperas a la frase perfecta, no sale nunca."],
+        ["Gana tiempo, no te calles.", "Un 'pues… a ver…' mantiene el turno; el silencio lo corta."],
+        ["El error es información, no fracaso.", "Te corrigen → aprendes. Sigue."],
+        ["Apunta a 'que me entiendan'.", "Comunicar > acertar la gramática."],
+      ]
+    },
+    {
+      type: "callout",
+      style: "important",
+      text: "Recuerda: la fluidez no es hablar sin errores. Es hablar sin pararte. Los hablantes nativos también cometen errores — simplemente siguen hablando."
+    }
   ],
 };
 

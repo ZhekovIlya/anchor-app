@@ -14,6 +14,9 @@ import week6Data from '../../data/sentences/week_6.js';
 import week7Data from '../../data/sentences/week7.js';
 
 import theoryVerbs from '../../data/theory/verbs_and_irregulars.js';
+import theoryIrregularFull from '../../data/theory/verbs_irregular_full.js';
+import theoryReflexiveSpecial from '../../data/theory/verbs_reflexive_special.js';
+import theoryDemonstratives from '../../data/theory/demonstrative_pronouns.js';
 import theoryBridge from '../../data/theory/the_bridge.js';
 import theoryCatalan from '../../data/theory/catalan_vs_castellano.js';
 
@@ -32,7 +35,7 @@ import { tokenize } from './tokenizer.js';
  */
 export function loadAllData() {
   const sentences = hydrateSentenceTopics([week1Data, week2Data, week3Data, week4Data, week5Data, week6Data, week7Data]);
-  const theory = [theoryVerbs, theoryBridge, theoryCatalan];
+  const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
   const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors]);
 
   return { sentences, theory, words, readAloud: readAloudData };

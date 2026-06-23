@@ -1,55 +1,68 @@
 // ========================
-// THEORY: VERBS & IRREGULARS
+// THEORY: VERBS & IRREGULARS — PART 1
 // ========================
-// Standalone theory article for the Theory tab.
-// Teaches verb families, conjugation patterns, and the Three Rebels.
+// Regular verbs, three families, the Yo shortcut, and the Three Rebels.
+// Emphasizes that verbs are the ENGINE of every Spanish sentence.
 
 export default {
   id: "theory_verbs",
   type: "theory",
-  title: "Verbs & Irregulars",
+  title: "Глаголы: Двигатель Предложения",
   icon: "manufacturing",
-  description: "Spanish verbs as 'Motors' with 'Tails'. Master the three families and the three rebels.",
+  description: "Глагол — сердце любого предложения. Правильные -AR/-ER/-IR глаголы и три главных нарушителя: SER, ESTAR, IR.",
   sections: [
     {
       type: "heading",
-      text: "🔧 Spanish Verbs = Motors with Tails"
+      text: "🚀 Глагол — это двигатель предложения"
     },
     {
       type: "paragraph",
-      text: "Every Spanish verb in its base form (infinitive) is a motor with a detachable tail. The tail tells you which family it belongs to. Remove the tail, attach a new ending, and you've conjugated the verb."
+      text: "В испанском (и в любом другом языке) глагол — это главная часть предложения. Пойми глагол — поймёшь предложение. Всё остальное: подлежащее, дополнение, прилагательные — лишь детали вокруг него."
+    },
+    {
+      type: "callout",
+      style: "important",
+      text: "Ключевое правило: каждое испанское предложение строится вокруг глагола. Научись распознавать и изменять глаголы — и ты сможешь понять и создать любое предложение. Освой глагол → освой предложение."
+    },
+    {
+      type: "heading",
+      text: "🔧 Испанский глагол = основа + окончание"
+    },
+    {
+      type: "paragraph",
+      text: "Каждый испанский глагол в инфинитиве (начальной форме) — это основа с отделяемым окончанием. Окончание говорит, к какому семейству принадлежит глагол. Убери окончание, прикрепи новое — и ты проспрягал глагол."
     },
     {
       type: "callout",
       style: "tip",
-      text: "Think of it like LEGO: the stem is the brick, the ending is the connector piece. Swap the connector to change who is doing the action."
+      text: "Думай о глаголе как о LEGO: основа — это кирпичик, окончание — коннектор. Меняй коннектор, чтобы показать, кто совершает действие."
     },
     {
       type: "table",
-      caption: "The Three Verb Families",
-      headers: ["Family", "Tail", "Example", "Stem"],
+      caption: "Три семейства глаголов",
+      headers: ["Семейство", "Окончание", "Пример", "Основа"],
       rows: [
-        ["-AR", "-ar", "hablar (to speak)", "habl-"],
-        ["-ER", "-er", "comer (to eat)", "com-"],
-        ["-IR", "-ir", "vivir (to live)", "viv-"],
+        ["-AR", "-ar", "hablar (говорить)", "habl-"],
+        ["-ER", "-er", "comer (есть)", "com-"],
+        ["-IR", "-ir", "vivir (жить)", "viv-"],
       ]
     },
     {
       type: "paragraph",
-      text: "-AR verbs are by far the most common (~70% of all Spanish verbs). If you only learn one family first, learn -AR."
+      text: "-AR глаголы — самые распространённые (~70% всех испанских глаголов). Если ты учишь первое семейство — ты уже охватываешь большинство глаголов испанского языка."
     },
     {
       type: "heading",
-      text: "🎯 The 'Yo' Shortcut: Everything ends in -O"
+      text: "🎯 Ярлык «Yo»: всегда оканчивается на -O"
     },
     {
       type: "paragraph",
-      text: "For regular verbs, the 'I' form is dead simple: drop the tail, add -O. This works for ALL three families. It's the single most useful pattern in Spanish."
+      text: "Для правильных глаголов форма «я» (Yo) — самая простая: убери окончание, добавь -O. Это работает для ВСЕХ трёх семейств. Это самый полезный паттерн в испанском."
     },
     {
       type: "table",
-      caption: "Yo Conjugation — Universal -O Rule",
-      headers: ["Infinitive", "Drop tail", "Add -O", "Result"],
+      caption: "Спряжение Yo — универсальное правило -O",
+      headers: ["Инфинитив", "Убрать окончание", "Добавить -O", "Результат"],
       rows: [
         ["hablar", "habl-", "+ o", "hablo"],
         ["comer", "com-", "+ o", "como"],
@@ -60,105 +73,113 @@ export default {
     },
     {
       type: "heading",
-      text: "⚡ The 'Tú' Pattern"
-    },
-    {
-      type: "paragraph",
-      text: "For 'You (informal)', the ending depends on the family — but -ER and -IR share the same ending:"
+      text: "📋 Полная таблица правильного спряжения"
     },
     {
       type: "table",
-      caption: "Tú Endings by Family",
-      headers: ["Family", "Ending", "Example"],
+      caption: "Настоящее время — все лица",
+      headers: ["Лицо", "-AR (hablar)", "-ER (comer)", "-IR (vivir)"],
       rows: [
-        ["-AR", "-as", "hablas"],
-        ["-ER", "-es", "comes"],
-        ["-IR", "-es", "vives"],
+        ["Yo (я)", "hablo", "como", "vivo"],
+        ["Tú (ты)", "hablas", "comes", "vives"],
+        ["Él/Ella/Usted (он/она/Вы)", "habla", "come", "vive"],
+        ["Nosotros (мы)", "hablamos", "comemos", "vivimos"],
+        ["Vosotros (вы, Испания)", "habláis", "coméis", "vivís"],
+        ["Ellos/Ustedes (они/Вы мн.)", "hablan", "comen", "viven"],
       ]
     },
     {
       type: "callout",
       style: "important",
-      text: "Notice: -ER and -IR share the same 'Tú' ending (-es). Two families, one pattern! This is true for most persons."
+      text: "Заметь: -ER и -IR глаголы имеют ОДИНАКОВЫЕ окончания для Tú, Él, Nosotros, Vosotros, Ellos. Два семейства — один паттерн. Это сильно упрощает запоминание!"
     },
     {
       type: "heading",
-      text: "📋 Complete Regular Conjugation Table"
-    },
-    {
-      type: "table",
-      caption: "Present Tense — All Persons",
-      headers: ["Person", "-AR (hablar)", "-ER (comer)", "-IR (vivir)"],
-      rows: [
-        ["Yo", "hablo", "como", "vivo"],
-        ["Tú", "hablas", "comes", "vives"],
-        ["Él/Ella", "habla", "come", "vive"],
-        ["Nosotros", "hablamos", "comemos", "vivimos"],
-        ["Ellos/Ustedes", "hablan", "comen", "viven"],
-      ]
-    },
-    {
-      type: "heading",
-      text: "🏴‍☠️ The Three Rebels: SER, ESTAR, IR"
+      text: "🏴‍☠️ Три бунтаря: SER, ESTAR, IR"
     },
     {
       type: "paragraph",
-      text: "These three verbs refuse to follow rules. They are ESSENTIAL — you'll use them in nearly every sentence. Don't try to derive them — memorize them as fixed patterns."
+      text: "Эти три глагола отказываются следовать правилам. Они ОБЯЗАТЕЛЬНЫ — ты будешь использовать их почти в каждом предложении. Не пытайся вывести их формы — запомни как фиксированные паттерны."
     },
     {
       type: "table",
-      caption: "The Three Rebels — Present Tense",
-      headers: ["Person", "SER (to be — identity)", "ESTAR (to be — state)", "IR (to go)"],
+      caption: "SER — быть (постоянные характеристики)",
+      headers: ["Лицо", "SER", "Пример"],
       rows: [
-        ["Yo", "soy", "estoy", "voy"],
-        ["Tú", "eres", "estás", "vas"],
-        ["Él/Ella", "es", "está", "va"],
-        ["Nosotros", "somos", "estamos", "vamos"],
-        ["Ellos/Ustedes", "son", "están", "van"],
+        ["Yo", "soy", "Yo soy estudiante. — Я студент."],
+        ["Tú", "eres", "Tú eres inteligente. — Ты умный."],
+        ["Él/Ella/Usted", "es", "Ella es médica. — Она врач."],
+        ["Nosotros", "somos", "Somos amigos. — Мы друзья."],
+        ["Vosotros", "sois", "Vosotros sois de Ucrania. — Вы из Украины."],
+        ["Ellos/Ustedes", "son", "Son muy simpáticos. — Они очень приятные."],
+      ]
+    },
+    {
+      type: "table",
+      caption: "ESTAR — быть (состояния, местоположение)",
+      headers: ["Лицо", "ESTAR", "Пример"],
+      rows: [
+        ["Yo", "estoy", "Estoy cansado. — Я устал."],
+        ["Tú", "estás", "¿Estás bien? — Ты в порядке?"],
+        ["Él/Ella/Usted", "está", "Está en casa. — Он/она дома."],
+        ["Nosotros", "estamos", "Estamos en Barcelona. — Мы в Барселоне."],
+        ["Vosotros", "estáis", "¿Estáis listos? — Вы готовы?"],
+        ["Ellos/Ustedes", "están", "Están muy contentos. — Они очень довольны."],
       ]
     },
     {
       type: "callout",
       style: "warning",
-      text: "SER = who/what you ARE (identity, profession, origin). ESTAR = how/where you ARE (mood, location, temporary state). Mixing them up changes meaning! 'Soy aburrido' = I'm a boring person. 'Estoy aburrido' = I'm bored right now."
-    },
-    {
-      type: "heading",
-      text: "🎓 Other High-Frequency Irregulars"
-    },
-    {
-      type: "paragraph",
-      text: "Beyond the Three Rebels, these verbs have irregular 'Yo' forms but follow normal patterns for other persons:"
+      text: "SER vs ESTAR — самая частая ошибка! SER = кто/что ты ЕСТЬ (личность, профессия, происхождение). ESTAR = как/где ты НАХОДИШЬСЯ (настроение, местоположение, временное состояние). 'Soy aburrido' = Я скучный человек. 'Estoy aburrido' = Мне сейчас скучно."
     },
     {
       type: "table",
-      caption: "Irregular 'Yo' Verbs",
-      headers: ["Verb", "Meaning", "Yo form", "Tú form (regular)"],
+      caption: "IR — идти / ехать",
+      headers: ["Лицо", "IR", "Пример"],
       rows: [
-        ["tener", "to have", "tengo", "tienes"],
-        ["hacer", "to do/make", "hago", "haces"],
-        ["decir", "to say/tell", "digo", "dices"],
-        ["poner", "to put", "pongo", "pones"],
-        ["salir", "to go out", "salgo", "sales"],
-        ["venir", "to come", "vengo", "vienes"],
-        ["conocer", "to know (person)", "conozco", "conoces"],
-        ["saber", "to know (fact)", "sé", "sabes"],
+        ["Yo", "voy", "Voy al trabajo. — Я иду на работу."],
+        ["Tú", "vas", "¿Vas al gimnasio? — Ты идёшь в спортзал?"],
+        ["Él/Ella/Usted", "va", "Va al médico. — Он/она идёт к врачу."],
+        ["Nosotros", "vamos", "¡Vamos! — Пошли!"],
+        ["Vosotros", "vais", "¿Vais al cine? — Вы идёте в кино?"],
+        ["Ellos/Ustedes", "van", "Van de vacaciones. — Они едут в отпуск."],
       ]
     },
     {
       type: "callout",
       style: "tip",
-      text: "Pattern: many irregular 'Yo' forms end in -GO (tengo, hago, digo, pongo, salgo, vengo). Once you spot this, they become predictable!"
+      text: "IR + a + инфинитив = ближайшее будущее! 'Voy a comer' = Я собираюсь поесть. 'Vamos a hablar' = Мы собираемся поговорить. Это один из самых частых способов говорить о будущем."
+    },
+    {
+      type: "heading",
+      text: "🎓 Высокочастотные неправильные глаголы (Часть 1)"
+    },
+    {
+      type: "paragraph",
+      text: "Помимо трёх бунтарей, эти глаголы имеют неправильную форму «Yo», но следуют нормальным паттернам для остальных лиц:"
+    },
+    {
+      type: "table",
+      caption: "TENER (иметь) и HACER (делать/делать)",
+      headers: ["Лицо", "TENER", "HACER"],
+      rows: [
+        ["Yo", "tengo", "hago"],
+        ["Tú", "tienes", "haces"],
+        ["Él/Ella", "tiene", "hace"],
+        ["Nosotros", "tenemos", "hacemos"],
+        ["Vosotros", "tenéis", "hacéis"],
+        ["Ellos/Ustedes", "tienen", "hacen"],
+      ]
+    },
+    {
+      type: "callout",
+      style: "tip",
+      text: "Паттерн -GO: многие неправильные глаголы в форме «Yo» оканчиваются на -GO (tengo, hago, digo, pongo, salgo, vengo). Как только ты заметишь это, они становятся предсказуемыми! Подробнее — в Части 2."
     },
     {
       type: "video",
       src: "https://www.youtube.com/embed/hfWcAgihqVw",
-      title: "Spanish Verbs Explained"
-    },
-    {
-      type: "video",
-      src: "https://www.youtube.com/embed/BFmmvdANZl0",
-      title: "More Verb Practice"
+      title: "Spanish Verbs Explained — Regular Conjugation"
     }
   ]
 };
