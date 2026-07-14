@@ -4,7 +4,7 @@
 // Pure logic — no DOM, no browser APIs.
 // Supports unified game modes for sentence drills.
 
-import { STREAK_TARGETS, COPY_STAGE_THRESHOLDS, DRILL_MODE } from './constants.js';
+import { STREAK_TARGETS, COPY_STAGE_THRESHOLDS, DRILL_MODE, EXAM_MAX_MISTAKES } from './constants.js';
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -62,7 +62,8 @@ export function createDrillEngine(options) {
   let drawingDeck = [];
   let currentPhrase = null;
   let currentInteractionMode = 'TYPE'; // 'TYPE', 'MC', 'WORD_ORDER'
-  let currentQuestionData = null; 
+  let currentQuestionData = null;
+  let mistakes = 0;
 
   const copyThreshold = isWordMode ? COPY_STAGE_THRESHOLDS.word : COPY_STAGE_THRESHOLDS.sentence;
 
@@ -179,6 +180,7 @@ export function createDrillEngine(options) {
   return {
     start() {
       streak = 0;
+      mistakes = 0;
       failedPhrases = [];
       drawingDeck = [];
       pickNextPhrase();
@@ -255,6 +257,7 @@ export function createDrillEngine(options) {
     },
 
     handleWrong() {
+      mistakes++;
       targetStreak++;
       failedPhrases.push(currentPhrase);
 
@@ -263,6 +266,10 @@ export function createDrillEngine(options) {
       }
 
       callbacks.onRevealUpdate(streak, targetStreak);
+
+      // Check if exam should fail
+      const examFailed = (isExam || isTabExam) && mistakes >= EXAM_MAX_MISTAKES;
+      return { failed: examFailed, mistakes };
     },
 
     nextPhraseAfterWrong() {
@@ -293,6 +300,7 @@ export function createDrillEngine(options) {
         isExam,
         isReview,
         mode,
+        mistakes,
       };
     },
   };

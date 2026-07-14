@@ -75,3 +75,6 @@ export const DRILL_MODE = {
   SENTENCE: 'sentence',
   WORD: 'word',
 };
+
+/** Maximum mistakes allowed before an exam is failed */
+export const EXAM_MAX_MISTAKES = 5;

@@ -4,7 +4,7 @@
 // Connects core/engine.js to the browser DOM.
 // Supports Unified Dynamic Game Modes (Type, MC, Word Order) seamlessly.
 
-import { COLOR_MAP, DRILL_MODE } from '../core/constants.js';
+import { COLOR_MAP, DRILL_MODE, EXAM_MAX_MISTAKES } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
 import { SpeechRecognitionService } from '../core/speech-recognition.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang, speakSlowly } from './speech.js';
@@ -51,6 +51,18 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   showOnly(elements, 'drill');
   isHandlingFeedback = false;
+
+  function showExamFailed(mistakeCount) {
+    showOnly(elements, 'end');
+    elements.endScreenProgressContainer.classList.add('hidden', 'opacity-0');
+    elements.endScreenIconBox.className = 'w-20 h-20 flex items-center justify-center rounded-full mb-4 shadow-sm border transition-colors transition-transform scale-100 bg-[#fef2f2] dark:bg-red-950/20 text-[#dc2626] dark:text-red-400 border-[#fecaca] dark:border-red-600/30';
+    elements.endScreenIcon.textContent = 'block';
+    elements.endScreenTitle.textContent = 'Exam Failed';
+    elements.endScreenSubtitle.textContent = `${mistakeCount} mistakes — review the material and try again.`;
+
+    const xpContainer = document.getElementById('endScreenXPContainer');
+    if (xpContainer) xpContainer.classList.add('hidden');
+  }
 
   function showFeedback(isCorrect, correctAnswerText, onCompleteCallback) {
     function triggerHaptic(type) {
@@ -246,9 +258,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           } else if (interactionMode === 'TYPE') {
             ghostText.style.transition = '';
             ghostText.classList.add('opacity-0');
-            if (!isExam) {
-              revealAnswerBtn.classList.remove('hidden');
-            }
+            revealAnswerBtn.classList.remove('hidden');
+          } else if (interactionMode === 'LISTENING') {
+            revealAnswerBtn.classList.remove('hidden');
           }
         } else if (interactionMode === 'MC') {
           mcContainer.classList.remove('hidden');
@@ -369,9 +381,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
               } else {
                 ghostText.style.transition = '';
                 ghostText.classList.add('opacity-0');
-                if (!isExam) {
-                  revealAnswerBtn.classList.remove('hidden');
-                }
+                revealAnswerBtn.classList.remove('hidden');
               }
               
               if (hintBtn) hintBtn.classList.add('hidden');
@@ -534,10 +544,16 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           activeEngine.handleCorrect();
         });
       } else {
-        activeEngine.handleWrong();
-        showFeedback(false, state.currentPhrase.es, () => {
-          activeEngine.nextPhraseAfterWrong();
-        });
+        const wrongResult = activeEngine.handleWrong();
+        if (wrongResult.failed) {
+          showFeedback(false, state.currentPhrase.es, () => {
+            showExamFailed(wrongResult.mistakes);
+          });
+        } else {
+          showFeedback(false, state.currentPhrase.es, () => {
+            activeEngine.nextPhraseAfterWrong();
+          });
+        }
       }
     }
   };
@@ -553,10 +569,14 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     revealAnswerBtn.classList.add('hidden');
     
     const state = activeEngine.getState();
-    activeEngine.handleWrong(); 
+    const wrongResult = activeEngine.handleWrong(); 
     
     showFeedback(false, state.currentPhrase.es, () => {
-      activeEngine.nextPhraseAfterWrong();
+      if (wrongResult.failed) {
+        showExamFailed(wrongResult.mistakes);
+      } else {
+        activeEngine.nextPhraseAfterWrong();
+      }
     });
   };
 
@@ -584,10 +604,16 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           });
         } else {
           btn.classList.add('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/30', 'text-[#dc2626]', 'dark:text-red-400');
-          activeEngine.handleWrong();
-          showFeedback(false, phrase.es, () => {
-            activeEngine.nextPhraseAfterWrong();
-          });
+          const wrongResult = activeEngine.handleWrong();
+          if (wrongResult.failed) {
+            showFeedback(false, phrase.es, () => {
+              showExamFailed(wrongResult.mistakes);
+            });
+          } else {
+            showFeedback(false, phrase.es, () => {
+              activeEngine.nextPhraseAfterWrong();
+            });
+          }
         }
       });
       container.appendChild(btn);
@@ -659,13 +685,22 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         });
       } else {
         answerArea.classList.add('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
-        activeEngine.handleWrong();
-        showFeedback(false, phrase.es, () => {
-          answerArea.classList.remove('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
-          poolArea.style.pointerEvents = '';
-          checkBtn.style.pointerEvents = '';
-          activeEngine.nextPhraseAfterWrong();
-        });
+        const wrongResult = activeEngine.handleWrong();
+        if (wrongResult.failed) {
+          showFeedback(false, phrase.es, () => {
+            answerArea.classList.remove('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
+            poolArea.style.pointerEvents = '';
+            checkBtn.style.pointerEvents = '';
+            showExamFailed(wrongResult.mistakes);
+          });
+        } else {
+          showFeedback(false, phrase.es, () => {
+            answerArea.classList.remove('border-[#dc2626]', 'dark:border-red-500', 'bg-[#fef2f2]', 'dark:bg-red-950/20');
+            poolArea.style.pointerEvents = '';
+            checkBtn.style.pointerEvents = '';
+            activeEngine.nextPhraseAfterWrong();
+          });
+        }
       }
     };
 
