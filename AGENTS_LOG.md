@@ -626,3 +626,10 @@
 **[QA]:** All 10 tests pass. Theory renders correctly. Week7 theory card now shows subtitle instead of undefined. Drills untouched.
 **[TEACH]:** Updated LESSONS_LEARNED.md with Theory Section Format and subtitle rules.
 **[LOG]:** Squash-merged to main, pushed to origin, task branch deleted.
+
+## Task: question-words-drill (2026-07-14)
+**Branch:** task/question-words-drill
+**[DEV]:** Created data/words/question_words.js — a 12-word lesson covering all 8 Spanish interrogatives (qué, cómo, dónde, cuándo, por qué, cuál, quién, cuánto) plus cuánta/cuántos/cuántas/cuáles forms. RU/UK translations are deliberately nuanced, not literal — e.g. cuál = '???????? (????? ?? ?????????)'. Includes a rich 	heory object with 10 sections (headings, paragraphs, tables, callouts) explaining the qué vs cuál distinction, gender agreement for cuánto, and a full cheat sheet. Registered in data-loader.js.
+**[AQA]:** Verified: 12 words in lesson, correct { ru, uk, es } shape, theory sections all typed correctly, subtitle present, import added to data-loader. All 10 automated tests pass.
+**[QA]:** Pedagogically sound for RU/UK speakers. Contextual hints in translations prevent the classic qué/cuál confusion. All 4 cuánto gender/number forms drilled. por qué includes reminder about porque answer form. Cheat sheet callout aids retention.
+**Status:** ? Committed to branch. Awaiting user review/testing before merge.

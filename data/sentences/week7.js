@@ -291,6 +291,53 @@ const week7Lessons = [
   { id: "w7_m6", tab: "quedar", exam: true, mini: true, title: "Mini-examen: Quedar y seguir hablando" },
 
   // ═══════════════════════════════════════════════════════
+  // TAB 7: VOCABULARIO NUEVO — user's new real-life words
+  // hay, siempre, oscuro, encendida, volumen, sus, rico,
+  // está de muerte, acabo de recordar, lo mismo, arroba,
+  // enfermera, enfermedad, cuáles, llegar, tener que
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "w7_l19",
+    tab: "vocab_nuevo",
+    title: "Hay y describir",
+    phrases: [
+      { ru: "Сегодня на рынке много людей", uk: "Сьогодні на ринку багато людей", es: "Hay mucha gente en el mercado hoy" },
+      { ru: "Тут всегда шум, громкость очень высокая", uk: "Тут завжди шум, гучність дуже висока", es: "Siempre hay ruido aquí, el volumen está muy alto" },
+      { ru: "Свет включён на кухне", uk: "Світло увімкнене на кухні", es: "La luz está encendida en la cocina" },
+      { ru: "На улице темно, никого нет", uk: "На вулиці темно, нікого немає", es: "Está oscuro en la calle, no hay nadie" },
+      { ru: "Рядом есть большой магазин", uk: "Поруч є великий магазин", es: "Hay una tienda grande cerca de aquí" },
+      { ru: "Она всегда ходит в парк со своими друзьями", uk: "Вона завжди ходить у парк зі своїми друзями", es: "Ella siempre va al parque con sus amigos" },
+    ],
+  },
+  {
+    id: "w7_l20",
+    tab: "vocab_nuevo",
+    title: "Expresiones del día",
+    phrases: [
+      { ru: "Еда просто божественная, очень вкусная", uk: "Їжа просто божественна, дуже смачна", es: "La comida está de muerte, muy rica" },
+      { ru: "Я только что вспомнил, мне нужно на рынок", uk: "Я щойно згадав, мені треба на ринок", es: "Acabo de recordar que tengo que ir al mercado" },
+      { ru: "Я всегда покупаю одно и то же на рынке", uk: "Я завжди купую одне й те саме на ринку", es: "Siempre compro lo mismo en el mercado" },
+      { ru: "У нас одни и те же проблемы с арендой", uk: "У нас одні й ті самі проблеми з орендою", es: "Tenemos los mismos problemas con el alquiler" },
+      { ru: "Кофе очень вкусный, я купил его вчера", uk: "Кава дуже смачна, я купив її вчора", es: "El café está muy rico, lo compré ayer" },
+      { ru: "Дай мне свой ник в Инстаграме", uk: "Дай мені свій нік в Інстаграмі", es: "Dame tu arroba de Instagram" },
+    ],
+  },
+  {
+    id: "w7_l21",
+    tab: "vocab_nuevo",
+    title: "Llegar y quedar",
+    phrases: [
+      { ru: "Медсестра всегда приходит в восемь", uk: "Медсестра завжди приходить о восьмій", es: "La enfermera llega siempre a las ocho" },
+      { ru: "У него болезнь, ему нужно в больницу", uk: "У нього хвороба, йому треба до лікарні", es: "Él tiene una enfermedad, tiene que ir al hospital" },
+      { ru: "Какие у вас те же проблемы?", uk: "Які у вас ті самі проблеми?", es: "¿Cuáles son los mismos problemas?" },
+      { ru: "Я только что пришёл, встретимся тут или в баре?", uk: "Я щойно прийшов, зустрінемося тут чи в барі?", es: "Acabo de llegar, ¿quedamos aquí o en el bar?" },
+      { ru: "В аптеке есть медсестра", uk: "В аптеці є медсестра", es: "Hay una enfermera en la farmacia" },
+      { ru: "Мне нужно прийти до девяти", uk: "Мені треба прийти до дев'ятої", es: "Tengo que llegar antes de las nueve" },
+    ],
+  },
+  { id: "w7_m7", tab: "vocab_nuevo", exam: true, mini: true, title: "Mini-examen: Vocabulario nuevo" },
+
+  // ═══════════════════════════════════════════════════════
   // FULL EXAM — everything together
   // ═══════════════════════════════════════════════════════
   {
@@ -448,6 +495,15 @@ export default {
   title: "Week 7: Romper la barrera de hablar",
   description:
     "Conversational machinery to get off the intermediate plateau and actually speak: buying time, reacting, giving opinions, narrating in the past, talking around missing words, and socializing. Level A2–B1.",
+  tabs: [
+    { id: "ganar_tiempo", label: "Ganar tiempo" },
+    { id: "reaccionar", label: "Reaccionar" },
+    { id: "opinar", label: "Opinar" },
+    { id: "contar", label: "Contar" },
+    { id: "rescate", label: "Rescate" },
+    { id: "quedar", label: "Quedar" },
+    { id: "vocab_nuevo", label: "Vocabulario nuevo" },
+  ],
   theory: week7Theory,
   lessons: week7Lessons,
 };

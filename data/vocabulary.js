@@ -49,6 +49,7 @@ const vocabulary = {
   // ── Question Words ───────────────────────────────────
   cuándo: 'question',
   cuánto: 'question',
+  cuáles: 'question',
   cómo: 'question',
   dónde: 'question',
   qué: 'question',
@@ -64,6 +65,7 @@ const vocabulary = {
   mal: 'adverb',
   mañana: 'adverb',
   pronto: 'adverb',
+  siempre: 'adverb',
   tarde: 'adverb',
 
   // ── Verbs (conjugated) ───────────────────────────────
@@ -117,6 +119,12 @@ const vocabulary = {
   bebo: 'verb', bebes: 'verb', bebe: 'verb', bebemos: 'verb', beben: 'verb',
   // vivir
   vivo: 'verb', vives: 'verb', vive: 'verb', vivimos: 'verb', viven: 'verb',
+  // llegar
+  llego: 'verb', llegas: 'verb', llega: 'verb', llegamos: 'verb', llegan: 'verb',
+  // acabar
+  acabo: 'verb',
+  // hay (impersonal haber)
+  hay: 'verb',
 
   // ── Past Tense (Pretérito Indefinido) ─────────────────
   // comprar (past)
@@ -152,6 +160,7 @@ const vocabulary = {
 
   // ── Verb Infinitives ─────────────────────────────────
   abrir: 'verb_infinitive',
+  acabar: 'verb_infinitive',
   alquilar: 'verb_infinitive',
   ayudar: 'verb_infinitive',
   beber: 'verb_infinitive',
@@ -165,18 +174,22 @@ const vocabulary = {
   ladrar: 'verb_infinitive',
   lavar: 'verb_infinitive',
   limpiar: 'verb_infinitive',
+  llegar: 'verb_infinitive',
   morder: 'verb_infinitive',
   pagar: 'verb_infinitive',
+  recordar: 'verb_infinitive',
   secar: 'verb_infinitive',
   usar: 'verb_infinitive',
   vivir: 'verb_infinitive',
 
   // ── Adjectives ───────────────────────────────────────
+  alta: 'adjective', alto: 'adjective',
   amistosas: 'adjective', amistoso: 'adjective', amistosos: 'adjective',
   barata: 'adjective', barato: 'adjective', baratos: 'adjective',
   bonita: 'adjective', bonitas: 'adjective', bonito: 'adjective',
   bueno: 'adjective', buenos: 'adjective',
   cara: 'adjective', caro: 'adjective',
+  encendida: 'adjective', encendido: 'adjective',
   grande: 'adjective', grandes: 'adjective',
   hembra: 'adjective', hembras: 'adjective',
   inteligente: 'adjective', inteligentes: 'adjective',
@@ -185,16 +198,24 @@ const vocabulary = {
   lista: 'adjective', listas: 'adjective', listo: 'adjective', listos: 'adjective',
   macho: 'adjective', machos: 'adjective',
   mala: 'adjective', malas: 'adjective', malo: 'adjective', malos: 'adjective',
+  misma: 'adjective', mismos: 'adjective',
+  oscura: 'adjective', oscuro: 'adjective',
   pequeñas: 'adjective', pequeño: 'adjective', pequeños: 'adjective',
+  rica: 'adjective', rico: 'adjective',
   ruidosa: 'adjective', ruidosas: 'adjective', ruidoso: 'adjective', ruidosos: 'adjective',
   sucias: 'adjective', sucio: 'adjective',
   tonta: 'adjective', tonto: 'adjective', tontos: 'adjective',
 
+  // ── Possessives ────────────────────────────────────────
+  sus: 'article',
+
   // ── Nouns / Objects ──────────────────────────────────
   agua: 'object',
   alquiler: 'object',
+  arroba: 'object',
   baño: 'object',
   café: 'object',
+  calle: 'object',
   carne: 'object',
   casa: 'object',
   cocina: 'object',
@@ -203,26 +224,34 @@ const vocabulary = {
   correa: 'object',
   dinero: 'object',
   ducha: 'object',
+  enfermedad: 'object',
+  enfermera: 'object',
   fruta: 'object',
   habitación: 'object',
   habitaciones: 'object',
+  hospital: 'object',
   jabón: 'object',
   jardín: 'object',
   lavadora: 'object',
   leche: 'object',
   llave: 'object',
   llaves: 'object',
+  luz: 'object',
+  muerte: 'object',
   nevera: 'object',
   pan: 'object',
   parque: 'object',
   patas: 'object',
   perro: 'object',
   piso: 'object',
+  problemas: 'object',
   puerta: 'object',
+  ruido: 'object',
   tienda: 'object',
   tiempo: 'object',
   toalla: 'object',
   ventana: 'object',
+  volumen: 'object',
   // ── Week 7 Vocab ────────────────────────────────────
   acuerdo: 'adjective',
   alegro: 'adjective',
