@@ -24,6 +24,7 @@ import wordsNumbers from '../../data/words/numbers.js';
 import wordsTime from '../../data/words/time_calendar.js';
 import wordsWeather from '../../data/words/weather.js';
 import wordsColors from '../../data/words/colors.js';
+import wordsQuestionWords from '../../data/words/question_words.js';
 
 import readAloudData from '../../data/read_aloud.js';
 
@@ -36,7 +37,7 @@ import { tokenize } from './tokenizer.js';
 export function loadAllData() {
   const sentences = hydrateSentenceTopics([week1Data, week2Data, week3Data, week4Data, week5Data, week6Data, week7Data]);
   const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
-  const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors]);
+  const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors, wordsQuestionWords]);
 
   return { sentences, theory, words, readAloud: readAloudData };
 }
