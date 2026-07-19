@@ -416,7 +416,12 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
         let icon = '';
         let iconColorClass = '';
 
-        if (previousCount === 0) {
+        if (isReview) {
+          title = lesson && lesson.title ? `${lesson.title} Completed!` : 'Review Completed!';
+          subtitle = 'Awesome! You are keeping your memory fresh.';
+          icon = 'sync';
+          iconColorClass = 'bg-primary-container dark:bg-emerald-900/20 text-primary dark:text-emerald-400 border-primary/30 dark:border-emerald-600/30';
+        } else if (previousCount === 0) {
           title = isExam ? 'Exam Completed!' : 'Lesson Completed!';
           subtitle = isWordMode ? 'Vocabulary progress updated.' : 'Week progress updated.';
           icon = 'check_circle';
