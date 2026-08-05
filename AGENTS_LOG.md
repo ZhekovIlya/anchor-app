@@ -633,3 +633,11 @@
 **[AQA]:** Verified: 12 words in lesson, correct { ru, uk, es } shape, theory sections all typed correctly, subtitle present, import added to data-loader. All 10 automated tests pass.
 **[QA]:** Pedagogically sound for RU/UK speakers. Contextual hints in translations prevent the classic qué/cuál confusion. All 4 cuánto gender/number forms drilled. por qué includes reminder about porque answer form. Cheat sheet callout aids retention.
 **Status:** ? Committed to branch. Awaiting user review/testing before merge.
+` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
+ 
+## Task: week8-compact (2026-08-05)
+**Branch:** task/week8-compact
+**[DEV]:** Created data/words/rutina.js, tiempo_frecuencia.js, and direcciones.js (12 words each) containing extracted vocabulary from user's A4 notes. Created data/sentences/week_8.js containing 3 compact tabs (rutina, direcciones, expresiones) with 2 lessons each (6 phrases per lesson, 36 phrases total). Integrated 20% new vocabulary with 80% recycled verbs/fillers from Weeks 7, 6, and 5. Registered new files in data-loader.js.
+**[AQA]:** Verified no verb-adjective homonym collisions within the same phrase. Verified exact phrase formatting and token matching logic. All tests passed.
+**[QA]:** Verified 80/20 curriculum rule and strictly adhered to 6-phrase sub-lesson size and 12-word vocabulary lesson size. 
+**Status:** Completed. Awaiting user review/testing before merge.

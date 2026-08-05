@@ -12,6 +12,7 @@ import week4Data from '../../data/sentences/week_4.js';
 import week5Data from '../../data/sentences/week_5.js';
 import week6Data from '../../data/sentences/week_6.js';
 import week7Data from '../../data/sentences/week7.js';
+import week8Data from '../../data/sentences/week_8.js';
 
 import theoryVerbs from '../../data/theory/verbs_and_irregulars.js';
 import theoryIrregularFull from '../../data/theory/verbs_irregular_full.js';
@@ -25,6 +26,9 @@ import wordsTime from '../../data/words/time_calendar.js';
 import wordsWeather from '../../data/words/weather.js';
 import wordsColors from '../../data/words/colors.js';
 import wordsQuestionWords from '../../data/words/question_words.js';
+import wordsRutina from '../../data/words/rutina.js';
+import wordsTiempo from '../../data/words/tiempo_frecuencia.js';
+import wordsDirecciones from '../../data/words/direcciones.js';
 
 import readAloudData from '../../data/read_aloud.js';
 
@@ -35,9 +39,9 @@ import { tokenize } from './tokenizer.js';
  * @returns {{ sentences: Array, theory: Array, words: Array }}
  */
 export function loadAllData() {
-  const sentences = hydrateSentenceTopics([week1Data, week2Data, week3Data, week4Data, week5Data, week6Data, week7Data]);
+  const sentences = hydrateSentenceTopics([week1Data, week2Data, week3Data, week4Data, week5Data, week6Data, week7Data, week8Data]);
   const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
-  const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors, wordsQuestionWords]);
+  const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors, wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones]);
 
   return { sentences, theory, words, readAloud: readAloudData };
 }

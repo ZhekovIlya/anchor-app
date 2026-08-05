@@ -19,6 +19,7 @@ let boundKeydownHandler = null;
 let boundVisibilityHandler = null;
 let speechService = null;
 let lastSpokenTranscript = '';
+let cumulativeSpokenWords = new Set();
 
 function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}\s]/gu, '').toLowerCase().trim();
@@ -180,6 +181,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       },
       onNextPhrase({ phrase, isCopyStage, interactionMode, questionData, streak, targetStreak }) {
         cancelSpeech();
+        cumulativeSpokenWords.clear();
 
         const lang = getPromptLang();
         const promptText = lang === 'uk' ? phrase.uk : phrase.ru;
@@ -204,6 +206,11 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           typeInputArea.classList.remove('hidden');
           
           if (interactionMode === 'TYPE') {
+            if (!isCopyStage) {
+              ghostText.classList.add('opacity-0');
+            } else {
+              ghostText.classList.remove('opacity-0');
+            }
             ghostText.parentElement.classList.remove('hidden');
             ghostText.innerHTML = '';
             ghostText.classList.remove('pointer-events-none');
@@ -347,6 +354,11 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
               speechContainer.classList.add('hidden');
               
               typeInputArea.classList.remove('hidden');
+              if (!isCopyStage) {
+                ghostText.classList.add('opacity-0');
+              } else {
+                ghostText.classList.remove('opacity-0');
+              }
               ghostText.parentElement.classList.remove('hidden');
               ghostText.innerHTML = '';
               ghostText.classList.remove('pointer-events-none');
@@ -761,6 +773,10 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
    const targetWords = targetPhraseEs.split(' ').map(cleanWord);
    const spokenWords = transcript.split(' ').map(cleanWord);
    
+   spokenWords.forEach(w => {
+     if (w) cumulativeSpokenWords.add(w);
+   });
+   
    speechResultArea.innerHTML = '';
    let allCorrect = true;
    let correctCount = 0;
@@ -771,7 +787,7 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
      span.textContent = origWord;
      span.className = 'text-xl font-bold px-1 ';
      
-     if (spokenWords.includes(tClean)) {
+     if (cumulativeSpokenWords.has(tClean)) {
        span.classList.add('text-[#16a34a]', 'dark:text-emerald-400');
        correctCount++;
      } else {
