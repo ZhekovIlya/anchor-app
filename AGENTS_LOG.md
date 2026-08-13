@@ -1,5 +1,29 @@
 # AGENTS LOG
 
+## Current Task: New Vocabulary, Stem-Changing Verbs, and Vosotros (Weeks 9 & 10)
+
+### **[DEV] (The Builder):**
+- Branch `task/week6-new-vocab-and-vosotros` created.
+- Added stem-changing verbs (pensar, querer, etc.), travel nouns (estación, billete, etc.), conversational filler phrases, and the `vosotros` pronoun to `data/vocabulary.js`.
+- Created `data/sentences/week_9.js` introducing "Cambio de vocal e>ie" and "Vosotros", balancing 20% new vocabulary with 80% old vocabulary to ensure proper decay.
+- Created `data/sentences/week_10.js` introducing "Viajes y Direcciones" adhering to exactly 6 phrases per lesson.
+- Integrated new weeks into `src/core/data-loader.js`.
+
+### **[AQA] (Technical QA):**
+- Verified JSON formats and structural integrity.
+- Confirmed `npm test` successfully executed, resulting in all tests passing (Phrase validation, Tokenizer, Data file structure).
+- Validated that non-exam lessons adhere strictly to exactly 6 phrases.
+
+### **[QA] (Product QA):**
+- Verified the 80/20 vocabulary retention constraint across new Week 9 and Week 10 sub-lessons.
+- Ensured conversational phrases like "me da igual", "por ejemplo", and travel phrases correctly simulate actual conversational contexts.
+- Affirmed "vosotros" pronoun doesn't pollute stem-changing logic (e.g. `vosotros pensáis`, not `piensáis`).
+
+### **Status:**
+- Pending user review on `task/week6-new-vocab-and-vosotros` branch.
+
+---
+
 ## Current Task: Cannot Speak Mode
 
 ### **[DEV] (The Builder):**
@@ -8,7 +32,7 @@
 - Connected the toggle to `localStorageAdapter` under key `anchor_disable_speech` in `src/web/main.js` and loaded its state on boot.
 - Passed `disableSpeech` from `startDrill` to `createDrillEngine` in `src/web/drill-ui.js`.
 - Bypassed the `'SPEECH'` mode selection in `prepareInteractionMode` in `src/core/engine.js` if `disableSpeech` is active, and added a `setInteractionMode(mode)` setter.
-- Added a prominent `⌨️ Type Instead` button (`#typeInsteadBtn`) inside `#speechContainer` in `index.html`.
+- Added a prominent `âŒ¨ï¸� Type Instead` button (`#typeInsteadBtn`) inside `#speechContainer` in `index.html`.
 - Implemented `typeInsteadBtn.onclick` handler in `src/web/drill-ui.js` which stops speech recording, calls `activeEngine.setInteractionMode('TYPE')`, switches the layout to typed mode, resets input fields, and shows `revealAnswerBtn` if it is Recall stage.
 - Added `#hintBtn` next to `#revealAnswerBtn` in `index.html`.
 - Implemented Recall Stage Speech Hints logic in `src/web/drill-ui.js` which masks the Spanish text with `opacity-0` and displays `#hintBtn` during Recall stage speech drills. Clicking it reveals the text and hides the hint button without penalty.
@@ -162,7 +186,7 @@
 ### **[QA] (Product QA):**
 - Confirmed feature fulfills all product requirements (R1-R5).
 - Verified green word highlighting and dynamic skipping logic.
-- Checked data inclusion of 3 difficulty variations (Fácil, Medio, Difícil).
+- Checked data inclusion of 3 difficulty variations (FÃ¡cil, Medio, DifÃ­cil).
 - Ensured premium aesthetics with Tailwind styling.
 
 ### **Status:**
@@ -181,16 +205,16 @@
 - Converted `feedbackBar` from absolute positioning at the bottom to a floating, centered snackbar.
 - Transitioned `feedbackBar` visibility logic from vertical translation to opacity crossfading.
 - Added a `feedbackBarReplayBtn` so users can replay pronunciation on correct/wrong modals.
-- Added `w6_l6b` (Prices) lesson covering "¿Cuánto costaría?" and "¿Cuánto sería?".
-- Added `w6_l13b` (Tú & Nosotros) lesson for past tense conjugations.
-- Appended a structured `theory` object directly into `week_6.js` covering "tú/nosotros past" and "costaría/sería".
+- Added `w6_l6b` (Prices) lesson covering "Â¿CuÃ¡nto costarÃ­a?" and "Â¿CuÃ¡nto serÃ­a?".
+- Added `w6_l13b` (TÃº & Nosotros) lesson for past tense conjugations.
+- Appended a structured `theory` object directly into `week_6.js` covering "tÃº/nosotros past" and "costarÃ­a/serÃ­a".
 
 ### **[AQA] (Technical QA):**
 - Verified DOM changes map cleanly to `drill-ui.js` listeners without throwing unhandled exceptions.
 - Checked `opacity-0`/`opacity-100` transition overrides.
 
 ### **[QA] (Product QA):**
-- Confirmed phrases follow the curriculum constraint (Tú and Nosotros past matching expected definitions).
+- Confirmed phrases follow the curriculum constraint (TÃº and Nosotros past matching expected definitions).
 - Validated pedagogical feedback bar constraints (auto-hides on correct success, allows replay on failure).
 
 ### **Status:**
@@ -247,7 +271,7 @@
 
 ### **[QA] (Product QA):**
 - Verified the sliding window 80/20 vocabulary decay formula in Week 6 content (50% W5, 20% W4, 10% W3, 20% new shopping/errands terms).
-- Confirmed correct use of Spanish copulas for prices (e.g. "el café es caro" using `ser`) and adjectives (e.g. "el restaurante está sucio" using `estar`).
+- Confirmed correct use of Spanish copulas for prices (e.g. "el cafÃ© es caro" using `ser`) and adjectives (e.g. "el restaurante estÃ¡ sucio" using `estar`).
 - Checked RU/UK translations of all Week 6 phrases against their Castellano targets to verify semantic alignment.
 - Verified that the stats tab correctly derives SRS words encountered, lessons mastered, streak, and 4-week activity bar chart from local storage.
 
@@ -296,7 +320,7 @@
 - Branch `task/week-7` created.
 - Created `data/sentences/week_7.js` featuring functional Spanish contexts (Bar, Supermarket, Pharmacy, Appointments, Neighbors, Post Office).
 - Ensured exactly 6 phrases per lesson to satisfy the targetStreak math.
-- Maintained the 80/20 rule (new Peninsular Spanish vocabulary like *caña*, *guay*, *tío*, mixed with 80% recycled verbs from Week 4-6).
+- Maintained the 80/20 rule (new Peninsular Spanish vocabulary like *caÃ±a*, *guay*, *tÃ­o*, mixed with 80% recycled verbs from Week 4-6).
 - Exported the data module and imported it cleanly in `src/core/data-loader.js`.
 
 ### **[AQA] (Technical QA):**
@@ -481,7 +505,7 @@
 - Build passes perfectly.
 
 ### **[QA] (Product QA):**
-- Validated UX: The app now triggers an "Add to Home Screen" banner on supported mobile devices. When launched from the home screen, it feels indistinguishable from a native offline app—ideal for the Spain-based user! The haptics make the drilling feel significantly more tactile.
+- Validated UX: The app now triggers an "Add to Home Screen" banner on supported mobile devices. When launched from the home screen, it feels indistinguishable from a native offline appâ€”ideal for the Spain-based user! The haptics make the drilling feel significantly more tactile.
 
 ### **Status:**
 - [X] Write PWA static files (`manifest`, `sw`, `icon`).
@@ -585,7 +609,7 @@
 - Connected the toggle to `localStorageAdapter` under key `anchor_disable_speech` in `src/web/main.js` and loaded its state on boot.
 - Passed `disableSpeech` from `startDrill` to `createDrillEngine` in `src/web/drill-ui.js`.
 - Bypassed the `'SPEECH'` mode selection in `prepareInteractionMode` in `src/core/engine.js` if `disableSpeech` is active, and added a `setInteractionMode(mode)` setter.
-- Added a prominent `⌨️ Type Instead` button (`#typeInsteadBtn`) inside `#speechContainer` in `index.html`.
+- Added a prominent `âŒ¨ï¸� Type Instead` button (`#typeInsteadBtn`) inside `#speechContainer` in `index.html`.
 - Implemented `typeInsteadBtn.onclick` handler in `src/web/drill-ui.js` which stops speech recording, calls `activeEngine.setInteractionMode('TYPE')`, switches the layout to typed mode, resets input fields, and shows `revealAnswerBtn` if it is Recall stage.
 - Added `#hintBtn` next to `#revealAnswerBtn` in `index.html`.
 - Implemented Recall Stage Speech Hints logic in `src/web/drill-ui.js` which masks the Spanish text with `opacity-0` and displays `#hintBtn` during Recall stage speech drills. Clicking it reveals the text and hides the hint button without penalty.
@@ -612,9 +636,9 @@
  -   [ X ]   U p d a t e d   \ L E S S O N S _ L E A R N E D . m d \   t o   e s t a b l i s h   r u l e   o n   p u n c t u a t i o n   s t r i p p i n g . 
  -   [ X ]   U p d a t e d   \ s r c / w e b / d r i l l - u i . j s \   \ c l e a n W o r d \   t o   s t r i p   p u n c t u a t i o n   v i a   \ / [ ^ \ p { L } \ p { N } \ s ] / g u \ . 
  -   [ X ]   U p d a t e d   \ s r c / c o r e / e n g i n e . j s \   \ c h e c k A n s w e r \   t o   s t r i p   p u n c t u a t i o n   f o r   e x a c t   m a t c h   c o m p a r i s o n s . 
- -   * * [ D E V ] : * *   U s e d   u n i c o d e   p r o p e r t y   e s c a p e s   t o   e n s u r e   p u n c t u a t i o n   l i k e   \ � \ ,   \ � \ ,   \ & \ ,   a n d   \ , \   a r e   s t r i p p e d   w i t h o u t   a f f e c t i n g   a c c e n t e d   c h a r a c t e r s . 
+ -   * * [ D E V ] : * *   U s e d   u n i c o d e   p r o p e r t y   e s c a p e s   t o   e n s u r e   p u n c t u a t i o n   l i k e   \ ¿ \ ,   \ ¡ \ ,   \ & \ ,   a n d   \ , \   a r e   s t r i p p e d   w i t h o u t   a f f e c t i n g   a c c e n t e d   c h a r a c t e r s . 
  -   * * [ A Q A ] : * *   C h e c k e d   \ c l e a n W o r d \   a n d   \ c h e c k A n s w e r \ .   V a l i d a t e d   t h a t   \ d i s t \   c h e c k i n g   f o r   t y p o s   p r e s e r v e s   e x a c t   m i s m a t c h   c h e c k i n g . 
- -   * * [ Q A ] : * *   C o n f i r m e d   t h i s   r e s o l v e s   t h e   s p e e c h   r e c o g n i t i o n   b u g s   a n d   t h e   � C � m o   s e   l l a m a   e s o   q u e . . . ?   b u g   w i t h o u t   a f f e c t i n g   S p a n i s h   g r a m m a r   c h e c k s . 
+ -   * * [ Q A ] : * *   C o n f i r m e d   t h i s   r e s o l v e s   t h e   s p e e c h   r e c o g n i t i o n   b u g s   a n d   t h e   ¿ C ó m o   s e   l l a m a   e s o   q u e . . . ?   b u g   w i t h o u t   a f f e c t i n g   S p a n i s h   g r a m m a r   c h e c k s . 
   
  - Updated speech validation in drill-ui.js, audition-ui.js, and read-aloud-ui.js to not fail on first error and allow 60% accuracy threshold for progressing.
 - Updated 'Type Instead' fallback in drill-ui.js to prepopulate inputField with the user's spoken transcript.
@@ -629,9 +653,9 @@
 
 ## Task: question-words-drill (2026-07-14)
 **Branch:** task/question-words-drill
-**[DEV]:** Created data/words/question_words.js � a 12-word lesson covering all 8 Spanish interrogatives (qu�, c�mo, d�nde, cu�ndo, por qu�, cu�l, qui�n, cu�nto) plus cu�nta/cu�ntos/cu�ntas/cu�les forms. RU/UK translations are deliberately nuanced, not literal � e.g. cu�l = '???????? (????? ?? ?????????)'. Includes a rich 	heory object with 10 sections (headings, paragraphs, tables, callouts) explaining the qu� vs cu�l distinction, gender agreement for cu�nto, and a full cheat sheet. Registered in data-loader.js.
+**[DEV]:** Created data/words/question_words.js — a 12-word lesson covering all 8 Spanish interrogatives (qué, cómo, dónde, cuándo, por qué, cuál, quién, cuánto) plus cuánta/cuántos/cuántas/cuáles forms. RU/UK translations are deliberately nuanced, not literal — e.g. cuál = '???????? (????? ?? ?????????)'. Includes a rich 	heory object with 10 sections (headings, paragraphs, tables, callouts) explaining the qué vs cuál distinction, gender agreement for cuánto, and a full cheat sheet. Registered in data-loader.js.
 **[AQA]:** Verified: 12 words in lesson, correct { ru, uk, es } shape, theory sections all typed correctly, subtitle present, import added to data-loader. All 10 automated tests pass.
-**[QA]:** Pedagogically sound for RU/UK speakers. Contextual hints in translations prevent the classic qu�/cu�l confusion. All 4 cu�nto gender/number forms drilled. por qu� includes reminder about porque answer form. Cheat sheet callout aids retention.
+**[QA]:** Pedagogically sound for RU/UK speakers. Contextual hints in translations prevent the classic qué/cuál confusion. All 4 cuánto gender/number forms drilled. por qué includes reminder about porque answer form. Cheat sheet callout aids retention.
 **Status:** ? Committed to branch. Awaiting user review/testing before merge.
 ` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
  

@@ -470,6 +470,33 @@ const vocabulary = {
   vivía: 'adjective',
   vuelta: 'adjective',
   ya: 'adverb',
+  
+  // ── Week 9 & 10 Vocab ────────────────────────────────────
+  vosotros: 'subject',
+  vosotras: 'subject',
+  os: 'object',
+  pensar: 'verb', pienso: 'verb', piensas: 'verb', piensa: 'verb', pensamos: 'verb', pensáis: 'verb', piensan: 'verb',
+  querer: 'verb', quiero: 'verb', quieres: 'verb', quiere: 'verb', queremos: 'verb', queréis: 'verb', quieren: 'verb',
+  entender: 'verb', entiendo: 'verb', entiendes: 'verb', entiende: 'verb', entendemos: 'verb', entendéis: 'verb', entienden: 'verb',
+  cerrar: 'verb', cierro: 'verb', cierras: 'verb', cierra: 'verb', cerramos: 'verb', cerráis: 'verb', cierran: 'verb',
+  empezar: 'verb', empiezo: 'verb', empiezas: 'verb', empieza: 'verb', empezamos: 'verb', empezáis: 'verb', empiezan: 'verb',
+  comenzar: 'verb', comienzo: 'verb', comienzas: 'verb', comienza: 'verb', comenzamos: 'verb', comenzáis: 'verb', comienzan: 'verb',
+  perder: 'verb', pierdo: 'verb', pierdes: 'verb', pierde: 'verb', perdemos: 'verb', perdéis: 'verb', pierden: 'verb',
+  preferir: 'verb', prefiero: 'verb', prefieres: 'verb', prefiere: 'verb', preferimos: 'verb', preferís: 'verb', prefieren: 'verb',
+  sentir: 'verb', sientes: 'verb', siente: 'verb', sentimos: 'verb', sentís: 'verb', sienten: 'verb',
+  mentir: 'verb', miento: 'verb', mientes: 'verb', miente: 'verb', mentimos: 'verb', mentís: 'verb', mienten: 'verb',
+  recomendar: 'verb', recomiendo: 'verb', recomiendas: 'verb', recomienda: 'verb', recomendamos: 'verb', recomendáis: 'verb', recomiendan: 'verb',
+  despertar: 'verb', despierto: 'verb', despiertas: 'verb', despierta: 'verb', despertamos: 'verb', despertáis: 'verb', despiertan: 'verb',
+  estación: 'object', taquilla: 'object', máquina: 'object', billetes: 'object', billete: 'object', andén: 'object', vía: 'object',
+  sala: 'object', espera: 'object', horario: 'object', ida: 'object', salida: 'object', llegada: 'object', asiento: 'object',
+  equipaje: 'object', pasajero: 'object', pasajera: 'object', revisor: 'object', revisora: 'object',
+  conducir: 'verb', conduzco: 'verb', conduces: 'verb', conduce: 'verb', conducimos: 'verb', conducís: 'verb', conducen: 'verb',
+  conductor: 'object', conductora: 'object',
+  girar: 'verb', giro: 'verb', giras: 'verb', gira: 'verb', giramos: 'verb', giráis: 'verb', giran: 'verb',
+  derecha: 'object',
+  seguir: 'verb', sigo: 'verb', sigues: 'verb', sigue: 'verb', seguimos: 'verb', seguís: 'verb', siguen: 'verb',
+  palabras: 'object',
+  algunas: 'adjective', algunos: 'adjective'
 };
 
 export default vocabulary;
