@@ -11,6 +11,7 @@
 - **ES Module Imports:** Use `import`/`export` — never `window.AnchorData` or other globals. Data files use `export default { ... }`.
 - **Storage Adapter Pattern:** Storage must go through the adapter interface `{ load(key), save(key, data) }`. Never call `localStorage` directly from core modules.
 - **Test Before Commit:** Run `npm test` to validate data integrity before committing data changes.
+- **Explicit Tabs Array Required (Reported by USER):** When exporting a week's data file (e.g., `week_9.js`), if the lessons use the `tab` property (e.g. `tab: "viajes"`), the main exported object MUST include a `tabs: [{ id: 'viajes', label: 'Viajes' }]` array mapping those IDs to labels. If this `tabs` array is omitted, the UI will silently abort rendering and the user will see an empty screen.
 - **NPM Flag Passing (Reported by USER):** When passing flags like `--host` to an npm script (e.g., `npm run dev`), you MUST use the double-dash syntax: `npm run dev -- --host`. Otherwise, the flag is consumed by npm and never reaches the underlying tool (Vite).
 - **Background Servers (Reported by USER):** Do not leave processes like Vite (`npm run dev`) running indefinitely in the background. After verifying the dev environment, terminate the process.
 - **Strict Lesson Sizing (Reported by [AQA]):** Every standard sub-lesson MUST contain exactly 6 phrases. This is mathematically required to ensure the `targetStreak=24` (exactly 4 loops) completes symmetrically without orphaned reviews. Never output an 8-phrase or 4-phrase lesson under any circumstances.
