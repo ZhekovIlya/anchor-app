@@ -133,5 +133,10 @@ export default {
       }
     ]
   },
+  tabs: [
+    { id: 'rutina', label: 'Rutina' },
+    { id: 'direcciones', label: 'Direcciones' },
+    { id: 'expresiones', label: 'Expresiones' }
+  ],
   lessons: week8Lessons
 };

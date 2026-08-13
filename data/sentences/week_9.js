@@ -81,5 +81,8 @@ export default {
       }
     ]
   },
+  tabs: [
+    { id: 'cambio_e_ie', label: 'Cambio de Vocal' }
+  ],
   lessons: week9Lessons
 };

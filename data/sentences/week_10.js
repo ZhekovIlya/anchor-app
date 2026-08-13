@@ -85,5 +85,9 @@ export default {
       }
     ]
   },
+  tabs: [
+    { id: 'viajes', label: 'Viajes' },
+    { id: 'direcciones', label: 'Direcciones' }
+  ],
   lessons: week10Lessons
 };
