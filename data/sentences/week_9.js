@@ -71,13 +71,69 @@ export default {
   type: "sentences",
   title: "Week 9: Verbos con Cambio de Vocal",
   description: "Stem-changing verbs and conversational phrases.",
+  legacy: false,
   theory: {
-    title: "Grammar expansion",
-    subtitle: "Stem-changing verbs",
+    title: "Grammar Expansion",
+    subtitle: "Verbos con cambio vocálico e → ie y expresiones útiles",
     sections: [
       {
         type: "paragraph",
-        content: "This week introduces stem-changing verbs (e>ie) where the 'e' changes to 'ie' in all forms except nosotros."
+        text: "En la Semana 9 dominamos los verbos de cambio vocálico (e → ie) en presente de indicativo. Este cambio ocurre cuando la vocal de la raíz recibe el golpe de voz (acento tónico)."
+      },
+      {
+        type: "heading",
+        text: "1. El patrón de la bota (e → ie)"
+      },
+      {
+        type: "paragraph",
+        text: "La 'e' de la raíz se transforma en el diptongo 'ie' en las personas Yo, Tú, Él/Ella y Ellos/Ellas. Las formas Nosotros y Vosotros NUNCA cambian su raíz porque el acento recae en la terminación."
+      },
+      {
+        type: "callout",
+        style: "important",
+        text: "¡Regla fundamental! Nosotros y Vosotros conservan la vocal original: pensamos (no *piensamos*), queremos (no *quieremos*), cerramos (no *cierramos*)."
+      },
+      {
+        type: "heading",
+        text: "2. Modelos de conjugación e → ie"
+      },
+      {
+        type: "table",
+        caption: "Verbos modelo en -AR, -ER y -IR",
+        headers: ["Pronombre", "Pensar (-AR)", "Querer / Entender (-ER)", "Preferir / Sentir (-IR)"],
+        rows: [
+          ["Yo", "pienso", "quiero / entiendo", "prefiero / siento"],
+          ["Tú", "piensas", "quieres / entiendes", "prefieres / sientes"],
+          ["Él / Ella / Usted", "piensa", "quiere / entiende", "prefiere / siente"],
+          ["Nosotros / Nosotras", "pensamos", "queremos / entendemos", "preferimos / sentimos"],
+          ["Vosotros / Vosotras", "pensáis", "queréis / entendéis", "preferís / sentís"],
+          ["Ellos / Ellas / Ustedes", "piensan", "quieren / entienden", "prefieren / sienten"]
+        ]
+      },
+      {
+        type: "paragraph",
+        text: "Otros verbos comunes con cambio e → ie que practicamos esta semana: cerrar (cierro), empezar (empiezo), comenzar (comienzo), perder (pierdo), mentir (miento), recomendar (recomiendo) y despertarse (me despierto)."
+      },
+      {
+        type: "heading",
+        text: "3. Expresiones y giros conversacionales"
+      },
+      {
+        type: "table",
+        caption: "Expresiones prácticas de Semana 9",
+        headers: ["Expresión", "Significado", "Ejemplo práctico"],
+        rows: [
+          ["Me da igual / Le da igual", "It doesn't matter to me / him", "Me da igual, no entiendo nada."],
+          ["Por ejemplo", "For example", "Por ejemplo, pensamos que es muy temprano."],
+          ["Perder el tiempo", "To waste time", "Nosotros no perdemos el tiempo."],
+          ["Tener / sentir frío", "To be cold / feel cold", "Él siente mucho frío."],
+          ["Pensar en...", "To think about...", "Pienso en algunas palabras."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "En español, pensar en algo o en alguien siempre lleva la preposición 'en': 'Pienso en ti', 'Pienso en mis planes' (nunca *pienso de ti*)."
       }
     ]
   },

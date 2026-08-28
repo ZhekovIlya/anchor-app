@@ -75,13 +75,85 @@ export default {
   type: "sentences",
   title: "Week 10: En la Estación y Direcciones",
   description: "Travel vocabulary, train stations, and giving directions.",
+  legacy: false,
   theory: {
-    title: "Grammar expansion",
-    subtitle: "Travel and Directions",
+    title: "Grammar & Vocab Expansion",
+    subtitle: "Viajes en tren, billetes y orientación urbana",
     sections: [
       {
         type: "paragraph",
-        content: "This week expands your vocabulary for traveling, navigating train stations, and giving or following directions."
+        text: "En la Semana 10 aprenderás a desenvolverte con soltura en estaciones de tren y a pedir o dar indicaciones precisas para moverte por una ciudad."
+      },
+      {
+        type: "heading",
+        text: "1. En la estación de tren: vocabulario clave"
+      },
+      {
+        type: "paragraph",
+        text: "Para comprar billetes y orientarte en una estación española o latinoamericana, necesitas dominar estos términos indispensables:"
+      },
+      {
+        type: "table",
+        caption: "Términos ferroviarios y de viaje",
+        headers: ["Español", "Traducción", "Ejemplo práctico"],
+        rows: [
+          ["billete de ida", "one-way ticket", "Compro un billete de ida en la taquilla."],
+          ["billete de ida y vuelta", "round-trip ticket", "Vosotros compráis un billete de ida y vuelta."],
+          ["la taquilla", "ticket office / window", "¿Dónde está la taquilla, por favor?"],
+          ["la máquina de billetes", "ticket vending machine", "Ellos no entienden la máquina de billetes."],
+          ["el andén / la vía", "platform / track", "El tren está en la vía tres, en el andén dos."],
+          ["la sala de espera", "waiting room", "Estamos en la sala de espera."],
+          ["la salida / la llegada", "departure / arrival", "¿A qué hora es la salida del tren?"],
+          ["el equipaje", "luggage / baggage", "¿Vosotros tenéis mucho equipaje?"],
+          ["el revisor / la revisora", "ticket inspector", "El revisor quiere ver los billetes."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "En España se utiliza universalmente la palabra 'billete' para trenes y transporte. En Hispanoamérica es muy frecuente escuchar también 'boleto' o 'pasaje'."
+      },
+      {
+        type: "heading",
+        text: "2. Verbos de dirección y movimiento"
+      },
+      {
+        type: "paragraph",
+        text: "Para dar y seguir indicaciones, combinamos perífrasis de obligación ('tener que + infinitivo') con verbos directivos:"
+      },
+      {
+        type: "table",
+        caption: "Indicaciones de dirección en la calle",
+        headers: ["Estructura", "Significado", "Ejemplo en contexto"],
+        rows: [
+          ["girar a la derecha / izquierda", "to turn right / left", "Tú tienes que girar a la derecha aquí."],
+          ["seguir (+ dirección / infinitivo)", "to continue / keep going", "Tienes que seguir para llegar al parque."],
+          ["sigo a la derecha y luego...", "I continue right and then...", "Sigo a la derecha y luego a la izquierda."],
+          ["girar mal", "to turn the wrong way", "Ellos no entienden y giran mal."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "important",
+        text: "'Seguir' es un verbo con cambio vocálico e → i: yo sigo, tú sigues, él sigue, nosotros seguimos, vosotros seguís, ellos siguen."
+      },
+      {
+        type: "heading",
+        text: "3. La forma 'vosotros' en el viaje"
+      },
+      {
+        type: "paragraph",
+        text: "Consolidamos el uso de vosotros (segunda persona del plural informal en España) en contextos de viaje en grupo:"
+      },
+      {
+        type: "table",
+        caption: "Formas de vosotros",
+        headers: ["Verbo", "Vosotros", "Ejemplo"],
+        rows: [
+          ["comprar", "compráis", "Vosotros compráis un billete de ida y vuelta."],
+          ["tener", "tenéis", "¿Vosotros tenéis mucho equipaje?"],
+          ["empezar", "empezáis", "Vosotros empezáis a girar a la derecha."]
+        ]
       }
     ]
   },

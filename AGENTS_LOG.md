@@ -691,3 +691,27 @@
 - `topics_core.legacy = true` → invisible in dashboard lessons list; SRS pool unaffected; purely used for test coverage and hydration.
 
 **Status:** ✅ All changes committed to branch. Awaiting user review/testing before merge.
+
+---
+
+## Task: P0 Theory Rendering, Punctuation Tolerance, and Data Validator (2026-08-28)
+**Branch:** task/p0-theory-typing-validator
+
+**[DEV]:**
+- **Week 8, 9, 10 Theory Articles**: Authored rich, multi-section theory articles for Week 8 (routines, reflexive verbs table, time expressions, city navigation), Week 9 (stem-changing `e → ie` boot verbs, full conjugation tables for -AR/-ER/-IR, conversational idioms), and Week 10 (train station vocabulary, directional verbs `girar`/`seguir`, `vosotros` usage in travel contexts). Replaced deprecated `content` keys with `text` matching `theory-viewer.js` specifications. Added `legacy: false` to `week7.js`, `week_8.js`, `week_9.js`, and `week_10.js`.
+- **Live Typing Assist Punctuation Tolerance (`drill-ui.js`)**: Updated `renderFakeInput()` to normalize comparisons against punctuation in tokens and input, rendering the user's typed input with token color highlighting without requiring inverted punctuation (`¿`, `¡`) or punctuation marks (commas, periods), while properly falling back to uncolored text at the first actual spelling error.
+- **Validator Extension (`validate-data.test.js` & `engine.test.js`)**: Added `week7`, `week8`, `week9`, `week10` to test suite (now validating 1182 phrases across 10 weeks + core). Created strict theory schema test verifying `title`, `sections`, recognized `type`, required `text`/`headers`/`rows`/`src` fields, and explicitly forbidding `content`. Added 5 automated unit tests in `engine.test.js` covering typing assist behavior.
+
+**[AQA]:**
+- Static analysis & Tokenizer validation: all 1182 phrases in the repo tokenize and reconstruct their exact Spanish strings with 0 failures.
+- All token types verified against `VALID_TYPES`.
+- Live typing assist passes unit tests for omitted `¿`, included `¿`, multi-token sentences with punctuation, and typo isolation.
+- All 16 automated tests across 6 test suites pass with 0 failures.
+
+**[QA]:**
+- Guardrail test verified: injecting a `content` key into `week_8.js` immediately causes `Theory schema validation` test to fail with `[week8 section #0 (type: paragraph)] uses forbidden 'content' key instead of 'text'`. Reversion restores 16/16 pass.
+- Pedagogical check: Week 8 routines reflect real conversational speed; Week 9 stem-changing conjugation tables explicitly reinforce that `nosotros`/`vosotros` do not change the stem vowel; Week 10 travel vocabulary aligns with train station scenarios.
+- Dev build verified: Vite bundle builds in 187ms; `dist/sw.js` correctly stamped with git commit revision.
+
+**Status:** ✅ Committed to branch `task/p0-theory-typing-validator`. Awaiting user review/testing before merge.
+

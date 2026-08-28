@@ -495,6 +495,7 @@ export default {
   title: "Week 7: Romper la barrera de hablar",
   description:
     "Conversational machinery to get off the intermediate plateau and actually speak: buying time, reacting, giving opinions, narrating in the past, talking around missing words, and socializing. Level A2–B1.",
+  legacy: false,
   tabs: [
     { id: "ganar_tiempo", label: "Ganar tiempo" },
     { id: "reaccionar", label: "Reaccionar" },

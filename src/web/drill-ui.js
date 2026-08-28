@@ -801,30 +801,78 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
   activeEngine.start();
 }
 
-function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
+export function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
+  if (!currentPhrase || !currentPhrase.tokens) {
+    fakeInputEl.textContent = userInput;
+    return;
+  }
+
+  const isPunctuation = (ch) => /[^\p{L}\p{N}\s]/u.test(ch);
+  const esc = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   let html = '';
-  let remainingInput = userInput;
+  let uIdx = 0;
 
   for (const token of currentPhrase.tokens) {
-    if (remainingInput.length === 0) break;
+    if (uIdx >= userInput.length) break;
 
-    const lowerRemaining = remainingInput.toLowerCase();
-    const lowerToken = token.text.toLowerCase();
+    const tokenStartUIdx = uIdx;
+    let tokenMatched = true;
 
-    if (lowerRemaining.startsWith(lowerToken)) {
-      const typedPortion = remainingInput.substring(0, token.text.length);
-      const colorClass = COLOR_MAP[token.type] || '';
-      html += `<span class="${colorClass}">${typedPortion}</span>`;
-      remainingInput = remainingInput.substring(token.text.length);
+    if (token.type === 'space') {
+      if (userInput[uIdx] === ' ') {
+        while (uIdx < userInput.length && userInput[uIdx] === ' ') {
+          uIdx++;
+        }
+        const typedSpaces = userInput.substring(tokenStartUIdx, uIdx);
+        html += typedSpaces;
+      } else {
+        tokenMatched = false;
+      }
     } else {
-      html += `<span>${remainingInput}</span>`;
-      remainingInput = '';
+      for (const tChar of token.text) {
+        if (uIdx >= userInput.length) {
+          break;
+        }
+
+        const uChar = userInput[uIdx];
+
+        if (isPunctuation(tChar)) {
+          if (uChar === tChar) {
+            uIdx++;
+          } else if (isPunctuation(uChar)) {
+            tokenMatched = false;
+            break;
+          } else {
+            // User skipped punctuation mark (e.g. ¿, ¡, comma, period)
+            continue;
+          }
+        } else {
+          if (uChar.toLowerCase() === tChar.toLowerCase()) {
+            uIdx++;
+          } else {
+            tokenMatched = false;
+            break;
+          }
+        }
+      }
+
+      const typedPortion = userInput.substring(tokenStartUIdx, uIdx);
+      if (typedPortion.length > 0) {
+        const colorClass = COLOR_MAP[token.type] || '';
+        html += colorClass
+          ? `<span class="${colorClass}">${esc(typedPortion)}</span>`
+          : `<span>${esc(typedPortion)}</span>`;
+      }
+    }
+
+    if (!tokenMatched) {
       break;
     }
   }
 
-  if (remainingInput.length > 0) {
-    html += `<span>${remainingInput}</span>`;
+  if (uIdx < userInput.length) {
+    const remaining = userInput.substring(uIdx);
+    html += `<span>${esc(remaining)}</span>`;
   }
 
   fakeInputEl.innerHTML = html;

@@ -123,13 +123,91 @@ export default {
   type: "sentences",
   title: "Week 8: Mi Día y Mi Ciudad",
   description: "Compact week focusing on daily routine, directions, and time expressions.",
+  legacy: false,
   theory: {
-    title: "Grammar expansion",
-    subtitle: "Daily routines and city navigation",
+    title: "Grammar & Vocab Expansion",
+    subtitle: "Rutina diaria, horas y direcciones en la ciudad",
     sections: [
       {
         type: "paragraph",
-        content: "This week is compact! We are focusing on combining conversational fillers from last week with your new vocabulary for daily routines, time, and navigating the city."
+        text: "En la Semana 8 consolidamos el vocabulario práctico para describir tu día a día, organizar horarios exactos y orientarte en cualquier ciudad hispanohablante."
+      },
+      {
+        type: "heading",
+        text: "1. Verbos reflexivos para la rutina diaria"
+      },
+      {
+        type: "paragraph",
+        text: "Los verbos reflexivos describen acciones que el sujeto realiza sobre sí mismo. En presente de indicativo, el pronombre reflexivo (me, te, se, nos, os, se) se coloca antes del verbo conjugado."
+      },
+      {
+        type: "table",
+        caption: "Conjugación reflexiva: Levantarse y Ducharse",
+        headers: ["Pronombre", "Levantarse", "Ducharse"],
+        rows: [
+          ["Yo", "me levanto", "me ducho"],
+          ["Tú", "te levantas", "te duchas"],
+          ["Él / Ella / Usted", "se levanta", "se ducha"],
+          ["Nosotros / Nosotras", "nos levantamos", "nos duchamos"],
+          ["Vosotros / Vosotras", "os levantáis", "os ducháis"],
+          ["Ellos / Ellas / Ustedes", "se levantan", "se duchan"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "Para expresar frecuencia, usa adverbios clave: siempre (100%), con frecuencia (70%), a veces (50%), casi nunca (10%), nunca (0%). Recuerda: 'Nunca ceno tarde' no necesita doble negación si 'nunca' va al inicio."
+      },
+      {
+        type: "heading",
+        text: "2. La hora y expresiones temporales"
+      },
+      {
+        type: "paragraph",
+        text: "Para fijar una cita o relatar tu rutina, usamos 'a las...' para momentos concretos o 'sobre las...' para estimaciones aproximadas."
+      },
+      {
+        type: "table",
+        caption: "Expresiones temporales clave",
+        headers: ["Expresión", "Significado", "Ejemplo en contexto"],
+        rows: [
+          ["a las nueve en punto", "at 9:00 sharp / on the dot", "Me levanto a las nueve en punto."],
+          ["a las y media", "at half past", "Me alegro de verte a las y media."],
+          ["sobre las ocho", "around eight o'clock", "Vuelvo sobre las ocho."],
+          ["antes / después", "before / after", "Siempre me visto antes."],
+          ["al llegar", "upon arriving", "Los viernes paseamos al llegar."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "important",
+        text: "'Suelo + infinitivo' (del verbo soler) es la forma más natural y nativa de expresar hábitos: 'Suelo correr entre los árboles' (I usually run among the trees)."
+      },
+      {
+        type: "heading",
+        text: "3. Orientación y direcciones en la ciudad"
+      },
+      {
+        type: "paragraph",
+        text: "Para moverte por la ciudad o dar indicaciones, combinamos el verbo 'estar' con locuciones preposicionales de lugar."
+      },
+      {
+        type: "table",
+        caption: "Locuciones de lugar indispensables",
+        headers: ["Ubicación", "Traducción", "Ejemplo práctico"],
+        rows: [
+          ["a la derecha / a la izquierda", "on/to the right / left", "Está a la derecha."],
+          ["en la esquina", "on the corner", "No estoy seguro, pero está en la esquina."],
+          ["al lado de", "next to / beside", "Está al lado de la casa."],
+          ["enfrente (de)", "opposite / across", "Pues no sé, está enfrente."],
+          ["entre X y Y", "between X and Y", "Está entre el banco y el puente."],
+          ["pasar el / la...", "to pass by / go past", "Yo creo que paso el banco."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "warning",
+        text: "¡Atención a las contracciones! 'al' = 'a + el' (al lado del banco), 'del' = 'de + el' (cerca del piso). Con sustantivos femeninos no hay contracción (al lado de la farmacia)."
       }
     ]
   },
