@@ -107,6 +107,11 @@ export default {
           ["Disgusto total", "No me gusta nada", "No me gustan nada los exámenes."],
           ["Aversión / Rechazo", "Odio / No soporto", "Odio los insectos."]
         ]
+      },
+      {
+        type: "image",
+        src: "/theory/miro_gustos_chart.png",
+        alt: "Vocabulario visual del curso: ¿Te gusta o no? (Miro Board)"
       }
     ]
   },

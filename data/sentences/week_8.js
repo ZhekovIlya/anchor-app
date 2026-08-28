@@ -154,6 +154,11 @@ export default {
         ]
       },
       {
+        type: "image",
+        src: "/theory/miro_ducharse_reflexive_table.png",
+        alt: "Esquema de conjugación de verbos reflexivos (Miro Board)"
+      },
+      {
         type: "callout",
         style: "tip",
         text: "Para expresar frecuencia, usa adverbios clave: siempre (100%), con frecuencia (70%), a veces (50%), casi nunca (10%), nunca (0%). Recuerda: 'Nunca ceno tarde' no necesita doble negación si 'nunca' va al inicio."

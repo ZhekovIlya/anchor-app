@@ -119,43 +119,86 @@ function createCallout(style, text) {
 }
 
 function createTable(caption, headers, rows) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'mb-6 overflow-x-auto';
+  const container = document.createElement('div');
+  container.className = 'mb-8';
 
   let html = '';
   if (caption) {
-    html += `<div class="font-label text-xs uppercase tracking-widest text-on-surface-variant dark:text-stone-400 mb-2 transition-colors duration-300">${caption}</div>`;
+    html += `
+      <div class="flex items-center gap-2 mb-2.5 px-1 font-label text-xs font-bold uppercase tracking-wider text-primary dark:text-emerald-400">
+        <span class="material-symbols-outlined text-base">table_chart</span>
+        <span>${caption}</span>
+      </div>`;
   }
 
-  html += '<table class="w-full border-collapse">';
-  html += '<thead><tr>';
-  for (const h of headers) {
-    html += `<th class="text-left font-label text-xs uppercase tracking-wider text-on-surface-variant dark:text-stone-400 py-3 px-4 border-b border-surface-variant dark:border-stone-800 bg-surface-container-low dark:bg-stone-850 transition-colors duration-300">${h}</th>`;
-  }
-  html += '</tr></thead><tbody>';
+  html += `
+    <div class="rounded-2xl overflow-hidden border border-outline-variant/40 dark:border-stone-800 bg-surface-container-lowest dark:bg-stone-900 shadow-sm transition-all duration-300">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-surface-container-low dark:bg-stone-850 border-b border-surface-variant/70 dark:border-stone-800">
+            <tr>`;
 
-  for (const row of rows) {
-    html += '<tr class="border-b border-surface-variant/50 dark:border-stone-800/50 hover:bg-surface-container-low dark:hover:bg-stone-800 transition-colors duration-300">';
-    for (const cell of row) {
-      html += `<td class="font-body text-sm text-on-surface dark:text-stone-200 py-3 px-4 transition-colors duration-300">${cell}</td>`;
+  for (let i = 0; i < headers.length; i++) {
+    const h = headers[i];
+    const isFirst = i === 0;
+    html += `
+      <th class="py-3.5 px-4 sm:px-5 font-headline text-xs font-bold uppercase tracking-wider ${isFirst ? 'text-primary dark:text-emerald-400' : 'text-on-surface-variant dark:text-stone-300'}">
+        ${h}
+      </th>`;
+  }
+
+  html += `
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-variant/30 dark:divide-stone-800/60">`;
+
+  for (let r = 0; r < rows.length; r++) {
+    const row = rows[r];
+    const isZebra = r % 2 === 1;
+    const zebraClass = isZebra ? 'bg-surface-container-lowest/60 dark:bg-stone-850/30' : 'bg-surface-container-lowest dark:bg-stone-900';
+
+    html += `<tr class="${zebraClass} hover:bg-primary-container/10 dark:hover:bg-emerald-950/25 transition-colors duration-150">`;
+    for (let c = 0; c < row.length; c++) {
+      const cell = row[c];
+      const isFirst = c === 0;
+      let cellText = cell || '';
+
+      // Format warning/check badges inside table cells
+      let cellClass = isFirst
+        ? 'font-bold text-on-surface dark:text-white'
+        : 'text-on-surface-variant dark:text-stone-300';
+
+      html += `<td class="py-3.5 px-4 sm:px-5 font-body text-sm ${cellClass} leading-relaxed">${cellText}</td>`;
     }
-    html += '</tr>';
+    html += `</tr>`;
   }
 
-  html += '</tbody></table>';
-  wrapper.innerHTML = html;
-  return wrapper;
+  html += `
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  container.innerHTML = html;
+  return container;
 }
 
 function createImage(src, alt) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'group relative mb-6 rounded-xl overflow-hidden border border-surface-variant dark:border-stone-800 shadow-sm transition-all duration-300 hover:shadow-md cursor-zoom-in bg-surface-container-low dark:bg-stone-900';
+  wrapper.className = 'group relative mb-8 rounded-2xl overflow-hidden border border-outline-variant/40 dark:border-stone-800 shadow-md transition-all duration-300 hover:shadow-lg hover:border-primary/50 dark:hover:border-emerald-500/50 cursor-zoom-in bg-surface-container-lowest dark:bg-stone-900';
   
   wrapper.innerHTML = `
-    <img src="${src}" alt="${alt || 'Theory visual'}" class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]" loading="lazy" />
-    <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/75 backdrop-blur-md text-white text-xs font-label font-bold shadow-lg opacity-90 group-hover:opacity-100 transition-opacity">
-      <span class="material-symbols-outlined text-sm">zoom_in</span>
-      <span>Click to zoom & inspect</span>
+    <div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low dark:bg-stone-850 border-b border-surface-variant/40 dark:border-stone-800">
+      <div class="flex items-center gap-2 text-xs font-headline font-bold text-on-surface dark:text-stone-200 truncate">
+        <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-base">image</span>
+        <span class="truncate">${alt || 'Esquema visual del curso'}</span>
+      </div>
+      <span class="text-[11px] font-label font-bold text-primary dark:text-emerald-400 flex items-center gap-1 flex-shrink-0">
+        <span class="material-symbols-outlined text-xs">zoom_in</span> Click to zoom
+      </span>
+    </div>
+    <div class="p-2 sm:p-4 flex items-center justify-center bg-black/5 dark:bg-black/40">
+      <img src="${src}" alt="${alt || 'Theory visual'}" class="w-full max-h-[480px] object-contain rounded-xl transition-transform duration-300 group-hover:scale-[1.01]" loading="lazy" />
     </div>
   `;
 

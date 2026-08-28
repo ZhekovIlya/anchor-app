@@ -134,6 +134,11 @@ export default {
         type: "callout",
         style: "tip",
         text: "En español, pensar en algo o en alguien siempre lleva la preposición 'en': 'Pienso en ti', 'Pienso en mis planes' (nunca *pienso de ti*)."
+      },
+      {
+        type: "image",
+        src: "/theory/miro_verbos_diptongo_boxes.png",
+        alt: "Esquema visual del curso: Verbos con Cambio Vocálico (e→ie, o→ue, e→i)"
       }
     ]
   },
