@@ -127,11 +127,6 @@ export default {
       ]
     },
     {
-      type: "image",
-      src: "/theory/miro_ducharse_reflexive_table.png",
-      alt: "Схема спряжения возвратных глаголов (Miro Board)"
-    },
-    {
       type: "heading",
       text: "⭐ Особые глаголы: GUSTAR, DOLER, ENCANTAR"
     },
@@ -177,11 +172,6 @@ export default {
         ["Вам (мн.)", "Os", "gusta / gustan", "la pizza / las tapas"],
         ["Им", "Les", "gusta / gustan", "el fútbol / los deportes"],
       ]
-    },
-    {
-      type: "image",
-      src: "/theory/miro_acciones_habituales_grid.png",
-      alt: "Сетка действий и распорядка дня (Miro Board)"
     },
     {
       type: "table",

@@ -26,12 +26,7 @@ export default {
       { type: "heading", text: "⚡ Pattern 4: Hundreds → [mult]cientos" },
       { type: "paragraph", text: "100 alone = 'cien'. 100 + something = 'ciento'. For 200–900 the multiplier attaches to '-cientos'. Watch for irregulars: 500 (quinientos), 700 (setecientos), 900 (novecientos)." },
       { type: "table", caption: "Hundreds", headers: ["Number","Spanish","Note"], rows: [["100","cien","standalone"],["101","ciento uno","ciento + rest"],["200","doscientos","regular"],["300","trescientos","regular"],["500","quinientos","⚠️ irregular"],["700","setecientos","⚠️ irregular"],["900","novecientos","⚠️ irregular"],["1000","mil","standalone"]] },
-      { type: "callout", style: "tip", text: "Once you know 1–15, the 8 tens, and the 8 hundreds, you can construct ANY number up to 999,999." },
-      {
-        type: "image",
-        src: "/theory/miro_numbers_dates.png",
-        alt: "Esquema visual del curso: Los Números, Fechas y Expresiones de Tiempo"
-      }
+      { type: "callout", style: "tip", text: "Once you know 1–15, the 8 tens, and the 8 hundreds, you can construct ANY number up to 999,999." }
     ]
   },
   lessons: [

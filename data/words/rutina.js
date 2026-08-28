@@ -43,11 +43,6 @@ export default {
         type: "callout",
         style: "tip",
         text: "💡 Para ordenar tus acciones en el tiempo usa los conectores: 'Primero me despierto, luego me ducho, después desayuno y finalmente voy al trabajo'."
-      },
-      {
-        type: "image",
-        src: "/theory/miro_acciones_habituales_grid.png",
-        alt: "Esquema visual del curso: 20 Acciones Habituales y Rutina Diaria (Miro Board)"
       }
     ]
   },

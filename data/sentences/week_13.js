@@ -180,11 +180,6 @@ export default {
         type: "callout",
         style: "important",
         text: "El artículo neutro 'lo' se usa con adjetivos superlativos relativos para sustantivar la cualidad: 'lo mejor' (the best thing), 'lo peor' (the worst thing), 'lo más importante' (the most important thing)."
-      },
-      {
-        type: "image",
-        src: "/theory/miro_barrios_ciudad.png",
-        alt: "Esquema visual del curso: Tipos de Barrio y Comparaciones Urbanas"
       }
     ]
   },

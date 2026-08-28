@@ -31,11 +31,6 @@ export default {
         type: "callout",
         style: "tip",
         text: "💡 Recuerda la regla de oro de la ciudad: usamos 'HAY' para la existencia general de cosas o servicios desconocidos ('¿Hay un banco por aquí?'), y 'ESTÁ / ESTÁN' para ubicar un lugar específico y determinado ('El banco está en la calle Mayor')."
-      },
-      {
-        type: "image",
-        src: "/theory/miro_direcciones_ciudad.png",
-        alt: "Esquema visual del curso: Direcciones y Lugares en la Ciudad"
       }
     ]
   },

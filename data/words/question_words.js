@@ -121,11 +121,6 @@ export default {
         type: "callout",
         style: "tip",
         text: "🎯 Quick cheat sheet: qué = что, quién = кто, dónde = где, cuándo = когда, cómo = как, por qué = почему, cuál = который (из вариантов), cuánto = сколько"
-      },
-      {
-        type: "image",
-        src: "/theory/miro_question_words.png",
-        alt: "Esquema visual del curso: Palabras Interrogativas y Pronombres"
       }
     ]
   },

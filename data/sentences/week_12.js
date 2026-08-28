@@ -161,11 +161,6 @@ export default {
         type: "callout",
         style: "important",
         text: "Recuerda la diferencia entre 'ser' y 'estar': el precio ES caro (característica propia), pero la habitación ESTÁ sucia o ESTÁ libre (estado temporal)."
-      },
-      {
-        type: "image",
-        src: "/theory/miro_hoteles_servicios.png",
-        alt: "Esquema visual del curso: Hotel, Servicios e Instalaciones"
       }
     ]
   },
