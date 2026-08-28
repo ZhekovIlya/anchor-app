@@ -1,5 +1,28 @@
 # AGENTS LOG
 
+## Current Task: Modern Theory Table Styling & Visual Rule Cards
+
+### **[DEV] (The Builder):**
+- Branch `task/theory-table-styles-and-visual-rule-cards` created, validated, and merged into `main`.
+- Added rule to `LESSONS_LEARNED.md`: Theory Table Design & Dark Mode Contrast.
+- Redesigned `createTable` in `src/web/theory-viewer.js` with rounded-2xl glassmorphic cards, elevated dark headers (`dark:bg-stone-850`), primary/emerald highlights on column 1, zebra striping on alternating rows, and hover states with emerald glow.
+- Redesigned `createImage` with an elevated card frame, header with image title, and interactive zoom badge.
+- Re-introduced clean, focused Miro companion visual cards in `data/words/gustos.js`, `data/words/rutina.js`, `data/sentences/week_8.js`, `data/sentences/week_9.js`, `data/theory/the_bridge.js`, and `data/theory/verbs_reflexive_special.js`.
+
+### **[AQA] (Technical QA):**
+- Verified test suite: 18/18 tests passed across 7 test suites with 0 failures (1,326 phrases tokenized).
+- Verified production build and Service Worker cache stamp (`spanish-anchor-551be04`).
+
+### **[QA] (Product QA):**
+- Confirmed that tables look rich, modern, and readable in dark theme.
+- Confirmed that visual rule cards provide the original course board aesthetic without clutter.
+
+### **Status:**
+- Merged to `main` and deployed.
+
+---
+
+
 ## Current Task: Remove Complex PDF Strips in Favor of Bite-Sized Native Theory
 
 ### **[DEV] (The Builder):**
