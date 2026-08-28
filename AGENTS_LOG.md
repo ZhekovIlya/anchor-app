@@ -715,3 +715,44 @@
 
 **Status:** ✅ Committed to branch `task/p0-theory-typing-validator`. Awaiting user review/testing before merge.
 
+---
+
+## Task: Curriculum Topics Authoring (Weeks 11-13 & New Word Topics) (2026-08-28)
+**Branch:** task/curriculum-weeks-11-13-words
+
+**[DEV]:**
+- **Authored `data/sentences/week_11.js` (Hoteles)**:
+  - 2 tabs (`reserva`, `problemas`), 6 lessons (6 phrases each = 36 phrases total), 2 tab mini-exams (`w11_m1`, `w11_m2`), 1 final exam (`w11_exam`).
+  - Vocabulary: *habitación libre, reservar habitación doble/individual, desayuno incluido, wifi gratis, piscina, recepcionista, aire acondicionado, quejarse, pedir traslado de habitación, no funciona*.
+  - Full theory article with `title: "Hoteles y Estancias"`, `subtitle: "Reservas, servicios y cómo gestionar quejas amables"`, covering essential hotel terminology, polite requests (`me gustaría` / `¿podría...?`), and problem resolution formulas.
+- **Authored `data/sentences/week_12.js` (Barrios y la Ciudad)**:
+  - 2 tabs (`tipos_de_barrio`, `comparar`), 6 lessons (6 phrases each = 36 phrases total), 2 tab mini-exams (`w12_m1`, `w12_m2`), 1 final exam (`w12_exam`).
+  - Vocabulary: *barrio residencial, centro histórico, barrio comercial, zona industrial, barrio obrero, tranquilo, ruidoso, seguro, peligroso*. Comparisons: *más...que, menos...que, tan...como, mejor que, peor que, lo mejor de vivir aquí, lo peor del barrio, prefiero...porque*.
+  - Full theory article with `title: "Barrios y Comparaciones Urbanas"`, `subtitle: "Describir zonas de la ciudad y comparar dónde vivir"`.
+- **Authored `data/sentences/week_13.js` (Etapas de la Vida)**:
+  - 2 tabs (`juventud`, `madurez`), 6 lessons (6 phrases each = 36 phrases total), 2 tab mini-exams (`w13_m1`, `w13_m2`), 1 final exam (`w13_exam`).
+  - Practiced in Pretérito Indefinido (reviewing weeks 5-7): *nacer, crecer, mudarse, graduarse, empezar a trabajar, casarse, tener hijos, jubilarse, morir/fallecer*.
+  - Full theory article with `title: "Etapas de la Vida y Biografía"`, `subtitle: "Narrar hitos vitales con el pretérito indefinido"`.
+- **Authored `data/words/profesiones.js`**:
+  - Exact match of `direcciones.js` schema with `icon: "badge"`, 2 lessons of 12 words = 24 words total (covering masculine/feminine pairs `-o/-a`, `-or/-ora`, and invariable nouns `-ista`, `policía`), 1 exam lesson (`wp_exam`), and a theory article on gender rules for Spanish professions.
+- **Authored `data/words/gustos.js`**:
+  - Exact match of `direcciones.js` schema with `icon: "favorite"`, 2 lessons of 12 items = 24 items total (incorporating the course board's exact likes/dislikes items: *el brócoli, la lluvia, los exámenes, viajar, madrugar, Harry Potter, el olor a gasolina, el teatro, dibujar, los insectos, correr, leer, los perros, la piscina, conocer gente nueva, cocinar, el sushi, las tormentas de noche, las pelis de miedo, las matemáticas*), 1 exam lesson (`wg_exam`), and a comprehensive theory article on indirect object pronouns with *gustar/encantar* and singular/plural agreement.
+- **Registered Data & Extended Test Suite**:
+  - Imported and hydrated all 5 new modules in `src/core/data-loader.js`.
+  - Added all 5 modules to `tests/validate-data.test.js` (now validating 1290 phrases across 13 weeks + core, and 10 word topics with 18 automated tests passing).
+
+**[AQA]:**
+- Static analysis & Tokenizer validation: all 1290 phrases in the repository tokenize and reconstruct their exact Spanish text with 0 failures.
+- All token types verified against `VALID_TYPES`.
+- Schema checks pass for all 14 sentence topics (including explicit `tabs: [...]` arrays, `legacy` boolean flags) and all 10 word topics.
+- All theory objects strictly provide `title` and `subtitle`, with `sections` using valid section types and `text` properties (no forbidden `content` keys).
+- Lesson sizing: all non-exam sentence lessons contain exactly 6 phrases; all non-exam word lessons contain exactly 12 words.
+
+**[QA]:**
+- 80/20 & Pacing constraints verified: each new week conforms to the lightweight 2-tab, 3-lessons-per-tab structure (6 lessons total + 2 mini-exams + 1 final exam), avoiding Week 7 overload.
+- Grammar purity: no unintroduced tenses or complex moods were introduced. Week 13 reuses the Pretérito Indefinido from weeks 5–7 for biographical timelines.
+- Semantic alignment: RU and UK translations were verified word-by-word against the exact Spanish nuances, prepositions, and grammatical structures.
+- Dev build tested (`npm run build` completed in 184ms with service worker stamp). Dev server launched and verified (`http://localhost:5199/`).
+
+**Status:** ✅ Committed to branch `task/curriculum-weeks-11-13-words`. Awaiting user review/testing before merge.
+

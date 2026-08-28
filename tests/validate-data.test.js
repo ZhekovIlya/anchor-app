@@ -13,6 +13,9 @@ import week7 from '../data/sentences/week7.js';
 import week8 from '../data/sentences/week_8.js';
 import week9 from '../data/sentences/week_9.js';
 import week10 from '../data/sentences/week_10.js';
+import week11 from '../data/sentences/week_11.js';
+import week12 from '../data/sentences/week_12.js';
+import week13 from '../data/sentences/week_13.js';
 import topicsCore from '../data/sentences/topics_core.js';
 
 // Import standalone theory modules
@@ -32,10 +35,19 @@ import wordsQuestionWords from '../data/words/question_words.js';
 import wordsRutina from '../data/words/rutina.js';
 import wordsTiempo from '../data/words/tiempo_frecuencia.js';
 import wordsDirecciones from '../data/words/direcciones.js';
+import wordsProfesiones from '../data/words/profesiones.js';
+import wordsGustos from '../data/words/gustos.js';
 
 const allTopics = [
   week1, week2, week3, week4, week5, week6,
-  week7, week8, week9, week10, topicsCore
+  week7, week8, week9, week10, week11, week12,
+  week13, topicsCore
+];
+
+const allWordTopics = [
+  wordsNumbers, wordsTime, wordsWeather, wordsColors,
+  wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,
+  wordsProfesiones, wordsGustos
 ];
 
 describe('Data file structure', () => {
@@ -108,9 +120,7 @@ describe('Phrase validation', () => {
 describe('Theory schema validation', () => {
   const allTheoryContainers = [
     ...allTopics.filter(t => t.theory).map(t => ({ id: t.id, theory: t.theory })),
-    ...[wordsNumbers, wordsTime, wordsWeather, wordsColors, wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones]
-      .filter(w => w.theory)
-      .map(w => ({ id: w.id, theory: w.theory })),
+    ...allWordTopics.filter(w => w.theory).map(w => ({ id: w.id, theory: w.theory })),
     ...[theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan]
       .map(th => ({ id: th.id, theory: th })),
   ];
@@ -257,6 +267,32 @@ describe('Tokenizer', () => {
 
     if (invalid.length > 0) {
       assert.fail(`Invalid token types:\n${invalid.join('\n')}`);
+    }
+  });
+});
+
+describe('Word topics validation', () => {
+  test('each word topic has required fields', () => {
+    for (const topic of allWordTopics) {
+      assert.ok(topic.id, `Word topic missing id`);
+      assert.ok(topic.title, `Word topic ${topic.id} missing title`);
+      assert.strictEqual(topic.type, 'words', `Word topic ${topic.id} type must be "words"`);
+      assert.ok(Array.isArray(topic.lessons), `Word topic ${topic.id} missing lessons array`);
+    }
+  });
+
+  test('each word in non-exam lessons has ru, uk, es', () => {
+    for (const topic of allWordTopics) {
+      for (const lesson of topic.lessons) {
+        if (lesson.exam) continue;
+        assert.ok(Array.isArray(lesson.words), `Lesson ${lesson.id} missing words array`);
+        assert.strictEqual(lesson.words.length, 12, `Lesson ${lesson.id} must have exactly 12 words, got ${lesson.words.length}`);
+        for (const word of lesson.words) {
+          assert.ok(word.ru && typeof word.ru === 'string', `Word in ${lesson.id} missing ru`);
+          assert.ok(word.uk && typeof word.uk === 'string', `Word in ${lesson.id} missing uk`);
+          assert.ok(word.es && typeof word.es === 'string', `Word in ${lesson.id} missing es`);
+        }
+      }
     }
   });
 });

@@ -15,6 +15,9 @@ import week7Data from '../../data/sentences/week7.js';
 import week8Data from '../../data/sentences/week_8.js';
 import week9Data from '../../data/sentences/week_9.js';
 import week10Data from '../../data/sentences/week_10.js';
+import week11Data from '../../data/sentences/week_11.js';
+import week12Data from '../../data/sentences/week_12.js';
+import week13Data from '../../data/sentences/week_13.js';
 // Legacy core verb drills — legacy:true, so buildPhraseBank skips for SRS,
 // but including here keeps the data-loader in sync with the test suite.
 import topicsCoreData from '../../data/sentences/topics_core.js';
@@ -33,6 +36,8 @@ import wordsQuestionWords from '../../data/words/question_words.js';
 import wordsRutina from '../../data/words/rutina.js';
 import wordsTiempo from '../../data/words/tiempo_frecuencia.js';
 import wordsDirecciones from '../../data/words/direcciones.js';
+import wordsProfesiones from '../../data/words/profesiones.js';
+import wordsGustos from '../../data/words/gustos.js';
 
 import readAloudData from '../../data/read_aloud.js';
 
@@ -43,9 +48,17 @@ import { tokenize } from './tokenizer.js';
  * @returns {{ sentences: Array, theory: Array, words: Array }}
  */
 export function loadAllData() {
-  const sentences = hydrateSentenceTopics([week1Data, week2Data, week3Data, week4Data, week5Data, week6Data, week7Data, week8Data, week9Data, week10Data, topicsCoreData]);
+  const sentences = hydrateSentenceTopics([
+    week1Data, week2Data, week3Data, week4Data, week5Data,
+    week6Data, week7Data, week8Data, week9Data, week10Data,
+    week11Data, week12Data, week13Data, topicsCoreData
+  ]);
   const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
-  const words = hydrateWordTopics([wordsNumbers, wordsTime, wordsWeather, wordsColors, wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones]);
+  const words = hydrateWordTopics([
+    wordsNumbers, wordsTime, wordsWeather, wordsColors,
+    wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,
+    wordsProfesiones, wordsGustos
+  ]);
 
   return { sentences, theory, words, readAloud: readAloudData };
 }
