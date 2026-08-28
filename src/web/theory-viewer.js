@@ -149,9 +149,140 @@ function createTable(caption, headers, rows) {
 
 function createImage(src, alt) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'mb-6 rounded-xl overflow-hidden border border-surface-variant dark:border-stone-800 shadow-sm transition-colors duration-300';
-  wrapper.innerHTML = `<img src="${src}" alt="${alt || ''}" class="w-full h-auto" loading="lazy" />`;
+  wrapper.className = 'group relative mb-6 rounded-xl overflow-hidden border border-surface-variant dark:border-stone-800 shadow-sm transition-all duration-300 hover:shadow-md cursor-zoom-in bg-surface-container-low dark:bg-stone-900';
+  
+  wrapper.innerHTML = `
+    <img src="${src}" alt="${alt || 'Theory visual'}" class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]" loading="lazy" />
+    <div class="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/75 backdrop-blur-md text-white text-xs font-label font-bold shadow-lg opacity-90 group-hover:opacity-100 transition-opacity">
+      <span class="material-symbols-outlined text-sm">zoom_in</span>
+      <span>Click to zoom & inspect</span>
+    </div>
+  `;
+
+  wrapper.onclick = () => openImageLightbox(src, alt || 'Theory diagram');
   return wrapper;
+}
+
+/**
+ * Open interactive high-res image lightbox with zoom and pan controls.
+ */
+function openImageLightbox(src, title) {
+  const existing = document.getElementById('theoryImageLightbox');
+  if (existing) existing.remove();
+
+  let currentZoom = 1;
+  const minZoom = 0.5;
+  const maxZoom = 4.0;
+  const zoomStep = 0.3;
+
+  const modal = document.createElement('div');
+  modal.id = 'theoryImageLightbox';
+  modal.className = 'fixed inset-0 z-[9999] flex flex-col bg-black/90 backdrop-blur-md text-white select-none animate-in fade-in duration-200';
+
+  modal.innerHTML = `
+    <!-- Top toolbar -->
+    <div class="flex items-center justify-between px-4 py-3 bg-black/60 border-b border-white/10 flex-shrink-0 z-10">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <span class="material-symbols-outlined text-emerald-400 text-xl flex-shrink-0">image</span>
+        <span class="font-headline text-sm sm:text-base font-bold truncate">${title}</span>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button id="lightboxZoomOut" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 transition text-white" title="Zoom out (-)">
+          <span class="material-symbols-outlined text-lg">zoom_out</span>
+        </button>
+        <button id="lightboxZoomReset" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 transition text-xs font-mono font-bold" title="Reset zoom">
+          <span id="lightboxZoomVal">100%</span>
+        </button>
+        <button id="lightboxZoomIn" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 transition text-white" title="Zoom in (+)">
+          <span class="material-symbols-outlined text-lg">zoom_in</span>
+        </button>
+        <a href="${src}" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 transition text-white ml-2" title="Open full resolution image in new tab">
+          <span class="material-symbols-outlined text-lg">open_in_new</span>
+        </a>
+        <button id="lightboxCloseBtn" class="p-2 rounded-lg bg-red-600/80 hover:bg-red-600 active:scale-95 transition text-white ml-2" title="Close (Esc)">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Image viewport container -->
+    <div id="lightboxViewport" class="flex-1 overflow-auto p-4 flex items-center justify-center cursor-grab active:cursor-grabbing relative">
+      <img id="lightboxImg" src="${src}" alt="${title}" class="max-w-none transition-transform duration-150 ease-out origin-center rounded-lg shadow-2xl" style="max-height: 85vh; width: auto;" />
+    </div>
+
+    <!-- Footer helper hint -->
+    <div class="px-4 py-2 text-center text-xs text-stone-400 bg-black/40 border-t border-white/5 flex-shrink-0">
+      Use zoom buttons, double-click to toggle 2x zoom, or click 'Open in new tab' for 100% raw resolution. Press ESC to close.
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const img = modal.querySelector('#lightboxImg');
+  const zoomVal = modal.querySelector('#lightboxZoomVal');
+  const viewport = modal.querySelector('#lightboxViewport');
+  const btnIn = modal.querySelector('#lightboxZoomIn');
+  const btnOut = modal.querySelector('#lightboxZoomOut');
+  const btnReset = modal.querySelector('#lightboxZoomReset');
+  const btnClose = modal.querySelector('#lightboxCloseBtn');
+
+  function updateTransform() {
+    img.style.transform = `scale(${currentZoom})`;
+    zoomVal.textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+
+  btnIn.onclick = (e) => {
+    e.stopPropagation();
+    currentZoom = Math.min(maxZoom, currentZoom + zoomStep);
+    updateTransform();
+  };
+
+  btnOut.onclick = (e) => {
+    e.stopPropagation();
+    currentZoom = Math.max(minZoom, currentZoom - zoomStep);
+    updateTransform();
+  };
+
+  btnReset.onclick = (e) => {
+    e.stopPropagation();
+    currentZoom = 1;
+    updateTransform();
+  };
+
+  img.ondblclick = (e) => {
+    e.stopPropagation();
+    currentZoom = currentZoom === 1 ? 2.2 : 1;
+    updateTransform();
+  };
+
+  const closeModal = () => {
+    document.removeEventListener('keydown', handleKeyDown);
+    modal.classList.add('animate-out', 'fade-out');
+    setTimeout(() => modal.remove(), 150);
+  };
+
+  btnClose.onclick = closeModal;
+  viewport.onclick = (e) => {
+    if (e.target === viewport) closeModal();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === '+' || e.key === '=') {
+      currentZoom = Math.min(maxZoom, currentZoom + zoomStep);
+      updateTransform();
+    }
+    if (e.key === '-' || e.key === '_') {
+      currentZoom = Math.max(minZoom, currentZoom - zoomStep);
+      updateTransform();
+    }
+    if (e.key === '0') {
+      currentZoom = 1;
+      updateTransform();
+    }
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
 }
 
 function createVideo(src, title) {
