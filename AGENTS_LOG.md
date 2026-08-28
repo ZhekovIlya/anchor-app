@@ -1,5 +1,26 @@
 # AGENTS LOG
 
+## Current Task: Remove Complex PDF Strips in Favor of Bite-Sized Native Theory
+
+### **[DEV] (The Builder):**
+- Branch `task/remove-complex-pdf-strips-from-weeks` created, validated, and merged into `main`.
+- Added rule to `LESSONS_LEARNED.md`: No Overwhelming Long PDF Images in Week Theory. Keep theory clean, concise, and bite-sized without multi-part image dumps.
+- Removed all complex PDF strip images across `data/sentences/week_10.js`, `week_12.js`, `week_13.js`, `week_14.js`, `week_8.js`, `week_9.js`, `data/words/direcciones.js`, `numbers.js`, `question_words.js`, `rutina.js`, `gustos.js`, and `data/theory/the_bridge.js`, `verbs_reflexive_special.js`.
+- Preserved and highlighted all clean native in-app tables, callouts, and explanations.
+
+### **[AQA] (Technical QA):**
+- Verified test suite: 18/18 tests passed across 7 test suites with 0 failures (1,326 phrases tokenized).
+- Verified production build and Service Worker cache stamp (`spanish-anchor-f051171`).
+
+### **[QA] (Product QA):**
+- Confirmed that week theory articles are clean, digestible, and fast to read on any device with no overwhelming visual clutter.
+
+### **Status:**
+- Merged to `main` and deployed.
+
+---
+
+
 ## Current Task: Theory Tables & Focused Miro Diagram Crops
 
 ### **[DEV] (The Builder):**
