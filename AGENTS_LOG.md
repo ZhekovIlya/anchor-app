@@ -1,5 +1,28 @@
 # AGENTS LOG
 
+## Current Task: Theory Tables & Focused Miro Diagram Crops
+
+### **[DEV] (The Builder):**
+- Branch `task/theory-pedagogy-and-specific-diagram-crops` created, validated, and merged into `main`.
+- Added rules to `LESSONS_LEARNED.md`: Mandatory native structured tables for core mechanics, specific theory crops over full-page exercise sheets, and explicit warning callout contrasting `le gusta` vs `se relaja`.
+- Cropped focused diagrams from `pareja.pdf` into `public/theory/`: `miro_gustos_chart.png`, `miro_ducharse_reflexive_table.png`, `miro_acciones_habituales_grid.png`, `miro_verbos_diptongo_boxes.png`, and `miro_pronunciacion_reglas.png`.
+- Expanded `data/words/gustos.js` and `data/theory/verbs_reflexive_special.js` with complete 6-person tables for *gustar* (`me/te/le/nos/os/les`), *reflexivos* (`me/te/se/nos/os/se` for `relajarse`, `ducharse`, `levantarse`, `vestirse`), and contrast between reflexive actions vs transitive verbs (`lavo el coche` vs `me lavo la cara`).
+- Embedded isolated visual crops across `data/words/gustos.js`, `data/words/rutina.js`, `data/sentences/week_8.js`, `data/sentences/week_9.js`, and `data/theory/the_bridge.js`.
+
+### **[AQA] (Technical QA):**
+- Verified test suite: 18/18 tests passed across 7 test suites with 0 failures (1,326 phrases tokenized).
+- Verified production build and Service Worker cache stamp (`spanish-anchor-8d8d4b3`).
+
+### **[QA] (Product QA):**
+- Confirmed that core grammar mechanics (`me gusta / le gusta`, `me relajo / se relaja`) are taught through clear in-app HTML tables with zero reliance on low-context exercise sheets.
+- Confirmed full-screen interactive zoom lightbox functionality.
+
+### **Status:**
+- Merged to `main` and deployed.
+
+---
+
+
 ## Current Task: New Vocabulary, Stem-Changing Verbs, and Vosotros (Weeks 9 & 10)
 
 ### **[DEV] (The Builder):**
