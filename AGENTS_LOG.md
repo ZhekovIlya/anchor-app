@@ -754,5 +754,38 @@
 - Semantic alignment: RU and UK translations were verified word-by-word against the exact Spanish nuances, prepositions, and grammatical structures.
 - Dev build tested (`npm run build` completed in 184ms with service worker stamp). Dev server launched and verified (`http://localhost:5199/`).
 
-**Status:** ✅ Committed to branch `task/curriculum-weeks-11-13-words`. Awaiting user review/testing before merge.
+**Status:** ✅ Committed to branch `task/curriculum-weeks-11-13-words`. Merged into `main`.
+
+---
+
+## Task: Pretérito Indefinido Insertion (Week 11) & Curriculum Renumbering (2026-08-28)
+**Branch:** task/week-11-preterite-paradigm-and-renumbering
+
+**[DEV]:**
+- **Authored `data/sentences/week_11.js` (Pretérito Indefinido: Todas las Personas)**:
+  - 2 tabs (`personas_nuevas`, `verbos_irregulares`), 6 lessons (6 phrases each = 36 phrases total), 2 tab mini-exams (`w11_m1`, `w11_m2`), 1 final exam (`w11_exam`).
+  - Regular endings for *vosotros* (`-asteis/-isteis`) and *ellos/ellas/ustedes* (`-aron/-ieron`).
+  - Core 5 irregulars: *ir/ser* (fui/fuiste/fue), *tener* (tuve/tuviste/tuvo), *estar* (estuve/estuviste/estuvo), *hacer* (hice/hiciste/hizo), *poder* (pude/pudiste/pudo) focused on *yo/tú/él-ella*.
+  - Full theory article with 6-person regular paradigm table (*hablar*, *comer/vivir*), 5 irregulars table, and cross-reference to Week 7 past tense distinctions.
+- **Renumbered Downstream Weeks**:
+  - `week_12.js`: *Hoteles* (IDs: `week12`, `w12_l1`..`w12_l6`, `w12_m1`, `w12_m2`, `w12_exam`).
+  - `week_13.js`: *Barrios y la Ciudad* (IDs: `week13`, `w13_l1`..`w13_l6`, `w13_m1`, `w13_m2`, `w13_exam`).
+  - `week_14.js`: *Etapas de la Vida* (IDs: `week14`, `w14_l1`..`w14_l6`, `w14_m1`, `w14_m2`, `w14_exam`).
+- **Registered & Extended Test Suite**:
+  - Imported and hydrated `week14Data` in `src/core/data-loader.js`.
+  - Added `week14` to `tests/validate-data.test.js` (now validating 1326 phrases across 14 weeks + core with 18 automated tests passing).
+
+**[AQA]:**
+- Static code analysis & Tokenizer validation: **1,326 phrases** across 14 weeks + core tokenized and reconstructed with 0 errors.
+- Schema compliance: all 15 sentence topics (including legacy core) have explicit `tabs: [...]` arrays and `legacy` boolean flags.
+- Theory verification: every container has `title` and `subtitle`, with `sections` using valid types and `text` (no deprecated `content` keys).
+- Lesson sizing: all non-exam sentence lessons contain exactly 6 phrases; all non-exam word lessons contain exactly 12 words.
+
+**[QA]:**
+- Curriculum progression: Week 11 establishes the full preterite paradigm before Week 14 applies it to biographical storytelling.
+- Cognitive load control: irregulars are strictly restricted to 5 high-frequency verbs without 6-person explosion.
+- Semantic clarity: all RU and UK glosses contain sufficient subject and contextual markers to eliminate translation ambiguity.
+- Dev build tested (`npm run build` completed in 175ms with service worker stamp). Dev server launched and verified (`http://localhost:5198/`).
+
+**Status:** ✅ Committed to branch `task/week-11-preterite-paradigm-and-renumbering`. Awaiting user review/testing before merge.
 

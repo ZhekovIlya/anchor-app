@@ -1,191 +1,172 @@
 // ========================
-// WEEK 12 — "Barrios y la Ciudad"
+// WEEK 12 — "Hoteles"
 // ========================
 // Level: Intermediate.
-// Focus: Neighborhood types, urban adjectives, comparing places to live, and expressing residential preferences.
+// Focus: Hotel reservations, amenities, checking in/out, and polite problem resolution at reception.
 // ========================
 
 const week12Lessons = [
   // ═══════════════════════════════════════════════════════
-  // TAB 1: TIPOS DE BARRIO
+  // TAB 1: RESERVA Y SERVICIOS
   // ═══════════════════════════════════════════════════════
   {
     id: "w12_l1",
-    tab: "tipos_de_barrio",
-    title: "Tipos de Barrio",
+    tab: "reserva",
+    title: "Reservar Habitación",
     phrases: [
-      { ru: "Мой друг живёт в жилом районе.", uk: "Мій друг живе в житловому районі.", es: "Mi amigo vive en un barrio residencial." },
-      { ru: "В историческом центре очень узкие улицы.", uk: "В історичному центрі дуже вузькі вулиці.", es: "El centro histórico tiene calles muy estrechas." },
-      { ru: "Это коммерческий район со множеством магазинов.", uk: "Це комерційний район з багатьма магазинами.", es: "Es un barrio comercial con muchas tiendas." },
-      { ru: "Фабрика находится в промышленной зоне.", uk: "Фабрика знаходиться в промисловій зоні.", es: "La fábrica está en la zona industrial." },
-      { ru: "Мне нравится гулять по старому району.", uk: "Мені подобається гуляти старим районом.", es: "Me gusta pasear por el barrio antiguo." },
-      { ru: "В этом современном районе есть высокие здания.", uk: "У цьому сучасному районі є високі будівлі.", es: "Este barrio moderno tiene edificios altos." }
+      { ru: "У вас есть свободный номер на две ночи?", uk: "У вас є вільний номер на дві ночі?", es: "¿Tiene una habitación libre para dos noches?" },
+      { ru: "Я хотел бы забронировать двухместный номер.", uk: "Я хотів би забронювати двомісний номер.", es: "Me gustaría reservar una habitación doble." },
+      { ru: "У меня есть бронь на имя Хуан.", uk: "У мене є бронь на ім'я Хуан.", es: "Tengo una reserva a nombre de Juan." },
+      { ru: "Сколько стоит номер за ночь?", uk: "Скільки коштує номер за ніч?", es: "¿Cuánto cuesta la habitación por noche?" },
+      { ru: "Мы хотим одноместный номер с видом.", uk: "Ми хочемо одномісний номер з видом.", es: "Queremos una habitación individual con vistas." },
+      { ru: "Я могу оплатить картой на стойке регистрации?", uk: "Я можу оплатити карткою на стійці реєстрації?", es: "¿Puedo pagar con tarjeta en la recepción?" }
     ],
   },
   {
     id: "w12_l2",
-    tab: "tipos_de_barrio",
-    title: "Cómo es tu Barrio",
+    tab: "reserva",
+    title: "Servicios del Hotel",
     phrases: [
-      { ru: "Наш район очень спокойный и зелёный.", uk: "Наш район дуже спокійний і зелений.", es: "Nuestro barrio es muy tranquilo y verde." },
-      { ru: "Центральный район довольно шумный по ночам.", uk: "Центральний район досить шумний ночами.", es: "El barrio céntrico es bastante ruidoso por la noche." },
-      { ru: "Этот район города очень безопасный.", uk: "Цей район міста дуже безпечний.", es: "Esta zona de la ciudad es muy segura." },
-      { ru: "В рабочем районе мало парков.", uk: "У робітничому районі мало парків.", es: "Hay pocos parques en el barrio obrero." },
-      { ru: "Улицы моего района всегда чистые.", uk: "Вулиці мого району завжди чисті.", es: "Las calles de mi barrio están siempre limpias." },
-      { ru: "Это опасный район, чтобы гулять одному.", uk: "Це небезпечний район, щоб гуляти самому.", es: "Es un barrio peligroso para caminar solo." }
+      { ru: "Завтрак включен в стоимость?", uk: "Сніданок включений у вартість?", es: "¿El desayuno está incluido en el precio?" },
+      { ru: "В номерах есть бесплатный вайфай?", uk: "У номерах є безкоштовний вайфай?", es: "¿Hay wifi gratis en las habitaciones?" },
+      { ru: "В отеле есть очень большой бассейн.", uk: "В готелі є дуже великий басейн.", es: "El hotel tiene una piscina muy grande." },
+      { ru: "Во сколько открывается ресторан отеля?", uk: "О котрій відкривається ресторан готелю?", es: "¿A qué hora abre el restaurante del hotel?" },
+      { ru: "Кондиционер работает очень хорошо здесь.", uk: "Кондиціонер працює дуже добре тут.", es: "El aire acondicionado funciona muy bien aquí." },
+      { ru: "Я предпочитаю отель с частной парковкой.", uk: "Я віддаю перевагу готелю з приватною парковкою.", es: "Prefiero un hotel con aparcamiento privado." }
     ],
   },
   {
     id: "w12_l3",
-    tab: "tipos_de_barrio",
-    title: "Vida de Barrio",
+    tab: "reserva",
+    title: "Llegada y Llaves",
     phrases: [
-      { ru: "На площадях района очень оживленная атмосфера.", uk: "На площах району дуже жвава атмосфера.", es: "Hay mucho ambiente en las plazas del barrio." },
-      { ru: "Соседи по моей улице очень дружелюбные.", uk: "Сусіди по моїй вулиці дуже доброзичливі.", es: "Los vecinos de mi calle son muy amables." },
-      { ru: "Общественный транспорт работает хорошо в этом районе.", uk: "Громадський транспорт працює добре в цьому районі.", es: "El transporte público funciona bien en esta zona." },
-      { ru: "Рядом с моим домом есть традиционный рынок.", uk: "Поруч з моїм будинком є традиційний ринок.", es: "Cerca de mi casa hay un mercado tradicional." },
-      { ru: "Мы живём далеко от центра, но мы довольны.", uk: "Ми живемо далеко від центру, але ми задоволені.", es: "Vivimos lejos del centro, pero estamos contentos." },
-      { ru: "Я знаю почти всех официантов района.", uk: "Я знаю майже всіх офіціантів району.", es: "Conozco a casi todos los camareros del barrio." }
+      { ru: "Во сколько заселение в отель?", uk: "О котрій заселення в готель?", es: "¿A qué hora es el registro de entrada?" },
+      { ru: "Вот ключ от вашего номера.", uk: "Ось ключ від вашого номера.", es: "Aquí tiene la llave de su habitación." },
+      { ru: "Администратор даёт мне магнитную карту.", uk: "Адміністратор дає мені магнітну картку.", es: "El recepcionista me da la tarjeta magnética." },
+      { ru: "Мы поздно прибыли в отель из-за поезда.", uk: "Ми пізно прибули в готель через потяг.", es: "Llegamos tarde al hotel por el tren." },
+      { ru: "Мы можем оставить багаж на стойке регистрации?", uk: "Ми можемо залишити багаж на стійці реєстрації?", es: "¿Podemos dejar el equipaje en la recepción?" },
+      { ru: "Выезд из отеля в двенадцать часов.", uk: "Виїзд з готелю о дванадцятій годині.", es: "La salida del hotel es a las doce." }
     ],
   },
-  { id: "w12_m1", tab: "tipos_de_barrio", exam: true, mini: true, title: "Mini-examen: Tipos de Barrio" },
+  { id: "w12_m1", tab: "reserva", exam: true, mini: true, title: "Mini-examen: Reserva" },
 
   // ═══════════════════════════════════════════════════════
-  // TAB 2: COMPARAR Y PREFERIR
+  // TAB 2: PROBLEMAS Y RECEPCIÓN
   // ═══════════════════════════════════════════════════════
   {
     id: "w12_l4",
-    tab: "comparar",
-    title: "Comparaciones Urbanas",
+    tab: "problemas",
+    title: "Problemas en la Habitación",
     phrases: [
-      { ru: "Центр более шумный, чем окраина.", uk: "Центр більш шумний, ніж околиця.", es: "El centro es más ruidoso que las afueras." },
-      { ru: "Эта квартира менее дорогая, чем другая.", uk: "Ця квартира менш дорога, ніж інша.", es: "Este piso es menos caro que el otro." },
-      { ru: "Мой район такой же спокойный, как твой.", uk: "Мій район такий самий спокійний, як твій.", es: "Mi barrio es tan tranquilo como el tuyo." },
-      { ru: "У исторического района больше шарма, чем у нового.", uk: "В історичного району більше шарму, ніж у нового.", es: "El barrio histórico tiene más encanto que el nuevo." },
-      { ru: "Здесь меньше дорожного движения, чем на проспекте.", uk: "Тут менше дорожнього руху, ніж на проспекті.", es: "Aquí hay menos tráfico que en la avenida." },
-      { ru: "Жизнь здесь лучше, чем в большом городе.", uk: "Життя тут краще, ніж у великому місті.", es: "La vida aquí es mejor que en la gran ciudad." }
+      { ru: "В моем номере не работает кондиционер.", uk: "У моєму номері не працює кондиціонер.", es: "No funciona el aire acondicionado en mi habitación." },
+      { ru: "Номер грязный и нет полотенец.", uk: "Номер брудний і немає рушників.", es: "La habitación está sucia y no hay toallas." },
+      { ru: "Есть проблема с душем в ванной.", uk: "Є проблема з душем у ванній.", es: "Hay un problema con la ducha del baño." },
+      { ru: "У нас нет горячей воды сегодня ночью.", uk: "У нас немає гарячої води сьогодні вночі.", es: "No tenemos agua caliente esta noche." },
+      { ru: "Окно не закрывается и заходит много шума.", uk: "Вікно не зачиняється і заходить багато шуму.", es: "La ventana no cierra y entra mucho ruido." },
+      { ru: "Свет не работает в коридоре.", uk: "Світло не працює в коридорі.", es: "La luz no funciona en el pasillo." }
     ],
   },
   {
     id: "w12_l5",
-    tab: "comparar",
-    title: "Preferencias de Vivienda",
+    tab: "problemas",
+    title: "Quejas y Peticiones",
     phrases: [
-      { ru: "Я предпочитаю жить в центре, потому что там больше услуг.", uk: "Я віддаю перевагу жити в центрі, тому що там більше послуг.", es: "Prefiero vivir en el centro porque hay más servicios." },
-      { ru: "Она предпочитает жилой район для своих детей.", uk: "Вона віддає перевагу житловому району для своїх дітей.", es: "Ella prefiere un barrio residencial para sus hijos." },
-      { ru: "Мы предпочитаем снимать квартиру рядом с метро.", uk: "Ми віддаємо перевагу орендувати квартиру поруч з метро.", es: "Nosotros preferimos alquilar un piso cerca del metro." },
-      { ru: "Почему ты предпочитаешь этот район города?", uk: "Чому ти віддаєш перевагу цьому району міста?", es: "¿Por qué prefieres esta zona de la ciudad?" },
-      { ru: "Я предпочитаю платить больше за аренду, чтобы иметь больше света.", uk: "Я віддаю перевагу платити більше за оренду, щоб мати більше світла.", es: "Prefiero pagar más alquiler por tener más luz." },
-      { ru: "Они предпочитают спокойствие сельской местности.", uk: "Вони віддають перевагу спокою сільської місцевості.", es: "Ellos prefieren la tranquilidad del campo." }
+      { ru: "Извините, я мог бы поменять номер сегодня?", uk: "Вибачте, я міг би поміняти номер сьогодні?", es: "Perdón, ¿podría cambiar de habitación hoy?" },
+      { ru: "Мог бы я попросить о переводе в другой номер, пожалуйста?", uk: "Чи міг би я попросити про переведення в інший номер, будь ласка?", es: "¿Podría pedir un traslado de habitación, por favor?" },
+      { ru: "Я хотел бы поговорить с администратором сейчас.", uk: "Я хотів би поговорити з адміністратором зараз.", es: "Me gustaría hablar con el recepcionista ahora." },
+      { ru: "Вы можете убрать номер сегодня утром?", uk: "Ви можете прибрати номер сьогодні вранці?", es: "¿Pueden limpiar la habitación esta mañana?" },
+      { ru: "Нам нужны чистые полотенца для ванной комнаты.", uk: "Нам потрібні чисті рушники для ванної кімнати.", es: "Necesitamos toallas limpias para el baño." },
+      { ru: "Мы хотим решить эту проблему в ближайшее время.", uk: "Ми хочемо вирішити цю проблему найближчим часом.", es: "Queremos solucionar este problema pronto." }
     ],
   },
   {
     id: "w12_l6",
-    tab: "comparar",
-    title: "Pros y Contras",
+    tab: "problemas",
+    title: "En la Recepción",
     phrases: [
-      { ru: "Лучшее в жизни здесь — центральное расположение.", uk: "Найкраще в житті тут — центральне розташування.", es: "Lo mejor de vivir aquí es la ubicación céntrica." },
-      { ru: "Худшее в районе — нехватка парковки.", uk: "Найгірше в районі — нестача парковки.", es: "Lo peor del barrio es la falta de aparcamiento." },
-      { ru: "Большое преимущество — иметь супермаркет рядом.", uk: "Велика перевага — мати супермаркет поруч.", es: "Una gran ventaja es tener el supermercado al lado." },
-      { ru: "Главный недостаток — стоимость аренды.", uk: "Головний недолік — вартість оренди.", es: "El inconveniente principal es el precio del alquiler." },
-      { ru: "Я обожаю это место из-за его солнечных террас.", uk: "Я обожнюю це місце через його сонячні тераси.", es: "Me encanta este lugar por sus terrazas soleadas." },
-      { ru: "Мне не нравится шум машин по утрам.", uk: "Мені не подобається шум машин вранці.", es: "No me gusta el ruido de los coches por la mañana." }
+      { ru: "Администратор помогает мне с чемоданом.", uk: "Адміністратор допомагає мені з валізою.", es: "El recepcionista me ayuda con la maleta." },
+      { ru: "Мне очень жаль, мы меняем ваш номер сейчас.", uk: "Мені дуже шкода, ми міняємо ваш номер зараз.", es: "Lo siento mucho, cambiamos su habitación ahora." },
+      { ru: "Вчера я говорил с администратором о шуме.", uk: "Вчора я говорив з адміністраторкою про шум.", es: "Ayer hablé con la recepcionista sobre el ruido." },
+      { ru: "Она отправила человека убрать кухню.", uk: "Вона відправила людину прибрати кухню.", es: "Ella envió a una persona a limpiar la cocina." },
+      { ru: "Не могли бы вы дать мне другой ключ, пожалуйста?", uk: "Чи не могли б ви дати мені інший ключ, будь ласка?", es: "¿Podría darme otra llave, por favor?" },
+      { ru: "Большое спасибо за решение проблемы.", uk: "Дуже дякую за вирішення проблеми.", es: "Muchas gracias por solucionar el problema." }
     ],
   },
-  { id: "w12_m2", tab: "comparar", exam: true, mini: true, title: "Mini-examen: Comparar" },
+  { id: "w12_m2", tab: "problemas", exam: true, mini: true, title: "Mini-examen: Problemas" },
   { id: "w12_exam", exam: true, title: "Examen de la Semana 12" },
 ];
 
 export default {
   id: "week12",
   type: "sentences",
-  title: "Week 12: Barrios y la Ciudad",
-  description: "Neighborhood types, urban comparisons, and residential preferences.",
+  title: "Week 12: Hoteles",
+  description: "Hotel bookings, amenities, and polite problem-solving at reception.",
   legacy: false,
   theory: {
-    title: "Barrios y Comparaciones Urbanas",
-    subtitle: "Describir zonas de la ciudad y comparar dónde vivir",
+    title: "Hoteles y Estancias",
+    subtitle: "Reservas, servicios y cómo gestionar quejas amables",
     sections: [
       {
         type: "paragraph",
-        text: "En la Semana 12 aprenderás a describir con precisión cualquier zona urbana, valorar los pros y contras de un barrio y construir comparaciones naturales en español."
+        text: "En la Semana 12 aprendemos a gestionar reservas hoteleras, consultar comodidades y resolver incidencias de manera cortés y eficaz en la recepción."
       },
       {
         type: "heading",
-        text: "1. Tipos de barrio y adjetivos descriptivos"
+        text: "1. Vocabulario esencial de hotel"
       },
       {
         type: "paragraph",
-        text: "En las ciudades hispanohablantes distinguimos varios tipos de zonas según su actividad y trazado urbanístico:"
+        text: "Para reservar habitación y entender los servicios ofrecidos, domina estas expresiones básicas:"
       },
       {
         type: "table",
-        caption: "Tipos de barrio en español",
+        caption: "Términos indispensables en el hotel",
         headers: ["Español", "Traducción", "Ejemplo práctico"],
         rows: [
-          ["barrio residencial", "residential neighborhood", "Mi amigo vive en un barrio residencial."],
-          ["barrio histórico / antiguo", "historic / old quarter", "El centro histórico tiene calles muy estrechas."],
-          ["barrio comercial", "commercial / shopping area", "Es un barrio comercial con muchas tiendas."],
-          ["zona industrial", "industrial area / zone", "La fábrica está en la zona industrial."],
-          ["barrio obrero", "working-class neighborhood", "Hay pocos parques en el barrio obrero."],
-          ["céntrico / ruidoso / tranquilo", "central / noisy / quiet", "El barrio céntrico es bastante ruidoso."]
-        ]
-      },
-      {
-        type: "heading",
-        text: "2. Estructuras de comparación"
-      },
-      {
-        type: "paragraph",
-        text: "Para contrastar dos barrios o viviendas utilizamos estructuras comparativas de superioridad, inferioridad e igualdad:"
-      },
-      {
-        type: "table",
-        caption: "Comparativos de adjetivos y sustantivos",
-        headers: ["Estructura", "Significado", "Ejemplo"],
-        rows: [
-          ["más + adjetivo + que", "more ... than", "El centro es más ruidoso que las afueras."],
-          ["menos + adjetivo + que", "less ... than", "Este piso es menos caro que el otro."],
-          ["tan + adjetivo + como", "as ... as", "Mi barrio es tan tranquilo como el tuyo."],
-          ["más / menos + sustantivo + que", "more / fewer ... than", "Aquí hay menos tráfico que en la avenida."],
-          ["mejor que / peor que", "better than / worse than", "La vida aquí es mejor que en la gran ciudad."]
+          ["habitación individual / doble", "single / double room", "Me gustaría reservar una habitación doble."],
+          ["desayuno incluido", "breakfast included", "¿El desayuno está incluido en el precio?"],
+          ["aire acondicionado", "air conditioning", "El aire acondicionado funciona muy bien aquí."],
+          ["la piscina", "swimming pool", "El hotel tiene una piscina muy grande."],
+          ["la reserva", "reservation / booking", "Tengo una reserva a nombre de Juan."],
+          ["el / la recepcionista", "receptionist", "Me gustaría hablar con el recepcionista."],
+          ["el registro de entrada / la salida", "check-in / check-out", "¿A qué hora es el registro de entrada?"]
         ]
       },
       {
         type: "callout",
         style: "tip",
-        text: "¡Ojo con los comparativos irregulares! 'Bueno' → 'mejor que' (no *más bueno*), 'malo' → 'peor que' (no *más malo*)."
+        text: "Para formular peticiones con cortesía en español, utiliza 'Me gustaría + infinitivo' (I would like...) o '¿Podría + infinitivo...?' (Could you / Could I...?): '¿Podría pedir un traslado de habitación?'"
       },
       {
         type: "heading",
-        text: "3. Expresar ventajas, inconvenientes y preferencias"
+        text: "2. Gestión de incidencias y quejas amables"
       },
       {
         type: "paragraph",
-        text: "Para justificar por qué prefieres vivir en un sitio concreto, combina 'prefiero ... porque' con el artículo neutro 'lo':"
+        text: "Si algo no funciona en la habitación, comunícalo en recepción con estas fórmulas claras y educadas:"
       },
       {
         type: "table",
-        caption: "Expresar pros y contras",
-        headers: ["Fórmula", "Traducción", "Ejemplo"],
+        caption: "Frases para reportar problemas",
+        headers: ["Estructura", "Uso", "Ejemplo"],
         rows: [
-          ["Lo mejor de...", "The best thing about...", "Lo mejor de vivir aquí es la ubicación céntrica."],
-          ["Lo peor de...", "The worst thing about...", "Lo peor del barrio es la falta de aparcamiento."],
-          ["Una gran ventaja", "A major advantage", "Una gran ventaja es tener el supermercado al lado."],
-          ["El inconveniente principal", "The main drawback", "El inconveniente principal es el precio del alquiler."],
-          ["Prefiero... porque...", "I prefer... because...", "Prefiero vivir en el centro porque hay más servicios."]
+          ["No funciona el / la...", "Aparato averiado", "No funciona el aire acondicionado en mi habitación."],
+          ["Hay un problema con...", "Incidencia general", "Hay un problema con la ducha del baño."],
+          ["La habitación está sucia", "Estado de limpieza", "La habitación está sucia y no hay toallas."],
+          ["Pedir un traslado de habitación", "Solicitar cambio", "¿Podría pedir un traslado de habitación, por favor?"],
+          ["Solucionar el problema", "Resolver incidencia", "Queremos solucionar este problema pronto."]
         ]
       },
       {
         type: "callout",
         style: "important",
-        text: "El artículo neutro 'lo' se usa con adjetivos superlativos relativos para sustantivar la cualidad: 'lo mejor' (the best thing), 'lo peor' (the worst thing), 'lo más importante' (the most important thing)."
+        text: "Recuerda la diferencia entre 'ser' y 'estar': el precio ES caro (característica propia), pero la habitación ESTÁ sucia o ESTÁ libre (estado temporal)."
       }
     ]
   },
   tabs: [
-    { id: 'tipos_de_barrio', label: 'Tipos de Barrio' },
-    { id: 'comparar', label: 'Comparar y Preferir' }
+    { id: 'reserva', label: 'Reserva' },
+    { id: 'problemas', label: 'Problemas y Recepción' }
   ],
   lessons: week12Lessons
 };

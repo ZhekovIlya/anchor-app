@@ -18,6 +18,7 @@ import week10Data from '../../data/sentences/week_10.js';
 import week11Data from '../../data/sentences/week_11.js';
 import week12Data from '../../data/sentences/week_12.js';
 import week13Data from '../../data/sentences/week_13.js';
+import week14Data from '../../data/sentences/week_14.js';
 // Legacy core verb drills — legacy:true, so buildPhraseBank skips for SRS,
 // but including here keeps the data-loader in sync with the test suite.
 import topicsCoreData from '../../data/sentences/topics_core.js';
@@ -51,7 +52,7 @@ export function loadAllData() {
   const sentences = hydrateSentenceTopics([
     week1Data, week2Data, week3Data, week4Data, week5Data,
     week6Data, week7Data, week8Data, week9Data, week10Data,
-    week11Data, week12Data, week13Data, topicsCoreData
+    week11Data, week12Data, week13Data, week14Data, topicsCoreData
   ]);
   const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
   const words = hydrateWordTopics([

@@ -1,172 +1,178 @@
 // ========================
-// WEEK 11 — "Hoteles y Estancias"
+// WEEK 11 — "Pretérito Indefinido: Todas las Personas"
 // ========================
 // Level: Intermediate.
-// Focus: Hotel reservations, amenities, checking in/out, and polite problem resolution at reception.
+// Focus: Regular preterite endings for vosotros (-asteis/-isteis) and ellos/ellas/ustedes (-aron/-ieron),
+// plus the top 5 core irregular preterite verbs: ir/ser (fue), tener (tuvo), estar (estuvo), hacer (hizo), poder (pudo).
+// Note: Other irregulars (querer, venir, decir, poner, traer) are intentionally deferred to a later week to avoid overload.
 // ========================
 
 const week11Lessons = [
   // ═══════════════════════════════════════════════════════
-  // TAB 1: RESERVA Y SERVICIOS
+  // TAB 1: PERSONAS NUEVAS (Vosotros y Ellos/Ellas/Ustedes)
   // ═══════════════════════════════════════════════════════
   {
     id: "w11_l1",
-    tab: "reserva",
-    title: "Reservar Habitación",
+    tab: "personas_nuevas",
+    title: "Ellos y Ellas: Pasado Regular",
     phrases: [
-      { ru: "У вас есть свободный номер на две ночи?", uk: "У вас є вільний номер на дві ночі?", es: "¿Tiene una habitación libre para dos noches?" },
-      { ru: "Я хотел бы забронировать двухместный номер.", uk: "Я хотів би забронювати двомісний номер.", es: "Me gustaría reservar una habitación doble." },
-      { ru: "У меня есть бронь на имя Хуан.", uk: "У мене є бронь на ім'я Хуан.", es: "Tengo una reserva a nombre de Juan." },
-      { ru: "Сколько стоит номер за ночь?", uk: "Скільки коштує номер за ніч?", es: "¿Cuánto cuesta la habitación por noche?" },
-      { ru: "Мы хотим одноместный номер с видом.", uk: "Ми хочемо одномісний номер з видом.", es: "Queremos una habitación individual con vistas." },
-      { ru: "Я могу оплатить картой на стойке регистрации?", uk: "Я можу оплатити карткою на стійці реєстрації?", es: "¿Puedo pagar con tarjeta en la recepción?" }
+      { ru: "Вчера они поговорили с администратором.", uk: "Учора вони поговорили з адміністратором.", es: "Ayer ellos hablaron con el recepcionista." },
+      { ru: "Мои друзья купили билеты на поезд на прошлой неделе.", uk: "Мої друзі купили квитки на потяг минулого тижня.", es: "Mis amigos compraron billetes de tren la semana pasada." },
+      { ru: "Они поели в ресторане в центре вчера вечером.", uk: "Вони поїли в ресторані в центрі вчора ввечері.", es: "Ellas comieron en un restaurante del centro anoche." },
+      { ru: "Туристы прожили один год в Барселоне.", uk: "Туристи прожили один рік у Барселоні.", es: "Los turistas vivieron un año en Barcelona." },
+      { ru: "Вы прибыли вовремя на станцию?", uk: "Ви прибули вчасно на станцію?", es: "¿Ustedes llegaron a tiempo a la estación?" },
+      { ru: "Они открыли дверь ключом.", uk: "Вони відкрили двері ключем.", es: "Ellos abrieron la puerta con la llave." }
     ],
   },
   {
     id: "w11_l2",
-    tab: "reserva",
-    title: "Servicios del Hotel",
+    tab: "personas_nuevas",
+    title: "Vosotros: Pasado Regular",
     phrases: [
-      { ru: "Завтрак включен в стоимость?", uk: "Сніданок включений у вартість?", es: "¿El desayuno está incluido en el precio?" },
-      { ru: "В номерах есть бесплатный вайфай?", uk: "У номерах є безкоштовний вайфай?", es: "¿Hay wifi gratis en las habitaciones?" },
-      { ru: "В отеле есть очень большой бассейн.", uk: "В готелі є дуже великий басейн.", es: "El hotel tiene una piscina muy grande." },
-      { ru: "Во сколько открывается ресторан отеля?", uk: "О котрій відкривається ресторан готелю?", es: "¿A qué hora abre el restaurante del hotel?" },
-      { ru: "Кондиционер работает очень хорошо здесь.", uk: "Кондиціонер працює дуже добре тут.", es: "El aire acondicionado funciona muy bien aquí." },
-      { ru: "Я предпочитаю отель с частной парковкой.", uk: "Я віддаю перевагу готелю з приватною парковкою.", es: "Prefiero un hotel con aparcamiento privado." }
+      { ru: "Вы (мн.) говорили с врачом вчера?", uk: "Ви (мн.) говорили з лікарем учора?", es: "¿Vosotros hablasteis con el médico ayer?" },
+      { ru: "Вы (мн.) купили хлеб в пекарне.", uk: "Ви (мн.) купили хліб у пекарні.", es: "Vosotros comprasteis el pan en la panadería." },
+      { ru: "Во сколько вы (мн.) поели вчера?", uk: "О котрій годині ви (мн.) поїли вчора?", es: "¿A qué hora comisteis vosotros ayer?" },
+      { ru: "Вы (мн.) прожили в этом районе три года.", uk: "Ви (мн.) прожили в цьому районі три роки.", es: "Vosotros vivisteis en este barrio tres años." },
+      { ru: "Вы (мн.) вышли очень поздно с вечеринки.", uk: "Ви (мн.) вийшли дуже пізно з вечірки.", es: "Vosotros salisteis muy tarde de la fiesta." },
+      { ru: "Почему вы (мн.) не ответили на моё сообщение вчера вечером?", uk: "Чому ви (мн.) не відповіли на моє повідомлення вчора ввечері?", es: "¿Por qué no respondisteis a mi mensaje anoche?" }
     ],
   },
   {
     id: "w11_l3",
-    tab: "reserva",
-    title: "Llegada y Llaves",
+    tab: "personas_nuevas",
+    title: "Todas las Personas: Práctica",
     phrases: [
-      { ru: "Во сколько заселение в отель?", uk: "О котрій заселення в готель?", es: "¿A qué hora es el registro de entrada?" },
-      { ru: "Вот ключ от вашего номера.", uk: "Ось ключ від вашого номера.", es: "Aquí tiene la llave de su habitación." },
-      { ru: "Администратор даёт мне магнитную карту.", uk: "Адміністратор дає мені магнітну картку.", es: "El recepcionista me da la tarjeta magnética." },
-      { ru: "Мы поздно прибыли в отель из-за поезда.", uk: "Ми пізно прибули в готель через потяг.", es: "Llegamos tarde al hotel por el tren." },
-      { ru: "Мы можем оставить багаж на стойке регистрации?", uk: "Ми можемо залишити багаж на стійці реєстрації?", es: "¿Podemos dejar el equipaje en la recepción?" },
-      { ru: "Выезд из отеля в двенадцать часов.", uk: "Виїзд з готелю о дванадцятій годині.", es: "La salida del hotel es a las doce." }
+      { ru: "Мы ждали автобус, а они приехали на такси.", uk: "Ми чекали на автобус, а вони приїхали на таксі.", es: "Nosotros esperamos el autobús y ellos llegaron en taxi." },
+      { ru: "Я купил еду, а вы (мн.) заплатили за напиток.", uk: "Я купив їжу, а ви (мн.) заплатили за напій.", es: "Yo compré la comida y vosotros pagasteis la bebida." },
+      { ru: "Ты закрыл дверь, а они открыли окно.", uk: "Ти зачинив двері, а вони відчинили вікно.", es: "Tú cerraste la puerta y ellos abrieron la ventana." },
+      { ru: "Вы (мн.) поняли объяснение преподавателя?", uk: "Ви (мн.) зрозуміли пояснення викладача?", es: "¿Vosotros entendisteis la explicación del profesor?" },
+      { ru: "Она написала письмо, а они ответили быстро.", uk: "Вона написала листа, а вони відповіли швидко.", es: "Ella escribió una carta y ellos respondieron rápido." },
+      { ru: "Мы посетили музей в прошлое воскресенье.", uk: "Ми відвідали музей минулої неділі.", es: "Nosotros visitamos el museo el domingo pasado." }
     ],
   },
-  { id: "w11_m1", tab: "reserva", exam: true, mini: true, title: "Mini-examen: Reserva" },
+  { id: "w11_m1", tab: "personas_nuevas", exam: true, mini: true, title: "Mini-examen: Personas Nuevas" },
 
   // ═══════════════════════════════════════════════════════
-  // TAB 2: PROBLEMAS Y RECEPCIÓN
+  // TAB 2: VERBOS IRREGULARES (5 irregulares clave)
   // ═══════════════════════════════════════════════════════
   {
     id: "w11_l4",
-    tab: "problemas",
-    title: "Problemas en la Habitación",
+    tab: "verbos_irregulares",
+    title: "Ir, Ser y Estar en Pasado",
     phrases: [
-      { ru: "В моем номере не работает кондиционер.", uk: "У моєму номері не працює кондиціонер.", es: "No funciona el aire acondicionado en mi habitación." },
-      { ru: "Номер грязный и нет полотенец.", uk: "Номер брудний і немає рушників.", es: "La habitación está sucia y no hay toallas." },
-      { ru: "Есть проблема с душем в ванной.", uk: "Є проблема з душем у ванній.", es: "Hay un problema con la ducha del baño." },
-      { ru: "У нас нет горячей воды сегодня ночью.", uk: "У нас немає гарячої води сьогодні вночі.", es: "No tenemos agua caliente esta noche." },
-      { ru: "Окно не закрывается и заходит много шума.", uk: "Вікно не зачиняється і заходить багато шуму.", es: "La ventana no cierra y entra mucho ruido." },
-      { ru: "Свет не работает в коридоре.", uk: "Світло не працює в коридорі.", es: "La luz no funciona en el pasillo." }
+      { ru: "Вчера я пошёл в супермаркет во второй половине дня.", uk: "Учора я пішов до супермаркету по обіді.", es: "Ayer yo fui al supermercado por la tarde." },
+      { ru: "Ты ходил на пляж на выходных?", uk: "Ти ходив на пляж на вихідних?", es: "¿Tú fuiste a la playa el fin de semana?" },
+      { ru: "Поездка в Мадрид была очень интересной.", uk: "Поїздка до Мадрида була дуже цікавою.", es: "El viaje a Madrid fue muy interesante." },
+      { ru: "Я был дома всё воскресенье.", uk: "Я був удома всю неділю.", es: "Yo estuve en casa todo el domingo." },
+      { ru: "Ты болел на прошлой неделе?", uk: "Ти хворів минулого тижня?", es: "¿Estuviste enfermo la semana pasada?" },
+      { ru: "Мой брат был в больнице два дня.", uk: "Мій брат був у лікарні два дні.", es: "Mi hermano estuvo en el hospital dos días." }
     ],
   },
   {
     id: "w11_l5",
-    tab: "problemas",
-    title: "Quejas y Peticiones",
+    tab: "verbos_irregulares",
+    title: "Hacer y Poder en Pasado",
     phrases: [
-      { ru: "Извините, я мог бы поменять номер сегодня?", uk: "Вибачте, я міг би поміняти номер сьогодні?", es: "Perdón, ¿podría cambiar de habitación hoy?" },
-      { ru: "Мог бы я попросить о переводе в другой номер, пожалуйста?", uk: "Чи міг би я попросити про переведення в інший номер, будь ласка?", es: "¿Podría pedir un traslado de habitación, por favor?" },
-      { ru: "Я хотел бы поговорить с администратором сейчас.", uk: "Я хотів би поговорити з адміністратором зараз.", es: "Me gustaría hablar con el recepcionista ahora." },
-      { ru: "Вы можете убрать номер сегодня утром?", uk: "Ви можете прибрати номер сьогодні вранці?", es: "¿Pueden limpiar la habitación esta mañana?" },
-      { ru: "Нам нужны чистые полотенца для ванной комнаты.", uk: "Нам потрібні чисті рушники для ванної кімнати.", es: "Necesitamos toallas limpias para el baño." },
-      { ru: "Мы хотим решить эту проблему в ближайшее время.", uk: "Ми хочемо вирішити цю проблему найближчим часом.", es: "Queremos solucionar este problema pronto." }
+      { ru: "Вчера я занимался спортом утром.", uk: "Учора я займався спортом вранці.", es: "Ayer yo hice deporte por la mañana." },
+      { ru: "Что ты делал вчера вечером?", uk: "Що ти робив учора ввечері?", es: "¿Qué hiciste tú ayer por la noche?" },
+      { ru: "Она сделала очень вкусный яблочный пирог.", uk: "Вона зробила дуже смачний яблучний пиріг.", es: "Ella hizo una tarta de manzana muy rica." },
+      { ru: "Я не смог хорошо поспать из-за шума на улице.", uk: "Я не зміг добре поспати через шум на вулиці.", es: "No pude dormir bien por el ruido de la calle." },
+      { ru: "Ты смог поговорить с администратором отеля?", uk: "Ти зміг поговорити з адміністратором готелю?", es: "¿Pudiste hablar con el recepcionista del hotel?" },
+      { ru: "Он не смог прийти на урок, потому что был уставшим.", uk: "Він не зміг прийти на урок, тому що був втомленим.", es: "Él no pudo venir a la clase porque estuvo cansado." }
     ],
   },
   {
     id: "w11_l6",
-    tab: "problemas",
-    title: "En la Recepción",
+    tab: "verbos_irregulares",
+    title: "Tener y Repaso de Irregulares",
     phrases: [
-      { ru: "Администратор помогает мне с чемоданом.", uk: "Адміністратор допомагає мені з валізою.", es: "El recepcionista me ayuda con la maleta." },
-      { ru: "Мне очень жаль, мы меняем ваш номер сейчас.", uk: "Мені дуже шкода, ми міняємо ваш номер зараз.", es: "Lo siento mucho, cambiamos su habitación ahora." },
-      { ru: "Вчера я говорил с администратором о шуме.", uk: "Вчора я говорив з адміністраторкою про шум.", es: "Ayer hablé con la recepcionista sobre el ruido." },
-      { ru: "Она отправила человека убрать кухню.", uk: "Вона відправила людину прибрати кухню.", es: "Ella envió a una persona a limpiar la cocina." },
-      { ru: "Не могли бы вы дать мне другой ключ, пожалуйста?", uk: "Чи не могли б ви дати мені інший ключ, будь ласка?", es: "¿Podría darme otra llave, por favor?" },
-      { ru: "Большое спасибо за решение проблемы.", uk: "Дуже дякую за вирішення проблеми.", es: "Muchas gracias por solucionar el problema." }
+      { ru: "Вчера у меня была очень долгая встреча на работе.", uk: "Учора в мене була дуже довга зустріч на роботі.", es: "Ayer tuve una reunión muy larga en el trabajo." },
+      { ru: "У тебя было время отдохнуть в субботу?", uk: "У тебе був час відпочити в суботу?", es: "¿Tuviste tiempo para descansar el sábado?" },
+      { ru: "У неё возникла проблема с кондиционером.", uk: "У неї виникла проблема з кондиціонером.", es: "Ella tuvo un problema con el aire acondicionado." },
+      { ru: "Я был в центре, а потом пошёл в кино.", uk: "Я був у центрі, а потім пішов у кіно.", es: "Yo estuve en el centro y luego fui al cine." },
+      { ru: "Кто сделал эту бронь в отеле?", uk: "Хто зробив цю бронь у готелі?", es: "¿Quién hizo esta reserva de hotel?" },
+      { ru: "У нас не было проблем во время поездки.", uk: "У нас не було проблем під час поїздки.", es: "No tuvimos problemas durante el viaje." }
     ],
   },
-  { id: "w11_m2", tab: "problemas", exam: true, mini: true, title: "Mini-examen: Problemas" },
+  { id: "w11_m2", tab: "verbos_irregulares", exam: true, mini: true, title: "Mini-examen: Verbos Irregulares" },
   { id: "w11_exam", exam: true, title: "Examen de la Semana 11" },
 ];
 
 export default {
   id: "week11",
   type: "sentences",
-  title: "Week 11: Hoteles",
-  description: "Hotel bookings, amenities, and polite problem-solving at reception.",
+  title: "Week 11: Pretérito Indefinido: Todas las Personas",
+  description: "Complete regular preterite paradigm and the 5 essential irregular verbs in Spanish.",
   legacy: false,
   theory: {
-    title: "Hoteles y Estancias",
-    subtitle: "Reservas, servicios y cómo gestionar quejas amables",
+    title: "Pretérito Indefinido: Paradigma Completo",
+    subtitle: "Conjugación regular completa y los 5 verbos irregulares clave",
     sections: [
       {
         type: "paragraph",
-        text: "En la Semana 11 aprendemos a gestionar reservas hoteleras, consultar comodidades y resolver incidencias de manera cortés y eficaz en la recepción."
+        text: "En la Semana 11 completamos el paradigma del pretérito indefinido aprendiendo las terminaciones de vosotros y ellos/ellas/ustedes, junto a los 5 verbos irregulares más frecuentes del español."
       },
       {
         type: "heading",
-        text: "1. Vocabulario esencial de hotel"
+        text: "1. Paradigma regular completo: -AR vs -ER / -IR"
       },
       {
         type: "paragraph",
-        text: "Para reservar habitación y entender los servicios ofrecidos, domina estas expresiones básicas:"
+        text: "Observa las terminaciones para todas las personas gramaticales. Recuerda que los verbos en -ER e -IR comparten exactamente las mismas terminaciones en pretérito indefinido."
       },
       {
         type: "table",
-        caption: "Términos indispensables en el hotel",
-        headers: ["Español", "Traducción", "Ejemplo práctico"],
+        caption: "Conjugación regular completa en pretérito indefinido",
+        headers: ["Pronombre", "-AR (Hablar)", "-ER / -IR (Comer / Vivir)"],
         rows: [
-          ["habitación individual / doble", "single / double room", "Me gustaría reservar una habitación doble."],
-          ["desayuno incluido", "breakfast included", "¿El desayuno está incluido en el precio?"],
-          ["aire acondicionado", "air conditioning", "El aire acondicionado funciona muy bien aquí."],
-          ["la piscina", "swimming pool", "El hotel tiene una piscina muy grande."],
-          ["la reserva", "reservation / booking", "Tengo una reserva a nombre de Juan."],
-          ["el / la recepcionista", "receptionist", "Me gustaría hablar con el recepcionista."],
-          ["el registro de entrada / la salida", "check-in / check-out", "¿A qué hora es el registro de entrada?"]
+          ["Yo", "hablé", "comí / viví"],
+          ["Tú", "hablaste", "comiste / viviste"],
+          ["Él / Ella / Usted", "habló", "comió / vivió"],
+          ["Nosotros / Nosotras", "hablamos", "comimos / vivimos"],
+          ["Vosotros / Vosotras", "hablasteis", "comisteis / vivisteis"],
+          ["Ellos / Ellas / Ustedes", "hablaron", "comieron / vivieron"]
         ]
       },
       {
         type: "callout",
         style: "tip",
-        text: "Para formular peticiones con cortesía en español, utiliza 'Me gustaría + infinitivo' (I would like...) o '¿Podría + infinitivo...?' (Could you / Could I...?): '¿Podría pedir un traslado de habitación?'"
+        text: "Fíjate en los acentos escritos: solo la primera persona singular (yo hablé / comí) y la tercera persona singular (él habló / comió) llevan tilde. Las formas de vosotros (-asteis / -isteis) y ellos (-aron / -ieron) NO llevan tilde."
       },
       {
         type: "heading",
-        text: "2. Gestión de incidencias y quejas amables"
+        text: "2. Los 5 verbos irregulares fundamentales"
       },
       {
         type: "paragraph",
-        text: "Si algo no funciona en la habitación, comunícalo en recepción con estas fórmulas claras y educadas:"
+        text: "Estos cinco verbos tienen raíces y terminaciones especiales en pretérito indefinido. No llevan tildes en sus formas irregulares:"
       },
       {
         type: "table",
-        caption: "Frases para reportar problemas",
-        headers: ["Estructura", "Uso", "Ejemplo"],
+        caption: "Formas de los 5 verbos irregulares clave",
+        headers: ["Infinitivo", "Yo", "Tú", "Él / Ella / Usted", "Ejemplo práctico"],
         rows: [
-          ["No funciona el / la...", "Aparato averiado", "No funciona el aire acondicionado en mi habitación."],
-          ["Hay un problema con...", "Incidencia general", "Hay un problema con la ducha del baño."],
-          ["La habitación está sucia", "Estado de limpieza", "La habitación está sucia y no hay toallas."],
-          ["Pedir un traslado de habitación", "Solicitar cambio", "¿Podría pedir un traslado de habitación, por favor?"],
-          ["Solucionar el problema", "Resolver incidencia", "Queremos solucionar este problema pronto."]
+          ["ir / ser", "fui", "fuiste", "fue", "Ayer fui al supermercado. / El viaje fue genial."],
+          ["tener", "tuve", "tuviste", "tuvo", "Tuve una reunión muy larga."],
+          ["estar", "estuve", "estuviste", "estuvo", "Estuve en casa todo el domingo."],
+          ["hacer", "hice", "hiciste", "hizo", "Ayer hice deporte por la mañana."],
+          ["poder", "pude", "pudiste", "pudo", "No pude dormir bien por el ruido."]
         ]
       },
       {
         type: "callout",
         style: "important",
-        text: "Recuerda la diferencia entre 'ser' y 'estar': el precio ES caro (característica propia), pero la habitación ESTÁ sucia o ESTÁ libre (estado temporal)."
+        text: "Los verbos irregulares en indefinido no siguen las terminaciones regulares y no tienen reglas deductivas: se memorizan directamente como bloques léxicos de alta frecuencia."
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "Para repasar cuándo usar el pretérito indefinido frente al imperfecto o pretérito perfecto, consulta la guía de la Semana 7 (acciones completadas en un momento puntual del pasado)."
       }
     ]
   },
   tabs: [
-    { id: 'reserva', label: 'Reserva' },
-    { id: 'problemas', label: 'Problemas y Recepción' }
+    { id: 'personas_nuevas', label: 'Personas Nuevas' },
+    { id: 'verbos_irregulares', label: 'Verbos Irregulares' }
   ],
   lessons: week11Lessons
 };

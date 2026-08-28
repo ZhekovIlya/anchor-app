@@ -1,173 +1,191 @@
 // ========================
-// WEEK 13 — "Etapas de la Vida"
+// WEEK 13 — "Barrios y la Ciudad"
 // ========================
 // Level: Intermediate.
-// Focus: Life milestones, biography narration, and applying Pretérito Indefinido to life events.
+// Focus: Neighborhood types, urban adjectives, comparing places to live, and expressing residential preferences.
 // ========================
 
 const week13Lessons = [
   // ═══════════════════════════════════════════════════════
-  // TAB 1: INFANCIA Y JUVENTUD
+  // TAB 1: TIPOS DE BARRIO
   // ═══════════════════════════════════════════════════════
   {
     id: "w13_l1",
-    tab: "juventud",
-    title: "Nacimiento e Infancia",
+    tab: "tipos_de_barrio",
+    title: "Tipos de Barrio",
     phrases: [
-      { ru: "Я родился в маленьком городе.", uk: "Я народився в маленькому місті.", es: "Yo nací en una ciudad pequeña." },
-      { ru: "Моя сестра родилась в Барселоне в мае.", uk: "Моя сестра народилася в Барселоні в травні.", es: "Mi hermana nació en Barcelona en mayo." },
-      { ru: "Я рос с бабушкой и дедушкой в деревне.", uk: "Я ріс з бабусею і дідусем у селі.", es: "Crecí con mis abuelos en el pueblo." },
-      { ru: "Они росли вместе в одном и том же районе.", uk: "Вони росли разом в одному й тому ж районі.", es: "Ellos crecieron juntos en el mismo barrio." },
-      { ru: "В десять лет моя семья переехала в Мадрид.", uk: "У десять років моя сім'я переїхала до Мадрида.", es: "A los diez años, mi familia se mudó a Madrid." },
-      { ru: "Мы переехали из дома три года назад.", uk: "Ми переїхали з будинку три роки тому.", es: "Nos mudamos de casa hace tres años." }
+      { ru: "Мой друг живёт в жилом районе.", uk: "Мій друг живе в житловому районі.", es: "Mi amigo vive en un barrio residencial." },
+      { ru: "В историческом центре очень узкие улицы.", uk: "В історичному центрі дуже вузькі вулиці.", es: "El centro histórico tiene calles muy estrechas." },
+      { ru: "Это коммерческий район со множеством магазинов.", uk: "Це комерційний район з багатьма магазинами.", es: "Es un barrio comercial con muchas tiendas." },
+      { ru: "Фабрика находится в промышленной зоне.", uk: "Фабрика знаходиться в промисловій зоні.", es: "La fábrica está en la zona industrial." },
+      { ru: "Мне нравится гулять по старому району.", uk: "Мені подобається гуляти старим районом.", es: "Me gusta pasear por el barrio antiguo." },
+      { ru: "В этом современном районе есть высокие здания.", uk: "У цьому сучасному районі є високі будівлі.", es: "Este barrio moderno tiene edificios altos." }
     ],
   },
   {
     id: "w13_l2",
-    tab: "juventud",
-    title: "Estudios y Juventud",
+    tab: "tipos_de_barrio",
+    title: "Cómo es tu Barrio",
     phrases: [
-      { ru: "Я изучал информатику в университете.", uk: "Я вивчав інформатику в університеті.", es: "Estudié informática en la universidad." },
-      { ru: "Она выпустилась с очень хорошими оценками.", uk: "Вона випустилася з дуже хорошими оцінками.", es: "Ella se graduó con muy buenas notas." },
-      { ru: "Мы выпустились вместе прошлым летом.", uk: "Ми випустилися разом минулого літа.", es: "Nos graduamos juntos el verano pasado." },
-      { ru: "Я начал свою первую работу в двадцать лет.", uk: "Я почав свою першу роботу у двадцять років.", es: "Empecé mi primer trabajo a los veinte años." },
-      { ru: "Он завел много друзей во время учебы.", uk: "Він завів багато друзів під час навчання.", es: "Él hizo muchos amigos durante sus estudios." },
-      { ru: "Я жил в студенческом общежитии.", uk: "Я жив у студентському гуртожитку.", es: "Viví en una residencia de estudiantes." }
+      { ru: "Наш район очень спокойный и зелёный.", uk: "Наш район дуже спокійний і зелений.", es: "Nuestro barrio es muy tranquilo y verde." },
+      { ru: "Центральный район довольно шумный по ночам.", uk: "Центральний район досить шумний ночами.", es: "El barrio céntrico es bastante ruidoso por la noche." },
+      { ru: "Этот район города очень безопасный.", uk: "Цей район міста дуже безпечний.", es: "Esta zona de la ciudad es muy segura." },
+      { ru: "В рабочем районе мало парков.", uk: "У робітничому районі мало парків.", es: "Hay pocos parques en el barrio obrero." },
+      { ru: "Улицы моего района всегда чистые.", uk: "Вулиці мого району завжди чисті.", es: "Las calles de mi barrio están siempre limpias." },
+      { ru: "Это опасный район, чтобы гулять одному.", uk: "Це небезпечний район, щоб гуляти самому.", es: "Es un barrio peligroso para caminar solo." }
     ],
   },
   {
     id: "w13_l3",
-    tab: "juventud",
-    title: "Primeros Pasos Adultos",
+    tab: "tipos_de_barrio",
+    title: "Vida de Barrio",
     phrases: [
-      { ru: "Я познакомился со своим лучшим другом в школе.", uk: "Я познайомився зі своїм найкращим другом у школі.", es: "Conocí a mi mejor amigo en la escuela." },
-      { ru: "Она путешествовала одна по Европе в течение года.", uk: "Вона подорожувала одна Європою протягом року.", es: "Ella viajó sola por Europa durante un año." },
-      { ru: "Я снял свою первую квартиру с двумя соседями.", uk: "Я винайняв свою першу квартиру з двома сусідами.", es: "Alquilé mi primer piso con dos compañeros." },
-      { ru: "Он научился водить очень молодым.", uk: "Він навчився водити дуже молодим.", es: "Él aprendió a conducir muy joven." },
-      { ru: "Я решил сменить специальность через год.", uk: "Я вирішив змінити спеціальність через рік.", es: "Decidí cambiar de carrera después de un año." },
-      { ru: "У нас было много незабываемых впечатлений.", uk: "У нас було багато незабутніх вражень.", es: "Tuvimos muchas experiencias inolvidables." }
+      { ru: "На площадях района очень оживленная атмосфера.", uk: "На площах району дуже жвава атмосфера.", es: "Hay mucho ambiente en las plazas del barrio." },
+      { ru: "Соседи по моей улице очень дружелюбные.", uk: "Сусіди по моїй вулиці дуже доброзичливі.", es: "Los vecinos de mi calle son muy amables." },
+      { ru: "Общественный транспорт работает хорошо в этом районе.", uk: "Громадський транспорт працює добре в цьому районі.", es: "El transporte público funciona bien en esta zona." },
+      { ru: "Рядом с моим домом есть традиционный рынок.", uk: "Поруч з моїм будинком є традиційний ринок.", es: "Cerca de mi casa hay un mercado tradicional." },
+      { ru: "Мы живём далеко от центра, но мы довольны.", uk: "Ми живемо далеко від центру, але ми задоволені.", es: "Vivimos lejos del centro, pero estamos contentos." },
+      { ru: "Я знаю почти всех официантов района.", uk: "Я знаю майже всіх офіціантів району.", es: "Conozco a casi todos los camareros del barrio." }
     ],
   },
-  { id: "w13_m1", tab: "juventud", exam: true, mini: true, title: "Mini-examen: Juventud" },
+  { id: "w13_m1", tab: "tipos_de_barrio", exam: true, mini: true, title: "Mini-examen: Tipos de Barrio" },
 
   // ═══════════════════════════════════════════════════════
-  // TAB 2: MADUREZ Y BIOGRAFÍA
+  // TAB 2: COMPARAR Y PREFERIR
   // ═══════════════════════════════════════════════════════
   {
     id: "w13_l4",
-    tab: "madurez",
-    title: "Familia y Madurez",
+    tab: "comparar",
+    title: "Comparaciones Urbanas",
     phrases: [
-      { ru: "Я познакомился со своей второй половинкой на вечеринке.", uk: "Я познайомився зі своєю другою половинкою на вечірці.", es: "Conocí a mi pareja en una fiesta." },
-      { ru: "Они поженились на пляже в прошлом году.", uk: "Вони одружилися на пляжі минулого року.", es: "Ellos se casaron en la playa el año pasado." },
-      { ru: "У них родился первый ребёнок пять лет назад.", uk: "У них народилася перша дитина п'ять років тому.", es: "Tuvieron su primer hijo hace cinco años." },
-      { ru: "Мы купили красивый дом рядом с морем.", uk: "Ми купили гарний будинок поруч з морем.", es: "Compramos una casa bonita cerca del mar." },
-      { ru: "Он сменил работу, чтобы зарабатывать больше денег.", uk: "Він змінив роботу, щоб заробляти більше грошей.", es: "Él cambió de trabajo para ganar más dinero." },
-      { ru: "Они прожили десять лет в другой стране.", uk: "Вони прожили десять років в іншій країні.", es: "Vivieron diez años en otro país." }
+      { ru: "Центр более шумный, чем окраина.", uk: "Центр більш шумний, ніж околиця.", es: "El centro es más ruidoso que las afueras." },
+      { ru: "Эта квартира менее дорогая, чем другая.", uk: "Ця квартира менш дорога, ніж інша.", es: "Este piso es menos caro que el otro." },
+      { ru: "Мой район такой же спокойный, как твой.", uk: "Мій район такий самий спокійний, як твій.", es: "Mi barrio es tan tranquilo como el tuyo." },
+      { ru: "У исторического района больше шарма, чем у нового.", uk: "В історичного району більше шарму, ніж у нового.", es: "El barrio histórico tiene más encanto que el nuevo." },
+      { ru: "Здесь меньше дорожного движения, чем на проспекте.", uk: "Тут менше дорожнього руху, ніж на проспекті.", es: "Aquí hay menos tráfico que en la avenida." },
+      { ru: "Жизнь здесь лучше, чем в большом городе.", uk: "Життя тут краще, ніж у великому місті.", es: "La vida aquí es mejor que en la gran ciudad." }
     ],
   },
   {
     id: "w13_l5",
-    tab: "madurez",
-    title: "Jubilación y Recuerdos",
+    tab: "comparar",
+    title: "Preferencias de Vivienda",
     phrases: [
-      { ru: "Мой дедушка вышел на пенсию в шестьдесят пять лет.", uk: "Мій дідусь вийшов на пенсію в шістдесят п'ять років.", es: "Mi abuelo se jubiló a los sesenta y cinco años." },
-      { ru: "Она вышла на пенсию в прошлом году после долгой карьеры.", uk: "Вона вийшла на пенсію минулого року після довгої кар'єри.", es: "Ella se jubiló el año pasado tras una larga carrera." },
-      { ru: "После выхода на пенсию они много путешествовали.", uk: "Після виходу на пенсію вони багато подорожували.", es: "Después de jubilarse, ellos viajaron mucho." },
-      { ru: "Мои родители отдохнули и наслаждались жизнью.", uk: "Мої батьки відпочили і насолоджувалися життям.", es: "Mis padres descansaron y disfrutaron de la vida." },
-      { ru: "Она заботилась о своих внуках каждые выходные.", uk: "Вона піклувалася про своїх онуків щовихідних.", es: "Ella cuidó de sus nietos todos los fines de semana." },
-      { ru: "Он прожил очень счастливую и спокойную жизнь.", uk: "Він прожив дуже щасливе і спокійне життя.", es: "Vivió una vida muy feliz y tranquila." }
+      { ru: "Я предпочитаю жить в центре, потому что там больше услуг.", uk: "Я віддаю перевагу жити в центрі, тому що там більше послуг.", es: "Prefiero vivir en el centro porque hay más servicios." },
+      { ru: "Она предпочитает жилой район для своих детей.", uk: "Вона віддає перевагу житловому району для своїх дітей.", es: "Ella prefiere un barrio residencial para sus hijos." },
+      { ru: "Мы предпочитаем снимать квартиру рядом с метро.", uk: "Ми віддаємо перевагу орендувати квартиру поруч з метро.", es: "Nosotros preferimos alquilar un piso cerca del metro." },
+      { ru: "Почему ты предпочитаешь этот район города?", uk: "Чому ти віддаєш перевагу цьому району міста?", es: "¿Por qué prefieres esta zona de la ciudad?" },
+      { ru: "Я предпочитаю платить больше за аренду, чтобы иметь больше света.", uk: "Я віддаю перевагу платити більше за оренду, щоб мати більше світла.", es: "Prefiero pagar más alquiler por tener más luz." },
+      { ru: "Они предпочитают спокойствие сельской местности.", uk: "Вони віддають перевагу спокою сільської місцевості.", es: "Ellos prefieren la tranquilidad del campo." }
     ],
   },
   {
     id: "w13_l6",
-    tab: "madurez",
-    title: "Biografías y Trayectoria",
+    tab: "comparar",
+    title: "Pros y Contras",
     phrases: [
-      { ru: "Он родился в Валенсии и умер в Севилье.", uk: "Він народився у Валенсії і помер у Севільї.", es: "Nació en Valencia y murió en Sevilla." },
-      { ru: "Она посвятила всю свою жизнь медицине.", uk: "Вона присвятила все своє життя медицині.", es: "Dedicó toda su vida a la medicina." },
-      { ru: "Он основал крупную компанию в девяностые годы.", uk: "Він заснував велику компанію в дев'яності роки.", es: "Fundó una empresa importante en los años noventa." },
-      { ru: "В каком году ты окончил школу?", uk: "У якому році ти закінчив школу?", es: "¿En qué año te graduaste de la escuela?" },
-      { ru: "Он был очень трудолюбивым и честным человеком.", uk: "Він був дуже працьовитою і чесною людиною.", es: "Fue una persona muy trabajadora y honesta." },
-      { ru: "Вся его история показалась мне увлекательной.", uk: "Уся його історія здалася мені захопливою.", es: "Toda su historia me pareció fascinante." }
+      { ru: "Лучшее в жизни здесь — центральное расположение.", uk: "Найкраще в житті тут — центральне розташування.", es: "Lo mejor de vivir aquí es la ubicación céntrica." },
+      { ru: "Худшее в районе — нехватка парковки.", uk: "Найгірше в районі — нестача парковки.", es: "Lo peor del barrio es la falta de aparcamiento." },
+      { ru: "Большое преимущество — иметь супермаркет рядом.", uk: "Велика перевага — мати супермаркет поруч.", es: "Una gran ventaja es tener el supermercado al lado." },
+      { ru: "Главный недостаток — стоимость аренды.", uk: "Головний недолік — вартість оренди.", es: "El inconveniente principal es el precio del alquiler." },
+      { ru: "Я обожаю это место из-за его солнечных террас.", uk: "Я обожнюю це місце через його сонячні тераси.", es: "Me encanta este lugar por sus terrazas soleadas." },
+      { ru: "Мне не нравится шум машин по утрам.", uk: "Мені не подобається шум машин вранці.", es: "No me gusta el ruido de los coches por la mañana." }
     ],
   },
-  { id: "w13_m2", tab: "madurez", exam: true, mini: true, title: "Mini-examen: Madurez" },
+  { id: "w13_m2", tab: "comparar", exam: true, mini: true, title: "Mini-examen: Comparar" },
   { id: "w13_exam", exam: true, title: "Examen de la Semana 13" },
 ];
 
 export default {
   id: "week13",
   type: "sentences",
-  title: "Week 13: Etapas de la Vida",
-  description: "Life stages, biographical milestones, and narrating life events in pretérito indefinido.",
+  title: "Week 13: Barrios y la Ciudad",
+  description: "Neighborhood types, urban comparisons, and residential preferences.",
   legacy: false,
   theory: {
-    title: "Etapas de la Vida y Biografía",
-    subtitle: "Narrar hitos vitales con el pretérito indefinido",
+    title: "Barrios y Comparaciones Urbanas",
+    subtitle: "Describir zonas de la ciudad y comparar dónde vivir",
     sections: [
       {
         type: "paragraph",
-        text: "En la Semana 13 aplicamos el pretérito indefinido aprendido en las semanas 5, 6 y 7 para construir biografías y relatar los momentos más significativos de la vida."
+        text: "En la Semana 13 aprenderás a describir con precisión cualquier zona urbana, valorar los pros y contras de un barrio y construir comparaciones naturales en español."
       },
       {
         type: "heading",
-        text: "1. Hitos vitales: verbos clave en pretérito indefinido"
+        text: "1. Tipos de barrio y adjetivos descriptivos"
       },
       {
         type: "paragraph",
-        text: "Para contar la historia vital de una persona utilizamos verbos de acción puntual completada:"
+        text: "En las ciudades hispanohablantes distinguimos varios tipos de zonas según su actividad y trazado urbanístico:"
       },
       {
         type: "table",
-        caption: "Verbos de etapas vitales",
-        headers: ["Verbo", "Pretérito Indefinido (Él / Ella)", "Ejemplo en biografía"],
+        caption: "Tipos de barrio en español",
+        headers: ["Español", "Traducción", "Ejemplo práctico"],
         rows: [
-          ["nacer", "nació", "Nació en Valencia en mayo."],
-          ["crecer", "creció", "Creció con sus abuelos en el pueblo."],
-          ["mudarse", "se mudó", "A los diez años se mudó a Madrid."],
-          ["graduarse", "se graduó", "Se graduó con muy buenas notas."],
-          ["casarse", "se casó", "Se casaron en la playa el año pasado."],
-          ["tener hijos", "tuvo un hijo / tuvieron hijos", "Tuvieron su primer hijo hace cinco años."],
-          ["jubilarse", "se jubiló", "Se jubiló tras una larga carrera."],
-          ["morir / fallecer", "murió / falleció", "Vivió muchos años y murió en Sevilla."]
+          ["barrio residencial", "residential neighborhood", "Mi amigo vive en un barrio residencial."],
+          ["barrio histórico / antiguo", "historic / old quarter", "El centro histórico tiene calles muy estrechas."],
+          ["barrio comercial", "commercial / shopping area", "Es un barrio comercial con muchas tiendas."],
+          ["zona industrial", "industrial area / zone", "La fábrica está en la zona industrial."],
+          ["barrio obrero", "working-class neighborhood", "Hay pocos parques en el barrio obrero."],
+          ["céntrico / ruidoso / tranquilo", "central / noisy / quiet", "El barrio céntrico es bastante ruidoso."]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. Estructuras de comparación"
+      },
+      {
+        type: "paragraph",
+        text: "Para contrastar dos barrios o viviendas utilizamos estructuras comparativas de superioridad, inferioridad e igualdad:"
+      },
+      {
+        type: "table",
+        caption: "Comparativos de adjetivos y sustantivos",
+        headers: ["Estructura", "Significado", "Ejemplo"],
+        rows: [
+          ["más + adjetivo + que", "more ... than", "El centro es más ruidoso que las afueras."],
+          ["menos + adjetivo + que", "less ... than", "Este piso es menos caro que el otro."],
+          ["tan + adjetivo + como", "as ... as", "Mi barrio es tan tranquilo como el tuyo."],
+          ["más / menos + sustantivo + que", "more / fewer ... than", "Aquí hay menos tráfico que en la avenida."],
+          ["mejor que / peor que", "better than / worse than", "La vida aquí es mejor que en la gran ciudad."]
         ]
       },
       {
         type: "callout",
         style: "tip",
-        text: "Para expresar la edad en que ocurrió un evento biográfico, usamos la estructura 'A los + número + años': 'A los veinte años empezó a trabajar'."
+        text: "¡Ojo con los comparativos irregulares! 'Bueno' → 'mejor que' (no *más bueno*), 'malo' → 'peor que' (no *más malo*)."
       },
       {
         type: "heading",
-        text: "2. Marcadores temporales biográficos"
+        text: "3. Expresar ventajas, inconvenientes y preferencias"
       },
       {
         type: "paragraph",
-        text: "Los conectores temporales ordenan cronológicamente las distintas fases de la trayectoria:"
+        text: "Para justificar por qué prefieres vivir en un sitio concreto, combina 'prefiero ... porque' con el artículo neutro 'lo':"
       },
       {
         type: "table",
-        caption: "Marcadores temporales indispensables",
-        headers: ["Marcador", "Significado", "Ejemplo"],
+        caption: "Expresar pros y contras",
+        headers: ["Fórmula", "Traducción", "Ejemplo"],
         rows: [
-          ["hace X años", "X years ago", "Nos mudamos de casa hace tres años."],
-          ["el año pasado", "last year", "Ella se graduó el año pasado."],
-          ["después de + infinitivo", "after doing...", "Después de jubilarse, viajaron mucho."],
-          ["tras + sustantivo", "following / after...", "Se jubiló tras una larga carrera."],
-          ["durante + periodo", "during...", "Hizo muchos amigos durante sus estudios."]
+          ["Lo mejor de...", "The best thing about...", "Lo mejor de vivir aquí es la ubicación céntrica."],
+          ["Lo peor de...", "The worst thing about...", "Lo peor del barrio es la falta de aparcamiento."],
+          ["Una gran ventaja", "A major advantage", "Una gran ventaja es tener el supermercado al lado."],
+          ["El inconveniente principal", "The main drawback", "El inconveniente principal es el precio del alquiler."],
+          ["Prefiero... porque...", "I prefer... because...", "Prefiero vivir en el centro porque hay más servicios."]
         ]
       },
       {
         type: "callout",
         style: "important",
-        text: "Recuerda: 'Tener' es irregular en pretérito indefinido (yo tuve, tú tuviste, él tuvo, nosotros tuvimos, vosotros tuvisteis, ellos tuvieron)."
+        text: "El artículo neutro 'lo' se usa con adjetivos superlativos relativos para sustantivar la cualidad: 'lo mejor' (the best thing), 'lo peor' (the worst thing), 'lo más importante' (the most important thing)."
       }
     ]
   },
   tabs: [
-    { id: 'juventud', label: 'Infancia y Juventud' },
-    { id: 'madurez', label: 'Madurez y Biografía' }
+    { id: 'tipos_de_barrio', label: 'Tipos de Barrio' },
+    { id: 'comparar', label: 'Comparar y Preferir' }
   ],
   lessons: week13Lessons
 };

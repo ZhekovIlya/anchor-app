@@ -16,6 +16,7 @@ import week10 from '../data/sentences/week_10.js';
 import week11 from '../data/sentences/week_11.js';
 import week12 from '../data/sentences/week_12.js';
 import week13 from '../data/sentences/week_13.js';
+import week14 from '../data/sentences/week_14.js';
 import topicsCore from '../data/sentences/topics_core.js';
 
 // Import standalone theory modules
@@ -41,7 +42,7 @@ import wordsGustos from '../data/words/gustos.js';
 const allTopics = [
   week1, week2, week3, week4, week5, week6,
   week7, week8, week9, week10, week11, week12,
-  week13, topicsCore
+  week13, week14, topicsCore
 ];
 
 const allWordTopics = [
