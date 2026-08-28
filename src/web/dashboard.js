@@ -233,7 +233,8 @@ function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick,
   }
 
   // Week cards
-  sentences.forEach((topic, index) => {
+  const activeWeeks = sentences.filter(topic => !topic.legacy);
+  activeWeeks.forEach((topic, index) => {
     const weekNumber = index + 1;
     const status = getTopicStatus(topic);
     const theme = TOPIC_THEMES[status];
