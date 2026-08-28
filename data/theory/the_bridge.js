@@ -164,6 +164,11 @@ export default {
       text: "Always double-check cognates that seem too convenient — a few are traps!"
     },
     {
+      type: "image",
+      src: "/theory/miro_alphabet_pronunciation.png",
+      alt: "Esquema visual del curso: Alfabeto Español y Reglas de Pronunciación (G, C, J, V, Z, LL, QU, GU)"
+    },
+    {
       type: "video",
       src: "https://www.youtube.com/embed/MRBenl2FghA",
       title: "1001 Spanish Words You Already Know | Spanish Cognates (Real Fast Spanish)"

@@ -162,6 +162,11 @@ export default {
         type: "callout",
         style: "important",
         text: "Recuerda: 'Tener' es irregular en pretérito indefinido (yo tuve, tú tuviste, él tuvo, nosotros tuvimos, vosotros tuvisteis, ellos tuvieron)."
+      },
+      {
+        type: "image",
+        src: "/theory/miro_etapas_vida.png",
+        alt: "Esquema visual del curso: Las Etapas de la Vida e Hitos Vitales"
       }
     ]
   },

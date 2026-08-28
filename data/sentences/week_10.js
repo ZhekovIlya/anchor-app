@@ -154,6 +154,11 @@ export default {
           ["tener", "tenéis", "¿Vosotros tenéis mucho equipaje?"],
           ["empezar", "empezáis", "Vosotros empezáis a girar a la derecha."]
         ]
+      },
+      {
+        type: "image",
+        src: "/theory/miro_estacion_tren.png",
+        alt: "Esquema visual del curso: En la Estación de Tren y Diálogos"
       }
     ]
   },
