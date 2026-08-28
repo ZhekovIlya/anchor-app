@@ -12,6 +12,7 @@ import { showOnly, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './
 import { incrementCompletion, getCompletionCount, localStorageAdapter } from './storage.js';
 import { XP_REWARDS } from '../core/gamification.js';
 import { launchConfetti, renderEndScreenXP, showLevelUpNotification, celebrateStreakMilestone } from './gamification-ui.js';
+import { flagPhrase, getFlaggedCount } from '../core/flag-store.js';
 
 let activeEngine = null;
 let isHandlingFeedback = false;
@@ -25,7 +26,7 @@ function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}\s]/gu, '').toLowerCase().trim();
 }
 
-export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null) {
+export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null, sessionPace = 1) {
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText,
@@ -114,6 +115,10 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       
       const replayBtn = document.getElementById('feedbackBarReplayBtn');
       if (replayBtn) replayBtn.classList.add('hidden');
+      const flagBtnCorrect = document.getElementById('feedbackBarFlagBtn');
+      const flagPanelCorrect = document.getElementById('feedbackBarFlagPanel');
+      if (flagBtnCorrect) flagBtnCorrect.classList.add('hidden');
+      if (flagPanelCorrect) flagPanelCorrect.classList.add('hidden');
       
       speakAnswer(correctAnswerText, () => {
         setTimeout(handleContinue, 500);
@@ -146,7 +151,62 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           speakAnswer(correctAnswerText, () => {});
         };
       }
-      
+
+      // ── Flag "wrong translation" button ───────────────────────────────
+      const flagBtn = document.getElementById('feedbackBarFlagBtn');
+      const flagPanel = document.getElementById('feedbackBarFlagPanel');
+      if (flagBtn && flagPanel) {
+        // Reset flag panel state each time the error bar opens
+        flagPanel.classList.add('hidden');
+        flagBtn.classList.remove('hidden');
+        flagBtn.onclick = (e) => {
+          e.stopPropagation();
+          // Populate panel with current phrase data
+          const currentPhrase = activeEngine.getState().currentPhrase;
+          const flagEsEl = document.getElementById('flagPhraseEs');
+          const flagCorrectionEl = document.getElementById('flagCorrectionInput');
+          const flagFieldRu = document.getElementById('flagFieldRu');
+          const flagFieldUk = document.getElementById('flagFieldUk');
+          if (flagEsEl) flagEsEl.textContent = currentPhrase.es;
+          if (flagCorrectionEl) flagCorrectionEl.value = '';
+          if (flagFieldRu) flagFieldRu.checked = true;
+          flagPanel.classList.remove('hidden');
+        };
+
+        // Submit handler
+        const flagSubmitBtn = document.getElementById('flagSubmitBtn');
+        const flagCancelBtn = document.getElementById('flagCancelBtn');
+        if (flagSubmitBtn) {
+          flagSubmitBtn.onclick = () => {
+            const currentPhrase = activeEngine.getState().currentPhrase;
+            const field = document.getElementById('flagFieldUk')?.checked ? 'uk' : 'ru';
+            const correction = document.getElementById('flagCorrectionInput')?.value?.trim() || '';
+            const lessonId = lesson?.id || 'unknown';
+            flagPhrase(localStorageAdapter, {
+              es: currentPhrase.es,
+              ru: currentPhrase.ru || '',
+              uk: currentPhrase.uk || '',
+              field,
+              correction,
+              lessonId,
+            });
+            flagPanel.classList.add('hidden');
+            flagBtn.classList.add('hidden');
+            // Refresh count badge in settings panel
+            if (typeof window.__anchorRefreshFlagCount === 'function') {
+              window.__anchorRefreshFlagCount();
+            }
+            // Brief confirmation toast on the flag button
+            const origText = flagBtn.innerHTML;
+            flagBtn.innerHTML = '✅ Flagged!';
+            setTimeout(() => { flagBtn.innerHTML = origText; }, 1500);
+          };
+        }
+        if (flagCancelBtn) {
+          flagCancelBtn.onclick = () => flagPanel.classList.add('hidden');
+        }
+      }
+
       // Allow enter key or click
       const enterHandler = (e) => {
         if (e.key === 'Enter') {
@@ -172,6 +232,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     srs,
     mode,
     disableSpeech,
+    sessionPace,
     callbacks: {
       onStreakUpdate(streak, target) {
         streakCounter.textContent = `${streak} / ${target}`;

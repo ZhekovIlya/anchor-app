@@ -5,7 +5,7 @@
 
 import './styles.css';
 import { createSRS } from '../core/srs.js';
-import { TAB_EXAM_PHRASE_CAP, SRS_KEY_SENTENCES, SRS_KEY_WORDS, SRS_KEY, DRILL_MODE } from '../core/constants.js';
+import { TAB_EXAM_PHRASE_CAP, SRS_KEY_SENTENCES, SRS_KEY_WORDS, SRS_KEY, DRILL_MODE, SESSION_PACE_KEY } from '../core/constants.js';
 import { loadAllData, buildPhraseBank, buildWordBank } from '../core/data-loader.js';
 import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHomeTab } from './dashboard.js';
@@ -19,6 +19,7 @@ import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 import { createGamification } from '../core/gamification.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
 import { checkAndShowReengagement } from './re-engagement.js';
+import { exportFlaggedItems, getFlaggedCount } from '../core/flag-store.js';
 
 // ========================
 // SEED (dev preview only)
@@ -203,12 +204,18 @@ function buildExamPhrases(topic, examLesson) {
   return pool;
 }
 
+function getSessionPace() {
+  const saved = localStorageAdapter.load(SESSION_PACE_KEY);
+  const parsed = parseFloat(saved);
+  return [0.5, 1, 1.5].includes(parsed) ? parsed : 1;
+}
+
 function onLessonClick(lesson) {
   const isExam = !!lesson.exam;
   const isTabExam = isExam && !!lesson.tab;
   const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
-  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification);
+  startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification, getSessionPace());
 }
 
 function onReviewClick() {
@@ -216,7 +223,7 @@ function onReviewClick() {
   if (duePhrases.length === 0) return;
 
   const reviewLesson = { id: 'daily_review', title: 'Daily Review', exam: false };
-  startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
+  startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE, null, getSessionPace());
 }
 
 function onMistakesClick() {
@@ -224,7 +231,7 @@ function onMistakesClick() {
   if (mistakePhrases.length === 0) return;
 
   const reviewLesson = { id: 'mistakes_review', title: 'Practice Mistakes', exam: false };
-  startDrill(elements, mistakePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE);
+  startDrill(elements, mistakePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE, null, getSessionPace());
 }
 
 
@@ -268,7 +275,7 @@ function onWordLessonClick(lesson) {
   const isExam = !!lesson.exam;
   const drillItems = isExam ? buildWordExamItems(activeTopic) : lesson.words;
 
-  startDrill(elements, drillItems, activeTopic, lesson, isExam, false, srsWords, returnToActiveTopic, false, DRILL_MODE.WORD);
+  startDrill(elements, drillItems, activeTopic, lesson, isExam, false, srsWords, returnToActiveTopic, false, DRILL_MODE.WORD, null, getSessionPace());
 }
 
 function onWordReviewClick() {
@@ -279,7 +286,7 @@ function onWordReviewClick() {
   startDrill(elements, dueWords, null, reviewLesson, false, true, srsWords, () => {
     setActiveHomeTab('words');
     initDashboard();
-  }, false, DRILL_MODE.WORD);
+  }, false, DRILL_MODE.WORD, null, getSessionPace());
 }
 
 function onWordMistakesClick() {
@@ -290,7 +297,7 @@ function onWordMistakesClick() {
   startDrill(elements, mistakeItems, null, reviewLesson, false, true, srsWords, () => {
     setActiveHomeTab('words');
     initDashboard();
-  }, false, DRILL_MODE.WORD);
+  }, false, DRILL_MODE.WORD, null, getSessionPace());
 }
 
 // ========================
@@ -484,3 +491,58 @@ const revisionTag = document.getElementById('revisionTag');
 if (revisionTag && typeof __GIT_REVISION__ !== 'undefined') {
   revisionTag.textContent = __GIT_REVISION__;
 }
+
+// ========================
+// SESSION PACE SETTING
+// ========================
+
+const paceButtons = document.querySelectorAll('[data-pace]');
+if (paceButtons.length) {
+  const currentPace = getSessionPace();
+  paceButtons.forEach((btn) => {
+    const pace = parseFloat(btn.dataset.pace);
+    if (pace === currentPace) {
+      btn.classList.add('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');
+      btn.classList.remove('bg-stone-100', 'dark:bg-stone-700', 'text-stone-700', 'dark:text-stone-300');
+    }
+    btn.addEventListener('click', () => {
+      localStorageAdapter.save(SESSION_PACE_KEY, pace);
+      paceButtons.forEach((b) => {
+        b.classList.remove('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');
+        b.classList.add('bg-stone-100', 'dark:bg-stone-700', 'text-stone-700', 'dark:text-stone-300');
+      });
+      btn.classList.add('bg-indigo-600', 'text-white', 'dark:bg-indigo-500');
+      btn.classList.remove('bg-stone-100', 'dark:bg-stone-700', 'text-stone-700', 'dark:text-stone-300');
+    });
+  });
+}
+
+// ========================
+// FLAGGED ITEMS EXPORT
+// ========================
+
+const exportFlagBtn = document.getElementById('exportFlaggedBtn');
+const flaggedCountEl = document.getElementById('flaggedItemsCount');
+
+function refreshFlaggedCount() {
+  const count = getFlaggedCount(localStorageAdapter);
+  if (flaggedCountEl) flaggedCountEl.textContent = count;
+  if (exportFlagBtn) exportFlagBtn.disabled = count === 0;
+}
+
+if (exportFlagBtn) {
+  exportFlagBtn.addEventListener('click', () => {
+    const json = exportFlaggedItems(localStorageAdapter);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `anchor-flagged-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+// Expose refreshFlaggedCount so drill-ui can call it after flagging
+window.__anchorRefreshFlagCount = refreshFlaggedCount;
+refreshFlaggedCount();

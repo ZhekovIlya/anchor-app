@@ -78,3 +78,14 @@ export const DRILL_MODE = {
 
 /** Maximum mistakes allowed before an exam is failed */
 export const EXAM_MAX_MISTAKES = 5;
+
+/** Session pace multiplier localStorage key */
+export const SESSION_PACE_KEY = 'anchor_session_pace';
+
+/** Available pace multipliers (0.5× quick / 1× normal / 1.5× thorough) */
+export const SESSION_PACE_OPTIONS = [0.5, 1, 1.5];
+
+/** Maximum total targetStreak inflation allowed per session from wrong answers.
+ *  Prevents unbounded session lengthening on hard new material. */
+export const MAX_WRONG_PENALTY = 6;
+

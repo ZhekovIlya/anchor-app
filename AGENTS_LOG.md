@@ -659,9 +659,35 @@
 **Status:** ? Committed to branch. Awaiting user review/testing before merge.
 ` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
  
+**Status:** ? Committed to branch. Awaiting user review/testing before merge.
+` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
+ 
 ## Task: week8-compact (2026-08-05)
 **Branch:** task/week8-compact
 **[DEV]:** Created data/words/rutina.js, tiempo_frecuencia.js, and direcciones.js (12 words each) containing extracted vocabulary from user's A4 notes. Created data/sentences/week_8.js containing 3 compact tabs (rutina, direcciones, expresiones) with 2 lessons each (6 phrases per lesson, 36 phrases total). Integrated 20% new vocabulary with 80% recycled verbs/fillers from Weeks 7, 6, and 5. Registered new files in data-loader.js.
 **[AQA]:** Verified no verb-adjective homonym collisions within the same phrase. Verified exact phrase formatting and token matching logic. All tests passed.
 **[QA]:** Verified 80/20 curriculum rule and strictly adhered to 6-phrase sub-lesson size and 12-word vocabulary lesson size. 
 **Status:** Completed. Awaiting user review/testing before merge.
+
+---
+
+## Task: P1-P3 Infrastructure Fixes (2026-08-28)
+**Branch:** task/p1-p3-fixes
+
+**[DEV]:**
+- **P1 SW cache**: Updated `public/sw.js` — replaced hardcoded `CACHE_NAME` with `%%CACHE_VERSION%%` placeholder; added network-first strategy for navigation requests (`request.mode === 'navigate'`), cache-first retained for hashed static assets. Created `scripts/stamp-sw.js` postbuild script that reads `git rev-parse --short HEAD` and stamps `dist/sw.js` after every `npm run build`. Added `postbuild` hook to `package.json`. Build verified: `CACHE_NAME = 'spanish-anchor-4751039'`.
+- **P1 Pacing**: Added `SESSION_PACE_KEY`, `SESSION_PACE_OPTIONS`, `MAX_WRONG_PENALTY = 6` to `constants.js`. Updated `engine.js` to accept `sessionPace` option — scales `targetStreak` at session start (non-exams only). Capped `targetStreak` inflation in `handleWrong()` at +6 total per session via `wrongPenaltyTotal` counter. Wired `sessionPace` through `startDrill()` → `createDrillEngine()`. Added 3-button pace control (0.5× / 1× / 1.5×) to the Settings modal in `index.html`. Boot code in `main.js` reads `anchor_session_pace` from localStorage.
+- **P2 Flag**: Created `src/core/flag-store.js` — pure core module, no DOM, uses storage adapter. Exports `flagPhrase`, `getFlaggedItems`, `exportFlaggedItems`, `clearFlaggedItems`, `getFlaggedCount`. Added 🚩 button in the error feedback bar (hidden on correct answers). Inline flag panel with RU/UK field selector and optional correction input. Flagged items count + JSON export button added to Settings modal.
+- **P3 topics_core**: Imported `topics_core.js` into `data-loader.js` and added to `hydrateSentenceTopics()` array. Since `legacy: true`, `buildPhraseBank` skips it for SRS. Test suite now covers 966 phrases (up from ~750) — data-loader and tests are fully in sync.
+
+**[AQA]:**
+- `sessionPace` defaults to `1` everywhere (backwards-compatible). `wrongPenaltyTotal` is properly closure-scoped. `flag-store.js` has no `window`/DOM references — safe in Node.js test env. `stamp-sw.js` has git-unavailable fallback. Build exits code 0 with stamp confirmation. PowerShell `;` separator used throughout (no `&&`).
+- All 10 automated tests pass after changes.
+
+**[QA]:**
+- Guardrail test confirmed: deliberately removing `es` field from `topics_core.js` causes 3 tests to fail; restoring → 10/10 pass.
+- Pacing: exam and tabExam sessions keep fixed targets (not scaled) — critical for difficulty parity.
+- Flag mechanism: stores `lessonId` for traceability; export is JSON for agent/human consumption — directly addresses the recurring RU/UK semantic alignment issue from LESSONS_LEARNED.md.
+- `topics_core.legacy = true` → invisible in dashboard lessons list; SRS pool unaffected; purely used for test coverage and hydration.
+
+**Status:** ✅ All changes committed to branch. Awaiting user review/testing before merge.

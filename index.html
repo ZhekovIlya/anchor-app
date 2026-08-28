@@ -220,10 +220,28 @@
               <button id="feedbackBarReplayBtn" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors">
                 <span class="material-symbols-outlined text-lg opacity-70">volume_up</span>
               </button>
+              <button id="feedbackBarFlagBtn" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors" title="Flag wrong translation">
+                &#x1F6A9;
+              </button>
             </div>
             <p id="feedbackBarSubtitle" class="font-body text-sm"></p>
           </div>
         </div>
+          <!-- Flag inline panel -->
+          <div id="feedbackBarFlagPanel" class="hidden mt-2 p-3 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-sm w-full">
+            <p class="font-label font-semibold text-xs uppercase tracking-wider mb-2 opacity-70">Flag wrong translation</p>
+            <p class="font-body text-xs mb-1 opacity-60">ES: <span id="flagPhraseEs" class="font-semibold"></span></p>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="font-label text-xs uppercase tracking-wider opacity-70">Wrong field:</span>
+              <label class="flex items-center gap-1 cursor-pointer text-xs font-body"><input type="radio" name="flagField" id="flagFieldRu" value="ru" checked class="accent-red-500"> RU</label>
+              <label class="flex items-center gap-1 cursor-pointer text-xs font-body"><input type="radio" name="flagField" id="flagFieldUk" value="uk" class="accent-red-500"> UK</label>
+            </div>
+            <input id="flagCorrectionInput" type="text" placeholder="Correct translation" class="w-full px-2 py-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-stone-800 font-body text-xs mb-2 outline-none focus:ring-1 focus:ring-red-400" />
+            <div class="flex gap-2">
+              <button id="flagSubmitBtn" class="px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-label font-semibold hover:bg-red-700 transition-colors">Submit</button>
+              <button id="flagCancelBtn" class="px-3 py-1 bg-black/10 dark:bg-white/10 rounded-lg text-xs font-label font-semibold hover:bg-black/20 transition-colors">Cancel</button>
+            </div>
+          </div>
         <button id="feedbackBarBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl font-label font-bold uppercase tracking-wider text-sm transition-all duration-200">
           Continue
         </button>
@@ -435,6 +453,28 @@
             <span>Normal</span>
             <span>2.0×</span>
           </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
+
+        <!-- Session Pace Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300">Session Length</label>
+          <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Scale reps per session. Exams are not affected.</p>
+          <div class="flex gap-2">
+            <button data-pace="0.5" class="flex-1 px-3 py-2 rounded-lg text-sm font-label font-semibold transition-colors bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-indigo-100 dark:hover:bg-indigo-900">0.5&times; Quick</button>
+            <button data-pace="1" class="flex-1 px-3 py-2 rounded-lg text-sm font-label font-semibold transition-colors bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-indigo-100 dark:hover:bg-indigo-900">1&times; Normal</button>
+            <button data-pace="1.5" class="flex-1 px-3 py-2 rounded-lg text-sm font-label font-semibold transition-colors bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-indigo-100 dark:hover:bg-indigo-900">1.5&times; Deep</button>
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
+
+        <!-- Flagged Translations Export -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300">Flagged Translations</label>
+          <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Phrases marked as having wrong RU/UK translations. <span id="flaggedItemsCount" class="font-semibold text-on-surface dark:text-stone-100">0</span> flagged.</p>
+          <button id="exportFlaggedBtn" class="self-start px-4 py-2 rounded-lg text-sm font-label font-semibold bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>&#x1F4E5; Export as JSON</button>
         </div>
 
         <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>

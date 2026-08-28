@@ -4,7 +4,7 @@
 // Pure logic — no DOM, no browser APIs.
 // Supports unified game modes for sentence drills.
 
-import { STREAK_TARGETS, COPY_STAGE_THRESHOLDS, DRILL_MODE, EXAM_MAX_MISTAKES } from './constants.js';
+import { STREAK_TARGETS, COPY_STAGE_THRESHOLDS, DRILL_MODE, EXAM_MAX_MISTAKES, MAX_WRONG_PENALTY } from './constants.js';
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -44,7 +44,7 @@ function levenshtein(a, b) {
 }
 
 export function createDrillEngine(options) {
-  const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE, disableSpeech = false } = options;
+  const { phrases, isExam, isTabExam, isReview, srs, callbacks, mode = DRILL_MODE.SENTENCE, disableSpeech = false, sessionPace = 1 } = options;
 
   const isWordMode = mode === DRILL_MODE.WORD;
 
@@ -57,6 +57,11 @@ export function createDrillEngine(options) {
     targetStreak = isTabExam ? STREAK_TARGETS.tabExam : isExam ? STREAK_TARGETS.exam : (isReview ? Math.min(phrases.length, STREAK_TARGETS.regular) : STREAK_TARGETS.regular);
   }
 
+  // Apply session pace multiplier (only for non-exam sessions — exams keep fixed targets)
+  if (!isExam && !isTabExam) {
+    targetStreak = Math.max(1, Math.round(targetStreak * sessionPace));
+  }
+
   const initialTargetStreak = targetStreak;
   let failedPhrases = [];
   let drawingDeck = [];
@@ -64,6 +69,7 @@ export function createDrillEngine(options) {
   let currentInteractionMode = 'TYPE'; // 'TYPE', 'MC', 'WORD_ORDER'
   let currentQuestionData = null;
   let mistakes = 0;
+  let wrongPenaltyTotal = 0; // tracks total targetStreak inflation this session
 
   const copyThreshold = isWordMode ? COPY_STAGE_THRESHOLDS.word : COPY_STAGE_THRESHOLDS.sentence;
 
@@ -258,7 +264,11 @@ export function createDrillEngine(options) {
 
     handleWrong() {
       mistakes++;
-      targetStreak++;
+      // Only inflate targetStreak if we haven't hit the per-session cap
+      if (wrongPenaltyTotal < MAX_WRONG_PENALTY) {
+        targetStreak++;
+        wrongPenaltyTotal++;
+      }
       failedPhrases.push(currentPhrase);
 
       if (currentPhrase.meta && currentPhrase.meta.id) {
@@ -301,6 +311,7 @@ export function createDrillEngine(options) {
         isReview,
         mode,
         mistakes,
+        wrongPenaltyTotal,
       };
     },
   };
