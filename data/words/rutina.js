@@ -17,16 +17,26 @@ export default {
       },
       {
         type: "table",
-        caption: "Verbos reflexivos de la rutina matutina y nocturna",
-        headers: ["Infinitivo", "Yo (presente)", "Significado"],
+        caption: "Los 6 pronombres reflexivos en acción (Ejemplo: LEVANTARSE)",
+        headers: ["Persona", "Pronombre + Verbo", "Traducción", "Ejemplo práctico"],
         rows: [
-          ["despertarse (e→ie)", "me despierto", "wake up"],
-          ["levantarse", "me levanto", "get out of bed"],
-          ["ducharse / lavarse", "me ducho / me lavo", "take a shower / wash"],
-          ["vestirse (e→i)", "me visto", "get dressed"],
-          ["peinarse / afeitarse", "me peino / me afeito", "comb hair / shave"],
-          ["acostarse (o→ue)", "me acuesto", "go to bed"],
-          ["dormirse (o→ue)", "me duermo", "fall asleep"]
+          ["Yo", "me levanto", "я встаю / підводжуся", "Me levanto a las siete de la mañana."],
+          ["Tú", "te levantas", "ти встаєш", "¿A qué hora te levantas normalmente?"],
+          ["Él / Ella / Usted", "se levanta", "він/вона встає", "Él se levanta muy temprano."],
+          ["Nosotros / Nosotras", "nos levantamos", "ми встаємо", "Nos levantamos juntos los domingos."],
+          ["Vosotros / Vosotras", "os levantáis", "ви встаєте", "¿Vosotros os levantáis antes de las ocho?"],
+          ["Ellos / Ellas / Ustedes", "se levantan", "вони встають", "Ellos se levantan cuando quieren."]
+        ]
+      },
+      {
+        type: "table",
+        caption: "Verbos reflexivos con cambio de raíz (diptongo)",
+        headers: ["Infinitivo", "Cambio vocálico", "Yo (presente)", "Él / Ella (presente)"],
+        rows: [
+          ["despertarse", "e → ie", "me despierto", "se despierta"],
+          ["acostarse", "o → ue", "me acuesto", "se acuesta"],
+          ["vestirse", "e → i", "me visto", "se viste"],
+          ["dormirse", "o → ue", "me duermo", "se duerme"]
         ]
       },
       {
@@ -36,8 +46,8 @@ export default {
       },
       {
         type: "image",
-        src: "/theory/miro_rutina_acciones.png",
-        alt: "Esquema visual del curso: Acciones Habituales y Rutina"
+        src: "/theory/miro_acciones_habituales_grid.png",
+        alt: "Esquema visual del curso: 20 Acciones Habituales y Rutina Diaria (Miro Board)"
       }
     ]
   },

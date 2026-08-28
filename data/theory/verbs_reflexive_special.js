@@ -95,17 +95,75 @@ export default {
       ]
     },
     {
+      type: "table",
+      caption: "Пример: RELAJARSE (расслабляться / отдыхать)",
+      headers: ["Лицо", "Форма", "Пример"],
+      rows: [
+        ["Yo", "me relajo", "Por la noche me relajo en el sofá. — Вечером я расслабляюсь на диване."],
+        ["Tú", "te relajas", "¿Cómo te relajas después del trabajo? — Как ты расслабляешься после работы?"],
+        ["Él / Ella / Usted", "se relaja", "Ella se relaja leyendo un libro. — Она отдыхает за чтением книги."],
+        ["Nosotros / Nosotras", "nos relajamos", "Nos relajamos los fines de semana. — Мы расслабляемся на выходных."],
+        ["Vosotros / Vosotras", "os relajáis", "¿Vosotros os relajáis en la playa? — Вы отдыхаете на пляже?"],
+        ["Ellos / Ellas / Ustedes", "se relajan", "Ellos se relajan escuchando música. — Они расслабляются под музыку."]
+      ]
+    },
+    {
+      type: "heading",
+      text: "⚡ Разница: Обычный глагол vs. Возвратный глагол"
+    },
+    {
+      type: "paragraph",
+      text: "Один и тот же глагол может быть возвратным (действие на себя) или обычным (действие на другой предмет или человека):"
+    },
+    {
+      type: "table",
+      caption: "Сравнение: Обычный vs. Возвратный",
+      headers: ["Обычный глагол (на объект)", "Возвратный глагол (на себя)", "Разница в значении"],
+      rows: [
+        ["Lavo el coche (Я мою машину)", "Me lavo la cara (Я умываю лицо)", "Мыть что-то vs. умываться самому"],
+        ["Despierto a mi hijo (Я бужу сына)", "Me despierto a las siete (Я просыпаюсь в 7)", "Будить кого-то vs. просыпаться самому"],
+        ["Llamo a María (Я звоню Марии)", "Me llamo Juan (Меня зовут Хуан)", "Звонить/звать кого-то vs. зваться самому"],
+        ["Duermo ocho horas (Я сплю 8 часов)", "Me duermo rápido (Я засыпаю быстро)", "Спать (процесс) vs. засыпать (действие)"]
+      ]
+    },
+    {
+      type: "image",
+      src: "/theory/miro_ducharse_reflexive_table.png",
+      alt: "Схема спряжения возвратных глаголов (Miro Board)"
+    },
+    {
       type: "heading",
       text: "⭐ Особые глаголы: GUSTAR, DOLER, ENCANTAR"
     },
     {
       type: "paragraph",
-      text: "Эти глаголы работают НАОБОРОТ по сравнению с русским. В русском: «Я люблю рыбу». В испанском: «Мне нравится рыба» (рыба нравится МНЕ). Субъект и объект меняются местами."
+      text: "Эти глаголы работают через местоимения КОСВЕННОГО дополнения (дательный падеж: кому? мне, тебе, ему...). В испанском: «Мне нравится музыка»."
+    },
+    {
+      type: "heading",
+      text: "⚠️ ГЛАВНАЯ ЛОВУШКА: Reflexivos (SE) vs. Gustar (LE) — почему НЕТ 'se gusta'!"
+    },
+    {
+      type: "paragraph",
+      text: "Никогда не путай возвратные глаголы (me/te/se) и глагол gustar (me/te/le)! В 3-м лице у них РАЗНЫЕ местоимения:"
+    },
+    {
+      type: "table",
+      caption: "Сравнение местоимений: Возвратные vs. Gustar",
+      headers: ["Лицо", "Возвратные (Relajarse / Ducharse)", "Тип Gustar (Gustar / Encantar)", "Важное правило"],
+      rows: [
+        ["Yo", "me relajo (я расслабляюсь)", "me gusta (мне нравится)", "Совпадают (me)"],
+        ["Tú", "te relajas (ты расслабляешься)", "te gusta (тебе нравится)", "Совпадают (te)"],
+        ["Él / Ella / Usted", "se relaja (он расслабляется)", "le gusta ⚠️ (ему/ей нравится)", "❌ НЕТ *se gusta → ✅ ТОЛЬКО le gusta"],
+        ["Nosotros", "nos relajamos (мы расслабляемся)", "nos gusta (нам нравится)", "Совпадают (nos)"],
+        ["Vosotros", "os relajáis (вы расслабляетесь)", "os gusta (вам нравится)", "Совпадают (os)"],
+        ["Ellos / Ustedes", "se relajan (они расслабляются)", "les gusta ⚠️ (им нравится)", "❌ НЕТ *se gustan → ✅ ТОЛЬКО les gusta"]
+      ]
     },
     {
       type: "callout",
       style: "warning",
-      text: "GUSTAR спрягается по тому, что НРАВИТСЯ, а не по тому, кому. 'A mí me gusta el café' (кофе один → gusta). 'A mí me gustan los gatos' (коты — множественное → gustan). Это самая частая ошибка!"
+      text: "🚨 Золотое правило:\n• С 'se': действие направлено на себя (Él se relaja, Ella se ducha).\n• С 'le / les': предмет нравится человеку (A él le gusta el café, A ellos les gusta viajar).\nКонструкции '*se gusta' или '*se gustan' в испанском НЕ СУЩЕСТВУЕТ!"
     },
     {
       type: "table",
@@ -114,11 +172,16 @@ export default {
       rows: [
         ["Мне", "Me", "gusta / gustan", "el libro / los libros"],
         ["Тебе", "Te", "gusta / gustan", "la música / las películas"],
-        ["Ему/Ей", "Le", "gusta / gustan", "viajar / los viajes"],
+        ["Ему/Ей/Вам", "Le", "gusta / gustan", "viajar / los viajes"],
         ["Нам", "Nos", "gusta / gustan", "el español / los idiomas"],
-        ["Вам", "Os", "gusta / gustan", "la pizza / las tapas"],
+        ["Вам (мн.)", "Os", "gusta / gustan", "la pizza / las tapas"],
         ["Им", "Les", "gusta / gustan", "el fútbol / los deportes"],
       ]
+    },
+    {
+      type: "image",
+      src: "/theory/miro_acciones_habituales_grid.png",
+      alt: "Сетка действий и распорядка дня (Miro Board)"
     },
     {
       type: "table",

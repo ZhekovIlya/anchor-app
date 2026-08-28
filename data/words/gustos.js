@@ -62,7 +62,33 @@ export default {
       },
       {
         type: "heading",
-        text: "3. La escala de intensidad para expresar preferencias"
+        text: "3. ⚠️ Trampa mortal: ¿Por qué NUNCA se dice 'se gusta'?"
+      },
+      {
+        type: "paragraph",
+        text: "Uno de los errores más comunes de los estudiantes es mezclar los verbos reflexivos (llamarse, relajarse: me/te/se) con los verbos de tipo gustar (me/te/le). ¡'Se gusta' NO EXISTE en español!"
+      },
+      {
+        type: "table",
+        caption: "Comparación directa: Verbos Reflexivos (SE) vs. Tipo Gustar (LE)",
+        headers: ["Pronombre sujeto", "Verbo reflexivo (Relajarse)", "Verbo tipo Gustar (Gustar)", "Regla"],
+        rows: [
+          ["Yo", "yo ME relajo", "a mí ME gusta", "Coinciden en 'me'"],
+          ["Tú", "tú TE relajas", "a ti TE gusta", "Coinciden en 'te'"],
+          ["Él / Ella / Usted", "él SE relaja", "a él LE gusta ⚠️", "❌ NUNCA *se gusta → ✅ LE gusta"],
+          ["Nosotros / Nosotras", "nosotros NOS relajamos", "a nosotros NOS gusta", "Coinciden en 'nos'"],
+          ["Vosotros / Vosotras", "vosotros OS relajáis", "a vosotros OS gusta", "Coinciden en 'os'"],
+          ["Ellos / Ellas / Ustedes", "ellos SE relajan", "a ellos LES gusta ⚠️", "❌ NUNCA *se gustan → ✅ LES gusta"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "warning",
+        text: "🚨 Recuerda para siempre:\n• Verbo reflexivo (acción sobre uno mismo): 'Él SE relaja en el sofá'.\n• Verbo de gusto (la cosa produce agrado a la persona): 'A él LE gusta la música clásica'."
+      },
+      {
+        type: "heading",
+        text: "4. La escala de intensidad para expresar preferencias"
       },
       {
         type: "paragraph",
@@ -76,15 +102,16 @@ export default {
           ["Amor / Pasión", "Me encanta / Me encantan", "¡Me encanta Harry Potter!"],
           ["Gusto alto", "Me gusta mucho", "Me gusta mucho el teatro."],
           ["Gusto neutro", "Me gusta", "Me gusta el café solo."],
+          ["Indiferencia", "Me da igual", "Me da igual el olor a gasolina."],
           ["Disgusto moderado", "No me gusta mucho", "No me gusta mucho madrugar."],
           ["Disgusto total", "No me gusta nada", "No me gustan nada los exámenes."],
-          ["Aversión / Rechazo", "Odio / No soporto", "Odio el olor a gasolina."]
+          ["Aversión / Rechazo", "Odio / No soporto", "Odio los insectos."]
         ]
       },
       {
         type: "image",
-        src: "/theory/miro_gustos.png",
-        alt: "Esquema visual del curso: ¿Te gusta o no? y estructura del verbo gustar"
+        src: "/theory/miro_gustos_chart.png",
+        alt: "Vocabulario visual del curso: ¿Te gusta o no? (Miro Board)"
       }
     ]
   },

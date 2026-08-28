@@ -165,8 +165,8 @@ export default {
     },
     {
       type: "image",
-      src: "/theory/miro_alphabet_pronunciation.png",
-      alt: "Esquema visual del curso: Alfabeto Español y Reglas de Pronunciación (G, C, J, V, Z, LL, QU, GU)"
+      src: "/theory/miro_pronunciacion_reglas.png",
+      alt: "Esquema visual del curso: Reglas de Pronunciación (G, C, J, V, Z, LL, QU, GU)"
     },
     {
       type: "video",

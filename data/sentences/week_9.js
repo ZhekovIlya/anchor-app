@@ -137,7 +137,7 @@ export default {
       },
       {
         type: "image",
-        src: "/theory/miro_verbos_irregulares_diptongo.png",
+        src: "/theory/miro_verbos_diptongo_boxes.png",
         alt: "Esquema visual del curso: Verbos con Cambio Vocálico (e→ie, o→ue, e→i)"
       }
     ]

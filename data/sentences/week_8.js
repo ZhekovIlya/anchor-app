@@ -142,16 +142,21 @@ export default {
       },
       {
         type: "table",
-        caption: "Conjugación reflexiva: Levantarse y Ducharse",
-        headers: ["Pronombre", "Levantarse", "Ducharse"],
+        caption: "Conjugación reflexiva: Levantarse, Ducharse, Relajarse y Vestirse (e→i)",
+        headers: ["Pronombre", "Levantarse", "Ducharse", "Relajarse", "Vestirse (e→i)"],
         rows: [
-          ["Yo", "me levanto", "me ducho"],
-          ["Tú", "te levantas", "te duchas"],
-          ["Él / Ella / Usted", "se levanta", "se ducha"],
-          ["Nosotros / Nosotras", "nos levantamos", "nos duchamos"],
-          ["Vosotros / Vosotras", "os levantáis", "os ducháis"],
-          ["Ellos / Ellas / Ustedes", "se levantan", "se duchan"]
+          ["Yo", "me levanto", "me ducho", "me relajo", "me visto"],
+          ["Tú", "te levantas", "te duchas", "te relajas", "te vistes"],
+          ["Él / Ella / Usted", "se levanta", "se ducha", "se relaja", "se viste"],
+          ["Nosotros / Nosotras", "nos levantamos", "nos duchamos", "nos relajamos", "nos vestimos"],
+          ["Vosotros / Vosotras", "os levantáis", "os ducháis", "os relajáis", "os vestís"],
+          ["Ellos / Ellas / Ustedes", "se levantan", "se duchan", "se relajan", "se visten"]
         ]
+      },
+      {
+        type: "image",
+        src: "/theory/miro_ducharse_reflexive_table.png",
+        alt: "Esquema de conjugación de verbos reflexivos (Miro Board)"
       },
       {
         type: "callout",
