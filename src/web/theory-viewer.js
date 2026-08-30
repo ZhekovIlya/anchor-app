@@ -118,6 +118,32 @@ function createCallout(style, text) {
   return div;
 }
 
+function formatCellContent(raw, isFirst) {
+  if (raw === null || raw === undefined) return '';
+  let str = String(raw);
+
+  // Convert markdown bold **text** -> <strong>
+  str = str.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-on-surface dark:text-stone-100">$1</strong>');
+
+  // Convert markdown backticks `code` -> styled pill badge
+  str = str.replace(/`([^`]+)`/g, '<code class="px-2 py-0.5 rounded-md font-mono text-xs font-bold bg-emerald-100/90 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs">$1</code>');
+
+  // Highlight checkmarks, crosses, warnings
+  str = str.replace(/✅\s*([^<,\n\r]+)/g, '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-100/90 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300/70 dark:border-emerald-700/70">✅ $1</span>');
+  str = str.replace(/❌\s*([^<,\n\r]+)/g, '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-rose-100/90 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-300/70 dark:border-rose-700/70">❌ $1</span>');
+  str = str.replace(/⚠️\s*([^<,\n\r]+)/g, '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold bg-amber-100/90 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300/70 dark:border-amber-700/70">⚠️ $1</span>');
+
+  // Highlight arrows →
+  str = str.replace(/→/g, '<span class="text-emerald-600 dark:text-emerald-400 font-bold mx-1.5">→</span>');
+
+  if (isFirst) {
+    // If it's the first column (e.g. Pronoun, Word root, Rule name), style with an accent chip or bold colored text
+    return `<span class="font-bold text-emerald-900 dark:text-emerald-200 tracking-tight">${str}</span>`;
+  }
+
+  return str;
+}
+
 function createTable(caption, headers, rows) {
   const container = document.createElement('div');
   container.className = 'mb-8';
@@ -125,24 +151,26 @@ function createTable(caption, headers, rows) {
   let html = '';
   if (caption) {
     html += `
-      <div class="flex items-center gap-2 mb-2.5 px-1 font-label text-xs font-bold uppercase tracking-wider text-primary dark:text-emerald-400">
-        <span class="material-symbols-outlined text-base">table_chart</span>
-        <span>${caption}</span>
+      <div class="flex items-center gap-2.5 mb-3 px-1">
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-500/15 dark:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400">
+          <span class="material-symbols-outlined text-base">table_chart</span>
+        </span>
+        <span class="font-label text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">${caption}</span>
       </div>`;
   }
 
   html += `
-    <div class="rounded-2xl overflow-hidden border border-outline-variant/40 dark:border-stone-800 bg-surface-container-lowest dark:bg-stone-900 shadow-sm transition-all duration-300">
+    <div class="rounded-2xl overflow-hidden border border-emerald-300/50 dark:border-emerald-900/40 bg-white dark:bg-stone-900 shadow-sm hover:shadow-md transition-all duration-300 ring-1 ring-emerald-500/10 dark:ring-emerald-500/15">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
-          <thead class="bg-surface-container-low dark:bg-stone-850 border-b border-surface-variant/70 dark:border-stone-800">
+          <thead class="bg-gradient-to-r from-emerald-100/80 via-teal-50/70 to-emerald-50/50 dark:from-emerald-950/80 dark:via-stone-900 dark:to-emerald-950/60 border-b-2 border-emerald-300/80 dark:border-emerald-800/60">
             <tr>`;
 
   for (let i = 0; i < headers.length; i++) {
     const h = headers[i];
     const isFirst = i === 0;
     html += `
-      <th class="py-3.5 px-4 sm:px-5 font-headline text-xs font-bold uppercase tracking-wider ${isFirst ? 'text-primary dark:text-emerald-400' : 'text-on-surface-variant dark:text-stone-300'}">
+      <th class="py-3.5 px-4 sm:px-5 font-headline text-xs font-bold uppercase tracking-wider ${isFirst ? 'text-emerald-900 dark:text-emerald-300' : 'text-stone-700 dark:text-stone-300'}">
         ${h}
       </th>`;
   }
@@ -150,25 +178,24 @@ function createTable(caption, headers, rows) {
   html += `
             </tr>
           </thead>
-          <tbody class="divide-y divide-surface-variant/30 dark:divide-stone-800/60">`;
+          <tbody class="divide-y divide-emerald-100/60 dark:divide-stone-800/70">`;
 
   for (let r = 0; r < rows.length; r++) {
     const row = rows[r];
     const isZebra = r % 2 === 1;
-    const zebraClass = isZebra ? 'bg-surface-container-lowest/60 dark:bg-stone-850/30' : 'bg-surface-container-lowest dark:bg-stone-900';
+    const zebraClass = isZebra ? 'bg-emerald-50/35 dark:bg-emerald-950/20' : 'bg-white dark:bg-stone-900';
 
-    html += `<tr class="${zebraClass} hover:bg-primary-container/10 dark:hover:bg-emerald-950/25 transition-colors duration-150">`;
+    html += `<tr class="${zebraClass} hover:bg-emerald-100/50 dark:hover:bg-emerald-900/35 transition-colors duration-150">`;
     for (let c = 0; c < row.length; c++) {
       const cell = row[c];
       const isFirst = c === 0;
-      let cellText = cell || '';
+      const formatted = formatCellContent(cell, isFirst);
 
-      // Format warning/check badges inside table cells
       let cellClass = isFirst
-        ? 'font-bold text-on-surface dark:text-white'
-        : 'text-on-surface-variant dark:text-stone-300';
+        ? 'py-3.5 px-4 sm:px-5 font-body text-sm text-stone-900 dark:text-stone-100 leading-relaxed font-medium'
+        : 'py-3.5 px-4 sm:px-5 font-body text-sm text-stone-700 dark:text-stone-300 leading-relaxed';
 
-      html += `<td class="py-3.5 px-4 sm:px-5 font-body text-sm ${cellClass} leading-relaxed">${cellText}</td>`;
+      html += `<td class="${cellClass}">${formatted}</td>`;
     }
     html += `</tr>`;
   }

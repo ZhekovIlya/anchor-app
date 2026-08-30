@@ -313,8 +313,74 @@ export default {
   ],
   lessons: week5Lessons,
   theory: {
-    title: "The Past Switch (Pretérito)",
-    subtitle: "Building formula: Present → Past · What changes for each group",
-    image: "/theory/week_5.png",
+    title: "El Pasado: Pretérito Indefinido (Acciones Completadas)",
+    subtitle: "Fórmulas de terminaciones en pasado (-AR vs -ER/-IR), raíces irregulares clave y marcadores temporales",
+    sections: [
+      {
+        type: "heading",
+        text: "1. ¿Cuándo se usa el Pretérito Indefinido?"
+      },
+      {
+        type: "paragraph",
+        text: "El Pretérito Indefinido se usa para acciones puntuales que ocurrieron y terminaron en un momento concreto del pasado (ayer, anoche, el año pasado, una vez):"
+      },
+      {
+        type: "table",
+        caption: "Terminaciones del Pretérito Indefinido (-AR vs -ER / -IR)",
+        headers: ["Pronombre", "-AR (lavar / comprar)", "-ER (comer / beber)", "-IR (vivir / abrir)", "Acento tónico"],
+        rows: [
+          ["Yo", "lavé (-é)", "comí (-í)", "viví (-í)", "Acento en la última vocal"],
+          ["Tú", "lavaste (-aste)", "comiste (-iste)", "viviste (-iste)", "Sin acento gráfico"],
+          ["Él / Ella / Usted", "lavó (-ó)", "comió (-ió)", "vivió (-ió)", "Acento en la última vocal"],
+          ["Nosotros / Nosotras", "lavamos (-amos)", "comimos (-imos)", "vivimos (-imos)", "-AR e -IR igual al presente"],
+          ["Vosotros / Vosotras", "lavasteis (-asteis)", "comisteis (-isteis)", "vivisteis (-isteis)", "Terminación -steis"],
+          ["Ellos / Ellas / Ustedes", "lavaron (-aron)", "comieron (-ieron)", "vivieron (-ieron)", "Terminación -ron"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "💡 ¡Atención a Nosotros! En los verbos en -AR y en -IR, la forma 'nosotros' en pasado es IDÉNTICA al presente (`lavamos`, `vivimos`). El contexto (como 'ayer' o 'ahora') indica el tiempo."
+      },
+      {
+        type: "heading",
+        text: "2. Verbos con raíz irregular en Indefinido"
+      },
+      {
+        type: "paragraph",
+        text: "Varios verbos clave cambian su raíz y utilizan un conjunto especial de terminaciones (-e, -iste, -o, -imos, -isteis, -ieron) SIN acentos gráficos:"
+      },
+      {
+        type: "table",
+        caption: "Verbos irregulares de alta frecuencia en pasado",
+        headers: ["Verbo", "Raíz en pasado", "Yo", "Él / Ella", "Ejemplo práctico (UK)"],
+        rows: [
+          ["tener (мати)", "tuv-", "tuve", "tuvo", "Yo tuve el contrato ayer."],
+          ["estar (бути/знаходитися)", "estuv-", "estuve", "estuvo", "Ella estuvo en el hospital."],
+          ["ir / ser (іти / бути)", "fu-", "fui", "fue", "Ayer fue un buen día / Fui al parque."],
+          ["hacer (робити)", "hic- / hiz-", "hice", "hizo", "Él hizo la cama por la mañana."],
+          ["decir (сказати)", "dij-", "dije", "dijo", "Ella me dijo la verdad."],
+          ["poder (могти)", "pud-", "pude", "pudo", "No pude pagar la renta."],
+          ["poner (класти/ставити)", "pus-", "puse", "puso", "Puse las llaves en la mesa."]
+        ]
+      },
+      {
+        type: "heading",
+        text: "3. Marcadores temporales del pasado puntual"
+      },
+      {
+        type: "table",
+        caption: "Palabras clave que activan el Indefinido",
+        headers: ["Marcador", "Significado (UK)", "Ejemplo"],
+        rows: [
+          ["ayer", "вчора", "Ayer compré pan en el mercado."],
+          ["anoche", "вчора ввечері / вночі", "Anoche cené con mi familia."],
+          ["el año pasado", "минулого року", "El año pasado viví en Barcelona."],
+          ["la semana pasada", "минулого тижня", "La semana pasada limpié el jardín."],
+          ["hace dos días", "два дні тому", "Hace dos días abrí la puerta con la llave."],
+          ["en 1995 / en mayo", "у конкретний рік/місяць", "Nací en 1995."]
+        ]
+      }
+    ]
   },
 };

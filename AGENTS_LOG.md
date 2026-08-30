@@ -1,6 +1,30 @@
 # AGENTS LOG
 
-## Current Task: Modern Theory Table Styling & Visual Rule Cards
+## Current Task: Enrich Weeks 1-5 & Word Theory with Tables from pareja.pdf and Vibrant Table Coloring
+
+### **[DEV] (The Builder):**
+- Created branch `task/theory-tables-enrichment-and-coloring`.
+- Upgraded `createTable` and `formatCellContent` in `src/web/theory-viewer.js` with rich emerald-teal gradients, vibrant headers, pill formatting for subject pronouns and roots, status badges (✅, ❌, ⚠️), highlighted arrows (`→`), and alternating tinted zebra striping for high-contrast readability in both light and dark themes.
+- Updated `onSentenceTheoryClick` in `src/web/main.js` to prioritize `theory.sections`, routing all sentence weeks directly into the in-page theory article viewer.
+- Converted and enriched Weeks 1 through 5 (`week_1.js` to `week_5.js`) with comprehensive structured theory tables directly derived from `pareja.pdf` (Fonética del alfabeto español, Pronombres de sujeto, SER vs ESTAR conjugación y usos, Artículos y excepciones griegas de género, Conjugación regular en -AR/-ER/-IR, Verbos modales, SER vs ESTAR con cambio de significado en adjetivos, Expresiones con TOMAR, y Pretérito Indefinido regular e irregular).
+- Added theory objects with structured tables to `data/words/colors.js` (Concordancia de colores) and `data/words/tiempo_frecuencia.js` (Escala de frecuencia 100%-0% y La Hora).
+- Enriched `data/words/numbers.js` (un/una, veintiún/veintiuna, centenas), `data/words/time_calendar.js` (meses por estaciones y las 4 estructuras de fechas), and `data/words/direcciones.js` (lugares urbanos, preposiciones de lugar y regla HAY vs ESTÁ).
+- Updated `tests/validate-data.test.js` to enforce strict `sections` schema across all sentence weeks, word topics, and standalone theory files.
+
+### **[AQA] (Technical QA):**
+- Verified full test suite: 18/18 tests passed across 7 test suites with 0 failures (1,326 phrases tokenized).
+- Confirmed zero syntax errors, valid ES module imports, no DOM leakage in core files, and strict schema compliance on all theory containers.
+- Verified production build (`npm run build`) bundles cleanly with Service Worker stamped.
+
+### **[QA] (Product QA):**
+- Verified that all tables from `pareja.pdf` (pronunciation rules, subject pronouns, SER vs ESTAR, Greek gender exceptions, regular verbs, adjectives, question words, time, frequency, directions, and Pretérito) are natively available in the in-page theory viewer.
+- Confirmed vibrant, high-contrast coloring and crystal-clear visual hierarchy in both light and dark themes.
+- Verified that non-exam lessons strictly maintain the 6-phrase / 12-word lesson sizing and 80/20 curriculum balance.
+
+### **Status:**
+- Committed to `task/theory-tables-enrichment-and-coloring`. Awaiting user review/testing before merge.
+
+---
 
 ### **[DEV] (The Builder):**
 - Branch `task/theory-table-styles-and-visual-rule-cards` created, validated, and merged into `main`.

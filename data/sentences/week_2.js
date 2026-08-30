@@ -214,8 +214,90 @@ export default {
   ],
   lessons: week2Lessons,
   theory: {
-    title: "Regular -AR Pattern & Modals",
-    subtitle: "Building formula: Stem + Ending · QUERER/PODER + Infinitive",
-    image: "/theory/week_2.png",
+    title: "El Género de las Cosas, Artículos y Verbos en -AR",
+    subtitle: "Reglas de género, excepciones griegas (-ma/-ta), artículos definidos/indefinidos, conjugación en -AR y modales",
+    sections: [
+      {
+        type: "heading",
+        text: "1. El género de los sustantivos y los artículos"
+      },
+      {
+        type: "paragraph",
+        text: "En español todo sustantivo es masculino (`el / un`) o femenino (`la / una`). Observa el patrón general:"
+      },
+      {
+        type: "table",
+        caption: "Artículos determinados e indeterminados",
+        headers: ["Tipo de artículo", "Masculino singular", "Femenino singular", "Masculino plural", "Femenino plural"],
+        rows: [
+          ["Determinado (el / la = the)", "el coche (машина)", "la casa (дім)", "los coches", "las casas"],
+          ["Indeterminado (un / una = a/an)", "un piso (квартира)", "una habitación (кімната)", "unos pisos", "unas habitaciones"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. ⚠️ Las excepciones de género imprescindibles"
+      },
+      {
+        type: "paragraph",
+        text: "Muchas palabras que terminan en '-a' son masculinas porque provienen del griego antiguo (terminadas en -ma, -ta o -ema), o son abreviaciones:"
+      },
+      {
+        type: "table",
+        caption: "Excepciones de género de alta frecuencia",
+        headers: ["Sustantivo", "Género", "¿Por qué ocurre?", "Traducción (UK)"],
+        rows: [
+          ["el problema", "Masculino (el)", "Origen griego en -ma", "проблема"],
+          ["el tema", "Masculino (el)", "Origen griego en -ma", "тема"],
+          ["el idioma / el sistema", "Masculino (el)", "Origen griego en -ma", "мова / система"],
+          ["el clima", "Masculino (el)", "Origen griego en -ma", "клімат"],
+          ["el día", "Masculino (el)", "Excepción clásica", "день (¡buenos días!)"],
+          ["la foto / la radio", "Femenino (la)", "Abreviación (fotografía / radiodifusión)", "фотографія / радіо"],
+          ["el capital vs la capital", "Cambio de significado", "el capital = dinero; la capital = ciudad", "капітал (гроші) vs столиця"],
+          ["el orden vs la orden", "Cambio de significado", "el orden = organización; la orden = mandato", "порядок vs наказ"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "warning",
+        text: "🚨 ¡Cuidado con el error clásico! Nunca digas *la problema* ni *la tema*. Siempre: `el problema es caro` y `el tema es importante`."
+      },
+      {
+        type: "heading",
+        text: "3. Conjugación regular en -AR (Presente de Indicativo)"
+      },
+      {
+        type: "paragraph",
+        text: "Los verbos en -AR representan el 70% del idioma. Para conjugarlos, retira la terminación `-ar` y añade las terminaciones del presente:"
+      },
+      {
+        type: "table",
+        caption: "Conjugación del grupo -AR (hablar, buscar, pagar, limpiar)",
+        headers: ["Pronombre", "Terminación", "hablar (говорити)", "buscar (шукати)", "limpiar (прибирати)"],
+        rows: [
+          ["Yo", "-o", "hablo", "busco", "limpio"],
+          ["Tú", "-as", "hablas", "buscas", "limpias"],
+          ["Él / Ella / Usted", "-a", "habla", "busca", "limpia"],
+          ["Nosotros / Nosotras", "-amos", "hablamos", "buscamos", "limpiamos"],
+          ["Vosotros / Vosotras", "-áis", "habláis", "buscáis", "limpiáis"],
+          ["Ellos / Ellas / Ustedes", "-an", "hablan", "buscan", "limpian"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "4. Verbos modales: QUERER, PODER, NECESITAR + Infinitivo"
+      },
+      {
+        type: "table",
+        caption: "Estructuras modales indispensables",
+        headers: ["Estructura", "Significado", "Ejemplo en contexto"],
+        rows: [
+          ["Querer + Infinitivo", "Хочу зробити щось", "Yo quiero alquilar un piso en Barcelona."],
+          ["Poder + Infinitivo", "Можу зробити щось", "¿Tú puedes firmar el contrato hoy?"],
+          ["Necesitar + Infinitivo / Sustantivo", "Потрібно зробити щось", "Nosotros necesitamos buscar una casa limpia."],
+          ["Tener que + Infinitivo", "Мушу / повинен зробити", "Él tiene que pagar el alquiler."]
+        ]
+      }
+    ]
   },
 };

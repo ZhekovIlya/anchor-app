@@ -344,8 +344,118 @@ export default {
   ],
   lessons: week1Lessons,
   theory: {
-    title: "Skeleton Grammar & SER vs ESTAR",
-    subtitle: "Full SER vs ESTAR tables · IR & TENER tables · All persons",
-    image: "/theory/week_1.png",
+    title: "Fundamentos: Fonética, Pronombres y SER vs ESTAR",
+    subtitle: "Reglas de pronunciación, pronombres personales y conjugación completa de SER, ESTAR, IR y TENER",
+    sections: [
+      {
+        type: "heading",
+        text: "1. Reglas de pronunciación del alfabeto español"
+      },
+      {
+        type: "paragraph",
+        text: "Para pronunciar con soltura desde el primer día, aprende estas combinaciones de letras que funcionan de forma especial en español:"
+      },
+      {
+        type: "table",
+        caption: "Reglas fonéticas clave (Alfabeto español)",
+        headers: ["Letra / Combinación", "Regla de pronunciación", "Ejemplos en español", "Guía fonética (RU/UK)"],
+        rows: [
+          ["G (+ e, i)", "Se pronuncia como 'X'", "gente, gesto, gimnasio", "люди / жест (звук Х)"],
+          ["G (+ a, o, u)", "Se pronuncia como 'Г'", "grande, gato, lengua", "великий / кіт (звук Г)"],
+          ["C (+ e, i)", "Se pronuncia como 'С' (o 'Z' peninsular)", "cena, cielo, gracias", "вечеря / небо (звук С)"],
+          ["C (+ a, o, u)", "Se pronuncia como 'К'", "casa, coche, cacao", "дім / машина (звук К)"],
+          ["J (siempre)", "Siempre se pronuncia como 'Х'", "mujer, jamón, jugar, jardín", "жінка / хамон (звук Х)"],
+          ["V / B", "Suenan casi idénticas (entre B y V suave)", "vamos, valor, vivir, bien", "ходімо / цінність (звук Б/В)"],
+          ["Z", "Se pronuncia como 'С' (o 'th' peninsular)", "azul, azúcar, zapato, zona", "синій / цукор (звук С)"],
+          ["LL", "Se pronuncia como 'Й' o 'ДЖ'", "llegar, me llamo, lluvia", "прибути / мене звати (звук Й)"],
+          ["QUE / QUI", "Se pronuncia 'КЕ' / 'КІ' (la 'U' es muda)", "que, quién, quiero, queso", "що / хто / сир (буква U німа)"],
+          ["GUE / GUI", "Se pronuncia 'ҐЕ' / 'ҐІ' (la 'U' es muda)", "guerra, guitarra", "війна / гітара (буква U німа)"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "💡 ¡Truco mnemotécnico! En QUE/QUI y GUE/GUI la 'u' nunca suena: `queso` se lee [кесо], `guitarra` se lee [ґітарра]."
+      },
+      {
+        type: "heading",
+        text: "2. Pronombres personales de sujeto"
+      },
+      {
+        type: "table",
+        caption: "Pronombres de sujeto en español",
+        headers: ["Pronombre", "Significado", "Uso gramatical"],
+        rows: [
+          ["Yo", "Я", "Primera persona singular"],
+          ["Tú", "Ти", "Segunda persona singular (informal/amigos)"],
+          ["Él / Ella", "Він / Вона", "Tercera persona singular"],
+          ["Usted", "Ви (ввічливо однина)", "Trato formal singular (usa verbo en 3ª persona)"],
+          ["Nosotros / Nosotras", "Ми (ч.р. / ж.р.)", "Primera persona plural"],
+          ["Vosotros / Vosotras", "Ви (друзі в Іспанії)", "Segunda persona plural informal en España"],
+          ["Ellos / Ellas", "Вони (ч.р. / ж.р.)", "Tercera persona plural"],
+          ["Ustedes", "Ви (ввічливо / мн.)", "Segunda persona plural formal"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "3. Los dos verbos de identidad: SER vs ESTAR"
+      },
+      {
+        type: "paragraph",
+        text: "En español existen dos verbos distintos para expresar 'ser' o 'estar'. Esta distinción es la base de toda la lengua:"
+      },
+      {
+        type: "table",
+        caption: "SER vs ESTAR — Conjugación completa",
+        headers: ["Pronombre", "SER (identidad / permanente)", "ESTAR (estado / ubicación)", "Diferencia clave"],
+        rows: [
+          ["Yo", "soy (Yo soy inteligente)", "estoy (Yo estoy aquí / bien)", "Soy = quién soy; Estoy = cómo/dónde estoy"],
+          ["Tú", "eres (Tú eres bueno)", "estás (Tú estás listo)", "Eres = cualidad; Estás = estado temporal"],
+          ["Él / Ella / Usted", "es (Él es grande / Usted es médico)", "está (Ella está en casa)", "Es = definición; Está = localización"],
+          ["Nosotros", "somos (Nosotros somos amigos)", "estamos (Nosotros estamos listos)", "Somos = identidad; Estamos = preparados"],
+          ["Vosotros", "sois (Vosotros sois de Ucrania)", "estáis (Vosotros estáis bien)", "Sois = origen; Estáis = salud/ánimo"],
+          ["Ellos / Ustedes", "son (Ellos son buenos)", "están (Ellas están aquí)", "Son = naturaleza; Están = presentes"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "important",
+        text: "🚨 Regla de oro: SER describe QUÉ o QUIÉN es alguien/algo por naturaleza (origen, profesión, carácter permanente). ESTAR describe CÓMO o DÓNDE se encuentra en este instante (ubicación, emociones, estados temporales)."
+      },
+      {
+        type: "heading",
+        text: "4. Verbos esenciales: IR y TENER"
+      },
+      {
+        type: "table",
+        caption: "Conjugación de IR y TENER en presente",
+        headers: ["Pronombre", "IR (desplazamiento a un lugar)", "TENER (posesión, edad, necesidad)"],
+        rows: [
+          ["Yo", "voy (Yo voy allí / a casa)", "tengo (Yo tengo tiempo / dinero)"],
+          ["Tú", "vas (Tú vas al parque)", "tienes (Tú tienes un perro)"],
+          ["Él / Ella / Usted", "va (Ella va a casa)", "tiene (Él tiene el contrato)"],
+          ["Nosotros", "vamos (Nosotros vamos allí)", "tenemos (Nosotros tenemos tiempo)"],
+          ["Vosotros", "vais (Vosotros vais al cine)", "tenéis (Vosotros tenéis llaves)"],
+          ["Ellos / Ustedes", "van (Ellos van a casa)", "tienen (Ellas tienen dinero)"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "5. Fórmulas de presentación personal"
+      },
+      {
+        type: "table",
+        caption: "Preguntas y respuestas para presentarse",
+        headers: ["Pregunta", "Traducción (UK)", "Respuesta modelo", "Traducción (UK)"],
+        rows: [
+          ["¿Cómo te llamas?", "Як тебе звати?", "Me llamo Mark.", "Мене звати Марк."],
+          ["¿De dónde eres?", "Звідки ти?", "Soy de Ucrania.", "Я з України."],
+          ["¿Dónde vives?", "Де ти живеш?", "Vivo en Barcelona.", "Я живу в Барселоні."],
+          ["¿Cuántos años tienes?", "Скільки тобі років?", "Tengo 25 años.", "Мені 25 років."],
+          ["¿A qué te dedicas?", "Чим ти займаєшся?", "Soy informático / estudiante.", "Я айтішник / студент."],
+          ["¡Mucho gusto!", "Дуже приємно!", "Igualmente / Encantado.", "Навзаєм / Приємно."]
+        ]
+      }
+    ]
   },
 };

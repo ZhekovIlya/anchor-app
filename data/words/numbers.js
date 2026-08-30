@@ -8,25 +8,98 @@ export default {
   icon: "tag",
   description: "Count in Spanish — from uno to mil",
   theory: {
-    title: "Number Patterns",
-    subtitle: "Three rules that unlock every number from 16 to 999",
+    title: "El Sistema Numérico (1–1000)",
+    subtitle: "Reglas de formación: 16–29 en una sola palabra, 30+ con 'y', regla de 'un/una' y centenas",
     sections: [
-      { type: "heading", text: "🔢 The Foundation: 1–15 (All Unique)" },
-      { type: "paragraph", text: "The first 15 numbers must be memorized — each is a unique word with no pattern. Use this table as a quick reference:" },
-      { type: "table", caption: "Numbers 1–15", headers: ["#", "Spanish", "#", "Spanish", "#", "Spanish"], rows: [["1","uno","6","seis","11","once"],["2","dos","7","siete","12","doce"],["3","tres","8","ocho","13","trece"],["4","cuatro","9","nueve","14","catorce"],["5","cinco","10","diez","15","quince"]] },
-      { type: "heading", text: "⚡ Pattern 1: 16–19 → dieci + unit" },
-      { type: "paragraph", text: "From 16 to 19, Spanish fuses 'diez' (ten) with the unit into one word." },
-      { type: "table", caption: "16–19 Pattern", headers: ["Number", "Formula", "Result"], rows: [["16","dieci + séis","dieciséis"],["17","dieci + siete","diecisiete"],["18","dieci + ocho","dieciocho"],["19","dieci + nueve","diecinueve"]] },
-      { type: "heading", text: "⚡ Pattern 2: 21–29 → veinti + unit" },
-      { type: "paragraph", text: "From 21 to 29, 'veinte' (twenty) fuses with the unit the same way." },
-      { type: "table", caption: "21–29 Pattern", headers: ["Number", "Formula", "Result"], rows: [["21","veinti + uno","veintiuno"],["22","veinti + dós","veintidós"],["25","veinti + cinco","veinticinco"],["29","veinti + nueve","veintinueve"]] },
-      { type: "heading", text: "⚡ Pattern 3: 30+ → [tens] y [unit]" },
-      { type: "paragraph", text: "From 30 onward, compounds use TWO words joined by 'y' (and). Learn the 8 unique tens, then combine freely." },
-      { type: "table", caption: "The 8 Unique Tens", headers: ["Number", "Spanish"], rows: [["30","treinta"],["40","cuarenta"],["50","cincuenta"],["60","sesenta"],["70","setenta"],["80","ochenta"],["90","noventa"],["100","cien"]] },
-      { type: "heading", text: "⚡ Pattern 4: Hundreds → [mult]cientos" },
-      { type: "paragraph", text: "100 alone = 'cien'. 100 + something = 'ciento'. For 200–900 the multiplier attaches to '-cientos'. Watch for irregulars: 500 (quinientos), 700 (setecientos), 900 (novecientos)." },
-      { type: "table", caption: "Hundreds", headers: ["Number","Spanish","Note"], rows: [["100","cien","standalone"],["101","ciento uno","ciento + rest"],["200","doscientos","regular"],["300","trescientos","regular"],["500","quinientos","⚠️ irregular"],["700","setecientos","⚠️ irregular"],["900","novecientos","⚠️ irregular"],["1000","mil","standalone"]] },
-      { type: "callout", style: "tip", text: "Once you know 1–15, the 8 tens, and the 8 hundreds, you can construct ANY number up to 999,999." }
+      {
+        type: "heading",
+        text: "1. La base: del 0 al 15 (Formas únicas memorizadas)"
+      },
+      {
+        type: "paragraph",
+        text: "Los primeros quince números no siguen una regla combinatoria regular; cada uno tiene una forma propia e imprescindible:"
+      },
+      {
+        type: "table",
+        caption: "Números fundamentales del 0 al 15",
+        headers: ["Nº", "Español", "Nº", "Español", "Nº", "Español"],
+        rows: [
+          ["0", "cero", "6", "seis", "11", "once"],
+          ["1", "uno", "7", "siete", "12", "doce"],
+          ["2", "dos", "8", "ocho", "13", "trece"],
+          ["3", "tres", "9", "nueve", "14", "catorce"],
+          ["4", "cuatro", "10", "diez", "15", "quince"],
+          ["5", "cinco", "—", "—", "—", "—"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. Las tres reglas de oro para números del 16 al 99"
+      },
+      {
+        type: "table",
+        caption: "Reglas de fusión y separación",
+        headers: ["Rango", "Fórmula", "Ejemplos en una o dos palabras"],
+        rows: [
+          ["16 a 19", "dieci + unidad (1 palabra)", "dieciséis, diecisiete, dieciocho, diecinueve"],
+          ["20 a 29", "veinti + unidad (1 palabra)", "veintiuno, veintidós, veinticinco, veintiocho"],
+          ["30 a 99", "decena + 'y' + unidad (3 palabras)", "treinta y uno, cuarenta y dos, noventa y nueve"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "3. ⚠️ La regla del '1' (un / una / veintiún / veintiuna)"
+      },
+      {
+        type: "paragraph",
+        text: "El número `uno` y todos sus compuestos (21, 31, 41...) cambian según el género del sustantivo al que acompañan:"
+      },
+      {
+        type: "table",
+        caption: "Concordancia de 'uno' con sustantivos",
+        headers: ["Género", "Cambio", "Ejemplo práctico", "Traducción (UK)"],
+        rows: [
+          ["Masculino", "uno → un / veintiún", "Tengo un pastel / Tengo veintiún años.", "Я маю 21 рік."],
+          ["Femenino", "uno → una / veintiuna", "Tengo una vela / Tiene veintiuna flores.", "Вона має 21 квітку."],
+          ["Centenas masc.", "-cientos", "doscientos euros / quinientos pisos", "200 євро / 500 квартир"],
+          ["Centenas fem.", "-cientas", "doscientas personas / trescientas casas", "200 людей / 300 будинків"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "4. Las centenas y números mayores"
+      },
+      {
+        type: "table",
+        caption: "Centenas y millares (¡ojo con las 3 irregulares!)",
+        headers: ["Número", "Español", "Nota gramatical"],
+        rows: [
+          ["100", "cien", "Solo ante sustantivo o aislado"],
+          ["101+", "ciento uno...", "Se usa 'ciento' para compuestos"],
+          ["200 / 300 / 400", "doscientos / trescientos / cuatrocientos", "Regulares"],
+          ["500", "quinientos", "⚠️ Irregular (no *cincocientos*)"],
+          ["600", "seiscientos", "Regular"],
+          ["700", "setecientos", "⚠️ Irregular (no *sietecientos*)"],
+          ["800", "ochocientos", "Regular"],
+          ["900", "novecientos", "⚠️ Irregular (no *nuevecientos*)"],
+          ["1000", "mil", "Invariable (dos mil, diez mil)"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "5. Uso de números para direcciones y descripciones"
+      },
+      {
+        type: "table",
+        caption: "Estructuras prácticas en la vida real",
+        headers: ["Contexto", "Estructura", "Ejemplo en contexto"],
+        rows: [
+          ["Número de la calle", "calle + Nombre, número + Nº", "Vivo en la calle Sol, número 21."],
+          ["Número de la casa", "Mi casa es el número...", "Mi casa es el número 32."],
+          ["Apartamento / piso", "piso / apartamento + Nº", "Vivo en el apartamento 43."],
+          ["Contar con HAY", "Hay + Nº + sustantivo", "En mi clase hay veintidós estudiantes."]
+        ]
+      }
     ]
   },
   lessons: [

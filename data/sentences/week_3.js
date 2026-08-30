@@ -214,8 +214,76 @@ export default {
   ],
   lessons: week3Lessons,
   theory: {
-    title: "Adjective Agreement & Negation",
-    subtitle: "Gender: -o/-a · Plural: -os/-as · SER vs ESTAR · Negation",
-    image: "/theory/week_3.png",
+    title: "Concordancia de Adjetivos, Negación y SER vs ESTAR con Adjetivos",
+    subtitle: "Reglas de género y número de adjetivos, adjetivos que cambian de significado con SER/ESTAR y la negación",
+    sections: [
+      {
+        type: "heading",
+        text: "1. Concordancia de los adjetivos en español"
+      },
+      {
+        type: "paragraph",
+        text: "Los adjetivos en español concuerdan siempre en género (masculino/femenino) y número (singular/plural) con el sustantivo al que describen:"
+      },
+      {
+        type: "table",
+        caption: "Reglas de concordancia de adjetivos",
+        headers: ["Tipo de adjetivo", "Masc. Sing.", "Fem. Sing.", "Masc. Plur.", "Fem. Plur.", "Traducción (UK)"],
+        rows: [
+          ["Terminados en -o (4 formas)", "bueno", "buena", "buenos", "buenas", "добрий / хороший"],
+          ["Terminados en -o (4 formas)", "limpio", "limpia", "limpios", "limpias", "чистий"],
+          ["Terminados en -o (4 formas)", "pequeño", "pequeña", "pequeños", "pequeñas", "маленький"],
+          ["Terminados en -e (2 formas)", "grande", "grande", "grandes", "grandes", "великий"],
+          ["Terminados en -e (2 formas)", "inteligente", "inteligente", "inteligentes", "inteligentes", "розумний"],
+          ["Terminados en consonante", "fácil", "fácil", "fáciles", "fáciles", "легкий / простий"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. SER vs ESTAR con adjetivos: cambio de significado"
+      },
+      {
+        type: "paragraph",
+        text: "Usar SER o ESTAR con el mismo adjetivo puede cambiar totalmente el significado de la frase. Presta mucha atención:"
+      },
+      {
+        type: "table",
+        caption: "Adjetivos con significado diferente según el verbo",
+        headers: ["Adjetivo", "Con SER (Cualidad inherente)", "Con ESTAR (Estado temporal)", "Diferencia (UK)"],
+        rows: [
+          ["bueno / buena", "Es bueno (Buena persona)", "Está bueno (Comida sabrosa / atractivo)", "Добрий vs Смачний/привабливий"],
+          ["malo / mala", "Es malo (Persona cruel/mala)", "Está malo (Enfermo / comida podrida)", "Злий vs Хворий/зіпсований"],
+          ["listo / lista", "Es listo (Muy inteligente)", "Está listo (Preparado para salir)", "Розумний vs Готовий"],
+          ["rico / rica", "Es rico (Tiene mucho dinero)", "Está rico (El plato sabe delicioso)", "Багатий vs Смачний"],
+          ["aburrido / aburrida", "Es aburrido (Persona aburrida)", "Está aburrido (Siente aburrimiento)", "Нудний vs Нудьгує зараз"],
+          ["limpio / limpia", "Es limpio (Hábitos limpios)", "Está limpio (El perro está limpio ahora)", "Охайний vs Чистий зараз"],
+          ["caro / barato", "El piso es caro (Invariable)", "N/A (Precios siempre con SER)", "Завжди SER для цін"]
+        ]
+      },
+      {
+        type: "callout",
+        style: "important",
+        text: "🚨 Para los precios siempre se usa SER: `El alquiler es caro`, `El contrato es barato` (nunca *está caro* para el valor de algo)."
+      },
+      {
+        type: "heading",
+        text: "3. La estructura de la negación"
+      },
+      {
+        type: "paragraph",
+        text: "En español la negación es sumamente sencilla: coloca la partícula `no` directamente antes del verbo conjugado."
+      },
+      {
+        type: "table",
+        caption: "Modelos de frases afirmativas y negativas",
+        headers: ["Afirmativa", "Negativa", "Traducción (UK)"],
+        rows: [
+          ["Yo soy estudiante.", "Yo no soy estudiante.", "Я не є студент."],
+          ["Tú estás listo.", "Tú no estás listo.", "Ти не готовий."],
+          ["Ella tiene tiempo.", "Ella no tiene tiempo.", "Вона не має часу."],
+          ["Ellos van al parque.", "Ellos no van al parque.", "Вони не йдуть до парку."]
+        ]
+      }
+    ]
   },
 };

@@ -8,15 +8,69 @@ export default {
   icon: "calendar_month",
   description: "Days, months, and time expressions",
   theory: {
-    title: "Time Patterns",
-    subtitle: "Days, months, and how to tell time in Spanish",
+    title: "El Calendario, las Fechas y las Estaciones",
+    subtitle: "Días de la semana, meses por estaciones y las 4 estructuras clave para decir fechas",
     sections: [
-      { type: "heading", text: "📅 Days & Months — No Capitals!" },
-      { type: "paragraph", text: "Unlike English, Spanish does NOT capitalize days or months. 'lunes' not 'Lunes', 'enero' not 'Enero'." },
-      { type: "callout", style: "tip", text: "Days of the week end in '-es' (except sábado & domingo). Months mostly mirror English/Latin roots." },
-      { type: "heading", text: "🕐 Telling Time" },
-      { type: "paragraph", text: "Use 'Es la una' for 1:00 (singular). Use 'Son las [number]' for 2:00–12:00 (plural). Add 'y media' for :30, 'y cuarto' for :15." },
-      { type: "table", caption: "Time expressions", headers: ["Time", "Spanish"], rows: [["1:00","Es la una"],["2:00","Son las dos"],["3:30","Son las tres y media"],["5:15","Son las cinco y cuarto"],["12:00","Son las doce / Es mediodía"]] },
+      {
+        type: "heading",
+        text: "1. Días de la semana y meses (¡siempre en minúscula!)"
+      },
+      {
+        type: "paragraph",
+        text: "A diferencia del inglés, en español los días de la semana y los meses del año se escriben SIEMPRE con letra minúscula: `lunes` (no *Lunes*), `enero` (no *Enero*)."
+      },
+      {
+        type: "table",
+        caption: "Días de la semana",
+        headers: ["Día", "Traducción (UK)", "Uso habitual"],
+        rows: [
+          ["el lunes / los lunes", "понеділок / щопонеділка", "Los lunes voy a la universidad."],
+          ["el martes / los martes", "вівторок / щовівторка", "Los martes trabajo en la oficina."],
+          ["el miércoles / los miércoles", "середа / щосереди", "Los miércoles hago deporte."],
+          ["el jueves / los jueves", "четвер / щочетверга", "Los jueves limpio la casa."],
+          ["el viernes / los viernes", "п'ятниця / щоп'ятниці", "Los viernes salgo con amigos."],
+          ["el sábado / los sábados", "субота / щосуботи", "Los sábados descanso."],
+          ["el domingo / los domingos", "неділя / щонеділі", "Los domingos como en familia."],
+          ["el fin de semana / los fines de semana", "вихідні / щовихідних", "Los fines de semana duermo más."]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. Meses del año agrupados por estaciones"
+      },
+      {
+        type: "table",
+        caption: "Meses y estaciones del año",
+        headers: ["Estación", "Meses correspondientes", "Ejemplo práctico"],
+        rows: [
+          ["el invierno (зима)", "diciembre, enero, febrero", "Navidad es en invierno."],
+          ["la primavera (весна)", "marzo, abril, mayo", "En primavera hay muchas flores."],
+          ["el verano (літо)", "junio, julio, agosto", "En verano viajamos al mar."],
+          ["el otoño (осінь)", "septiembre, octubre, noviembre", "En otoño hace fresco."]
+        ]
+      },
+      {
+        type: "heading",
+        text: "3. Las 4 estructuras indispensables para decir fechas"
+      },
+      {
+        type: "table",
+        caption: "Estructuras para fechas, cumpleaños y festivos",
+        headers: ["Uso", "Fórmula gramatical", "Ejemplo en contexto", "Traducción (UK)"],
+        rows: [
+          ["Fecha de hoy (sin artículo)", "Hoy es + número + de + mes", "Hoy es 14 de abril.", "Сьогодні 14 квітня."],
+          ["Fecha como sujeto (con 'el')", "El + número + de + mes + es...", "El 1 de enero es Año Nuevo.", "1 січня — Новий рік."],
+          ["Festivos célebres", "El + día + de + mes + es...", "El 25 de diciembre es Navidad.", "25 грудня — Різдво."],
+          ["Día de la Mujer", "El 8 de marzo", "El 8 de marzo es el Día de la Mujer.", "8 березня — День жінок."],
+          ["Cumpleaños", "Mi cumpleaños es el + fecha", "Mi cumpleaños es el 5 de mayo.", "Мій день народження 5 травня."],
+          ["Meses y estaciones", "Usamos la preposición 'en'", "Mi cumple es en mayo / en verano.", "Мій д.н. у травні / влітку."]
+        ]
+      },
+      {
+        type: "callout",
+        style: "tip",
+        text: "💡 ¡Ojo con el día 1! En español es muy común decir `primero` para el día 1 del mes: 'Hoy es el primero de febrero', 'Mi cumple es el primero de mayo'."
+      }
     ]
   },
   lessons: [

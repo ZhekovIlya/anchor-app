@@ -344,8 +344,65 @@ export default {
   ],
   lessons: week4Lessons,
   theory: {
-    title: "Three Verb Groups: -AR / -ER / -IR",
-    subtitle: "Side-by-Side Present Endings · -ER/-IR Shortcut · Pattern Recognition",
-    image: "/theory/week_4.png",
+    title: "Las Tres Familias de Verbos (-AR / -ER / -IR), Preguntas y Costes",
+    subtitle: "Comparación paralela de terminaciones, expresiones con TOMAR, preguntas de tiempo y precios",
+    sections: [
+      {
+        type: "heading",
+        text: "1. Las tres familias de verbos regulares lado a lado"
+      },
+      {
+        type: "paragraph",
+        text: "Observa cómo cambian las terminaciones en presente para las tres conjugaciones. Fíjate en que -ER e -IR comparten casi todas las formas excepto Nosotros y Vosotros:"
+      },
+      {
+        type: "table",
+        caption: "Tabla comparativa de verbos regulares (-AR / -ER / -IR)",
+        headers: ["Pronombre", "-AR (hablar / lavar)", "-ER (comer / beber)", "-IR (vivir / abrir)", "Patrón común"],
+        rows: [
+          ["Yo", "hablo / lavo (-o)", "como / bebo (-o)", "vivo / abro (-o)", "¡Todos terminan en -o!"],
+          ["Tú", "hablas / lavas (-as)", "comes / bebes (-es)", "vives / abres (-es)", "-ER y -IR usan -es"],
+          ["Él / Ella / Usted", "habla / lava (-a)", "come / bebe (-e)", "vive / abre (-e)", "-ER y -IR usan -e"],
+          ["Nosotros / Nosotras", "hablamos / lavamos (-amos)", "comemos / bebemos (-emos)", "vivimos / abrimos (-imos)", "Diferencia de vocal"],
+          ["Vosotros / Vosotras", "habláis / laváis (-áis)", "coméis / bebéis (-éis)", "vivís / abrís (-ís)", "Acento en la vocal"],
+          ["Ellos / Ellas / Ustedes", "hablan / lavan (-an)", "comen / beben (-en)", "viven / abren (-en)", "-ER y -IR usan -en"]
+        ]
+      },
+      {
+        type: "heading",
+        text: "2. Expresiones indispensables con el verbo TOMAR"
+      },
+      {
+        type: "paragraph",
+        text: "El verbo `tomar` es uno de los más versátiles y frecuentes del español cotidiano:"
+      },
+      {
+        type: "table",
+        caption: "Frases hechas con TOMAR",
+        headers: ["Expresión", "Significado (UK)", "Ejemplo en contexto"],
+        rows: [
+          ["tomar el sol", "засмагати", "Nosotros tomamos el sol en el parque."],
+          ["tomar medicina / una pastilla", "приймати ліки", "Ella tiene que tomar la medicina."],
+          ["tomar agua / café / té", "пити воду / каву", "Yo tomo un café por la mañana."],
+          ["tomar una decisión", "приймати рішення", "Él quiere tomar la decisión hoy."],
+          ["tomar el tren / autobús / metro", "сідати на потяг / автобус", "Ellos toman el tren para viajar."]
+        ]
+      },
+      {
+        type: "heading",
+        text: "3. Preguntar precios y momentos temporales"
+      },
+      {
+        type: "table",
+        caption: "Estructuras para preguntar cuánto y cuándo",
+        headers: ["Pregunta", "Uso", "Ejemplo", "Respuesta típica"],
+        rows: [
+          ["¿Cuánto cuesta...?", "Precio singular", "¿Cuánto cuesta el alquiler?", "Cuesta 800 euros."],
+          ["¿Cuánto cuestan...?", "Precio plural", "¿Cuánto cuestan las llaves?", "Cuestan 20 euros."],
+          ["¿Cuándo...?", "Momento en el tiempo", "¿Cuándo pagas el contrato?", "Pago mañana / hoy."],
+          ["¿Dónde...?", "Ubicación espacial", "¿Dónde está la puerta del jardín?", "Está aquí / allí."]
+        ]
+      }
+    ]
   },
 };

@@ -133,15 +133,6 @@ describe('Theory schema validation', () => {
     for (const { id, theory } of allTheoryContainers) {
       assert.ok(theory.title && typeof theory.title === 'string', `Theory ${id} missing string title`);
 
-      // Sentence weeks 1-5 use legacy image-based theory
-      if (theory.image) {
-        assert.ok(
-          typeof theory.image === 'string' && theory.image.trim().length > 0,
-          `Theory ${id} has invalid image path`
-        );
-        continue;
-      }
-
       assert.ok(Array.isArray(theory.sections), `Theory ${id} missing sections array`);
       assert.ok(theory.sections.length > 0, `Theory ${id} has empty sections array`);
 

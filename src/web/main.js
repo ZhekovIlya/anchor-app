@@ -163,16 +163,16 @@ function onTopicClick(topic) {
 }
 
 function onSentenceTheoryClick(theory) {
-  // Sentence-week theory: still uses the image modal
-  if (theory.image) {
+  if (theory.sections && theory.sections.length > 0) {
+    // Rich content theory (new style) — render in article view
+    renderWordTheoryArticle(elements, theory, () => onTopicClick(activeTopic));
+  } else if (theory.image) {
+    // Sentence-week theory fallback: legacy image modal
     elements.theoryModalTitle.textContent = theory.title;
     elements.theoryModalSubtitle.textContent = theory.subtitle;
     elements.theoryModalImage.src = theory.image;
     elements.theoryModal.classList.remove('hidden');
     elements.theoryModal.style.display = 'flex';
-  } else if (theory.sections) {
-    // Rich content theory (new style) — render in article view
-    renderWordTheoryArticle(elements, theory, () => onTopicClick(activeTopic));
   }
 }
 
