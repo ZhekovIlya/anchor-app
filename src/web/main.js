@@ -162,18 +162,27 @@ function onTopicClick(topic) {
   renderLessonsView(elements, topic, onLessonClick, initDashboard, onSentenceTheoryClick);
 }
 
+function openTheoryInLedger(topicOrTheoryId) {
+  setActiveHomeTab('theory');
+  renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
+    onTopicClick,
+    onReviewClick,
+    onMistakesClick,
+    onTheoryTopicClick,
+    onWordTopicClick,
+    onWordReviewClick,
+    onWordMistakesClick,
+    onReadAloudTabClick,
+    onAuditionsTabClick,
+    gamification,
+    storageAdapter: localStorageAdapter,
+    initialTheoryTopicId: topicOrTheoryId
+  });
+}
+
 function onSentenceTheoryClick(theory) {
-  if (theory.sections && theory.sections.length > 0) {
-    // Rich content theory (new style) — render in article view
-    renderWordTheoryArticle(elements, theory, () => onTopicClick(activeTopic));
-  } else if (theory.image) {
-    // Sentence-week theory fallback: legacy image modal
-    elements.theoryModalTitle.textContent = theory.title;
-    elements.theoryModalSubtitle.textContent = theory.subtitle;
-    elements.theoryModalImage.src = theory.image;
-    elements.theoryModal.classList.remove('hidden');
-    elements.theoryModal.style.display = 'flex';
-  }
+  const targetId = activeTopic ? activeTopic.id : (theory && theory.id ? theory.id : 'week_1_theory');
+  openTheoryInLedger(targetId);
 }
 
 function returnToActiveTopic() {
@@ -241,10 +250,7 @@ function onMistakesClick() {
 // ========================
 
 function onTheoryTopicClick(topic) {
-  renderTheoryArticle(elements, topic, () => {
-    setActiveHomeTab('theory');
-    initDashboard();
-  });
+  openTheoryInLedger(topic.id);
 }
 
 // ========================
@@ -261,7 +267,8 @@ function onWordTopicClick(topic) {
 }
 
 function onWordTopicTheoryClick(theory) {
-  renderWordTheoryArticle(elements, theory, () => onWordTopicClick(activeTopic));
+  const targetId = activeTopic ? activeTopic.id : (theory && theory.id ? theory.id : 'words_numbers');
+  openTheoryInLedger(targetId);
 }
 
 function buildWordExamItems(topic) {

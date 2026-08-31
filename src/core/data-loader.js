@@ -42,11 +42,12 @@ import wordsGustos from '../../data/words/gustos.js';
 
 import readAloudData from '../../data/read_aloud.js';
 
+import { getAllTheoryTopics } from './theory-registry.js';
 import { tokenize } from './tokenizer.js';
 
 /**
  * Load all content and return the three-pillar data structure.
- * @returns {{ sentences: Array, theory: Array, words: Array }}
+ * @returns {{ sentences: Array, theory: Array, words: Array, readAloud: Object }}
  */
 export function loadAllData() {
   const sentences = hydrateSentenceTopics([
@@ -54,7 +55,7 @@ export function loadAllData() {
     week6Data, week7Data, week8Data, week9Data, week10Data,
     week11Data, week12Data, week13Data, week14Data, topicsCoreData
   ]);
-  const theory = [theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan];
+  const theory = getAllTheoryTopics();
   const words = hydrateWordTopics([
     wordsNumbers, wordsTime, wordsWeather, wordsColors,
     wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,

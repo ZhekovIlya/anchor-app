@@ -7,6 +7,7 @@
 import { getCompletionCount } from './storage.js';
 import { renderStatsTab } from './stats-dashboard.js';
 import { localStorageAdapter } from './storage.js';
+import { renderTheoryLedgerView } from './theory-viewer.js';
 
 let activeTab = null;
 let activeHomeTab = 'sentences'; // Default to sentences
@@ -190,7 +191,7 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
   if (activeHomeTab === 'sentences') {
     renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick, onMistakesClick);
   } else if (activeHomeTab === 'theory') {
-    renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick);
+    renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick, callbacks.initialTheoryTopicId);
   } else if (activeHomeTab === 'words') {
     renderWordsTab(topicsContainer, data.words, srsWords, wordBank, onWordTopicClick, onWordReviewClick, onWordMistakesClick);
   } else if (activeHomeTab === 'readAloud') {
@@ -265,33 +266,12 @@ function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick,
   });
 }
 
-function renderTheoryTab(container, theoryTopics, onTheoryTopicClick) {
-  // Hide review section for theory
-  document.getElementById('reviewSection').style.display = 'none';
+function renderTheoryTab(container, theoryTopics, onTheoryTopicClick, initialTopicId) {
+  // Hide review section for theory tab
+  const reviewSection = document.getElementById('reviewSection');
+  if (reviewSection) reviewSection.style.display = 'none';
 
-  const header = document.createElement('div');
-  header.className = 'mb-2';
-  header.innerHTML = `<p class="font-body text-base text-on-surface-variant dark:text-stone-400 transition-colors duration-300">Grammar explanations, visual cheat sheets, and pattern recognition guides.</p>`;
-  container.appendChild(header);
-
-  for (const topic of theoryTopics) {
-    const card = document.createElement('div');
-    card.className = 'group relative bg-surface-container-lowest dark:bg-stone-850 rounded-xl p-6 transition-all hover:bg-surface-container-low dark:hover:bg-stone-800 cursor-pointer flex items-center justify-between border border-outline-variant/30 dark:border-stone-800 shadow-sm hover:border-primary/50 dark:hover:border-emerald-500/50 gap-4 transition-colors duration-300';
-    card.innerHTML = `
-      <div class="flex items-center gap-4 pl-2">
-        <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-emerald-600/20 flex items-center justify-center flex-shrink-0 transition-colors duration-300">
-          <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-2xl transition-colors duration-300" style="font-variation-settings: 'FILL' 1;">${topic.icon}</span>
-        </div>
-        <div>
-          <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300">${topic.title}</h3>
-          <p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mt-0.5 transition-colors duration-300">${topic.description}</p>
-        </div>
-      </div>
-      <span class="material-symbols-outlined text-primary/40 dark:text-emerald-500/40 group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors duration-300 text-2xl">arrow_forward</span>
-    `;
-    card.addEventListener('click', () => onTheoryTopicClick(topic));
-    container.appendChild(card);
-  }
+  renderTheoryLedgerView(container, { initialTopicId });
 }
 
 function renderWordsTab(container, wordTopics, srs, wordBank, onWordTopicClick, onWordReviewClick, onWordMistakesClick) {
