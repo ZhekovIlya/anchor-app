@@ -154,5 +154,29 @@ describe('Live typing assist punctuation tolerance', () => {
     assert.ok(el.innerHTML.includes(`<span class="${verbColor}">Quier</span>`), `Expected partial match Quier in ${el.innerHTML}`);
     assert.ok(el.innerHTML.includes(`<span>x</span>`), `Expected uncolored typo x in ${el.innerHTML}`);
   });
+
+  test('color assist wraps spaces in <span> elements so flexbox does not suppress them', () => {
+    const phrase = makePhrase('Yo hablo español');
+    const el = makeMockElement();
+
+    renderFakeInput(el, 'Yo hablo', phrase);
+    assert.ok(el.innerHTML.includes('<span> </span>'), `Expected space wrapped in span tag, got: ${el.innerHTML}`);
+    assert.strictEqual(
+      el.innerHTML,
+      `<span class="${COLOR_MAP['subject']}">Yo</span><span> </span><span class="${COLOR_MAP['verb']}">hablo</span>`
+    );
+  });
+
+  test('color assist preserves typed space immediately after word completion', () => {
+    const phrase = makePhrase('Yo hablo español');
+    const el = makeMockElement();
+
+    renderFakeInput(el, 'Yo ', phrase);
+    assert.strictEqual(
+      el.innerHTML,
+      `<span class="${COLOR_MAP['subject']}">Yo</span><span> </span>`
+    );
+  });
 });
+
 

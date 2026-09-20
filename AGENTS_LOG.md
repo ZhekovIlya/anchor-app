@@ -1,5 +1,32 @@
 # AGENTS LOG
 
+## Current Task: Fix Drill Input Line Missing Spaces (P0)
+
+### **[DEV] (The Builder):**
+- Created task branch `task/fix-drill-input-spaces`.
+- Identified root cause in `renderFakeInput()` (`src/web/drill-ui.js`): typed spaces were concatenated as raw text (`html += typedSpaces`). Because `#fakeInput` uses `display: flex`, CSS flexbox specifications treat contiguous whitespace text nodes as anonymous flex items and suppress their rendering (`display: none`), causing typed spaces to render with 0px width and words to visually collide.
+- Updated `renderFakeInput()` in `src/web/drill-ui.js` to wrap typed spaces in explicit elements: `html += <span>${esc(typedSpaces)}</span>;`.
+- Verified in Chromium via Playwright that spaces now render with correct geometry (width ~8.89px, proper margins between words, and matching caret alignment).
+- Added unit tests in `tests/engine.test.js` validating space wrapping in spans and immediate rendering upon hitting space after words.
+
+### **[AQA] (Technical QA):**
+- Verified token logic across punctuation tolerance and space matching: user typing assist preserves exact typed spaces, respects multiple consecutive spaces, and continues matching cleanly across words with or without optional punctuation (`¿`, `¡`, `,`, `.`).
+- Ran complete test suite (`npm test`): 26/26 tests passing across 8 suites with 0 failures.
+
+### **[QA] (Product QA):**
+- Verified user drill UX: pressing space immediately advances the visible styled text in `fakeInput`, matching the transparent `strictInput` caret position.
+- Confirmed words no longer bunch together in active drills and that feedback/scoring layers continue functioning with zero regression.
+
+### **Status:**
+- [X] Root cause identified (flexbox anonymous whitespace item suppression).
+- [X] Fixed in `src/web/drill-ui.js` with `<span>` wrapping.
+- [X] Automated unit tests added in `tests/engine.test.js` (26/26 passing).
+- [X] Headless browser layout verified in Chromium.
+- [X] Production build (`npm run build`) verified and Service Worker stamped.
+- [X] Rule documented in `LESSONS_LEARNED.md`.
+
+---
+
 ## Current Task: Theory Tab Redesign — High-Density Ledger (Stitch Screen 48aeb4e405db46209cf3db93b0a5c82f)
 
 ### **[DEV] (The Builder):**

@@ -824,7 +824,7 @@ export function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
           uIdx++;
         }
         const typedSpaces = userInput.substring(tokenStartUIdx, uIdx);
-        html += typedSpaces;
+        html += `<span>${esc(typedSpaces)}</span>`;
       } else {
         tokenMatched = false;
       }
