@@ -8,6 +8,8 @@ import { getCompletionCount } from './storage.js';
 import { renderStatsTab } from './stats-dashboard.js';
 import { localStorageAdapter } from './storage.js';
 import { renderTheoryLedgerView } from './theory-viewer.js';
+import { EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from '../core/constants.js';
+import { LEARNING_PATHS, buildLessonIndex, getPathProgress } from '../core/learning-paths.js';
 
 let activeTab = null;
 let activeHomeTab = 'sentences'; // Default to sentences
@@ -107,8 +109,8 @@ const LESSON_THEMES = {
 // STATUS HELPERS
 // ========================
 
-export const EXAM_MASTERED_THRESHOLD = 5;
-export const LESSON_MASTERED_THRESHOLD = 3;
+// Thresholds live in core/constants.js; re-exported here for existing web imports.
+export { EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD };
 
 function getTopicStatus(topic) {
   const lessons = topic.lessons;
@@ -189,7 +191,7 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
   });
 
   if (activeHomeTab === 'sentences') {
-    renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick, onMistakesClick);
+    renderSentencesTab(topicsContainer, data.sentences, srsSentences, phraseBank, onTopicClick, onReviewClick, onMistakesClick, callbacks.onPathLessonClick);
   } else if (activeHomeTab === 'theory') {
     renderTheoryTab(topicsContainer, data.theory, onTheoryTopicClick, callbacks.initialTheoryTopicId);
   } else if (activeHomeTab === 'words') {
@@ -201,7 +203,7 @@ export function renderDashboard(elements, data, srsSentences, srsWords, phraseBa
   }
 }
 
-function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick, onReviewClick, onMistakesClick) {
+function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick, onReviewClick, onMistakesClick, onPathLessonClick) {
   // Daily Review Card
   const dueCount = srs.getDueCount(phraseBank);
   const mistakesCount = srs.getMistakesCount(phraseBank);
@@ -232,6 +234,9 @@ function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick,
     practiceMistakesBtn.classList.add('hidden');
     practiceMistakesBtn.classList.remove('flex');
   }
+
+  // Learning path card(s) — pinned above the week cards
+  renderLearningPathCards(container, sentences, onPathLessonClick);
 
   // Week cards
   const activeWeeks = sentences.filter(topic => !topic.legacy);
@@ -264,6 +269,137 @@ function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick,
     topicBtn.addEventListener('click', () => onTopicClick(topic));
     container.appendChild(topicBtn);
   });
+}
+
+// ========================
+// LEARNING PATH CARD ("Domina el Pasado")
+// ========================
+
+const expandedPathSteps = new Set(); // keys like "path_past:2"
+
+const PATH_STATUS_ICON = {
+  mastered: '<span class="material-symbols-outlined text-[#ca8a04] dark:text-amber-400 text-2xl flex-shrink-0">workspace_premium</span>',
+  completed: '<span class="material-symbols-outlined text-[#16a34a] dark:text-emerald-400 text-2xl flex-shrink-0">check_circle</span>',
+  new: '<span class="material-symbols-outlined text-outline dark:text-stone-600 text-2xl flex-shrink-0">radio_button_unchecked</span>',
+};
+
+function pathStepStatus(step) {
+  if (step.isMastered) return 'mastered';
+  if (step.isDone) return 'completed';
+  return 'new';
+}
+
+function renderLearningPathCards(container, sentences, onPathLessonClick) {
+  if (!onPathLessonClick) return;
+  const lessonIndex = buildLessonIndex(sentences);
+
+  for (const path of LEARNING_PATHS) {
+    const completions = {};
+    for (const step of path.steps) {
+      for (const id of step.lessonIds) completions[id] = getCompletionCount(id);
+    }
+    const progress = getPathProgress(path, completions, lessonIndex);
+    container.appendChild(buildPathCard(path, progress, onPathLessonClick));
+  }
+}
+
+function buildPathCard(path, progress, onPathLessonClick) {
+  const overallPercent = progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
+
+  const card = document.createElement('div');
+  card.className = 'w-full rounded-2xl p-6 border border-primary/20 dark:border-emerald-600/30 bg-gradient-to-br from-primary-container/20 to-surface-container-lowest dark:from-emerald-900/20 dark:to-stone-850 shadow-sm flex flex-col gap-5 transition-colors duration-300';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'flex items-center gap-4';
+  header.innerHTML = `
+    <div class="w-12 h-12 rounded-xl bg-primary/10 dark:bg-emerald-600/20 flex items-center justify-center flex-shrink-0">
+      <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-2xl" style="font-variation-settings: 'FILL' 1;">route</span>
+    </div>
+    <div class="flex-grow min-w-0">
+      <h3 class="font-headline text-2xl text-primary dark:text-emerald-400 break-words">${path.title}</h3>
+      <p class="font-body text-sm text-on-surface-variant dark:text-stone-400">${path.subtitle}</p>
+    </div>
+    <span class="font-body text-sm font-medium text-primary dark:text-emerald-400 flex-shrink-0">${progress.done}/${progress.total}</span>`;
+  card.appendChild(header);
+
+  const overallBar = document.createElement('div');
+  overallBar.className = 'bg-surface-variant dark:bg-stone-800 rounded-full h-2 overflow-hidden';
+  overallBar.innerHTML = `<div class="bg-primary dark:bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: ${overallPercent}%"></div>`;
+  card.appendChild(overallBar);
+
+  // Next-lesson button (or completion trophy)
+  if (progress.next) {
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'w-full flex items-center justify-between gap-4 px-6 py-5 rounded-xl bg-primary dark:bg-emerald-600 text-on-primary shadow-md hover:opacity-90 cursor-pointer outline-none text-left transition-all duration-300';
+    nextBtn.innerHTML = `
+      <div class="min-w-0">
+        <div class="font-headline text-xl font-bold">Siguiente lección →</div>
+        <div class="font-body text-sm opacity-90 truncate">${progress.next.stepLabel} · ${progress.next.title}</div>
+      </div>
+      <span class="material-symbols-outlined text-3xl flex-shrink-0">play_arrow</span>`;
+    nextBtn.addEventListener('click', () => onPathLessonClick(progress.next.lessonId));
+    card.appendChild(nextBtn);
+  } else {
+    const done = document.createElement('div');
+    done.className = 'w-full flex items-center justify-center gap-3 px-6 py-5 rounded-xl bg-[#fefce8] dark:bg-amber-950/20 border border-[#fef08a] dark:border-yellow-600/30';
+    done.innerHTML = `${PATH_STATUS_ICON.mastered}<span class="font-headline text-xl font-bold text-[#854d0e] dark:text-amber-300">¡Camino completado!</span>`;
+    card.appendChild(done);
+  }
+
+  // Steps
+  const list = document.createElement('div');
+  list.className = 'flex flex-col gap-2';
+
+  progress.steps.forEach((step, stepIndex) => {
+    const key = `${path.id}:${stepIndex}`;
+    const status = pathStepStatus(step);
+    const percent = step.total > 0 ? Math.round((step.done / step.total) * 100) : 0;
+    const barColor = status === 'mastered' ? GOLD.bar : (status === 'completed' ? GREEN.bar : 'bg-primary dark:bg-emerald-600');
+    const isOpen = expandedPathSteps.has(key);
+    const isCurrent = progress.next && progress.next.stepIndex === stepIndex;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = `rounded-xl border bg-surface-container-lowest dark:bg-stone-850 transition-colors duration-300 ${isCurrent ? 'border-primary/50 dark:border-emerald-500/50' : 'border-outline-variant/30 dark:border-stone-800'}`;
+
+    const row = document.createElement('button');
+    row.className = 'w-full flex items-center gap-3 p-4 text-left cursor-pointer outline-none';
+    row.innerHTML = `
+      ${PATH_STATUS_ICON[status]}
+      <div class="flex-grow min-w-0">
+        <div class="font-label font-bold text-on-surface dark:text-stone-100 truncate">${step.label}</div>
+        <div class="mt-2 bg-surface-variant dark:bg-stone-800 rounded-full h-1.5 overflow-hidden">
+          <div class="${barColor} h-1.5 rounded-full transition-all duration-300" style="width: ${percent}%"></div>
+        </div>
+      </div>
+      <span class="font-body text-xs text-on-surface-variant dark:text-stone-400 flex-shrink-0">${step.done}/${step.total}</span>
+      <span class="material-symbols-outlined text-on-surface-variant dark:text-stone-400 flex-shrink-0 path-chevron">${isOpen ? 'expand_less' : 'expand_more'}</span>`;
+
+    const panel = document.createElement('div');
+    panel.className = `${isOpen ? '' : 'hidden '}flex flex-col gap-1 px-3 pb-3`;
+    step.lessons.forEach((lesson) => {
+      const lessonBtn = document.createElement('button');
+      lessonBtn.className = 'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-left cursor-pointer outline-none hover:bg-surface-container-low dark:hover:bg-stone-800 transition-colors duration-300';
+      lessonBtn.innerHTML = `
+        <span class="font-body text-sm text-on-surface dark:text-stone-200 truncate">${lesson.title}</span>
+        ${PATH_STATUS_ICON[lesson.status]}`;
+      lessonBtn.addEventListener('click', () => onPathLessonClick(lesson.id));
+      panel.appendChild(lessonBtn);
+    });
+
+    row.addEventListener('click', () => {
+      const nowOpen = panel.classList.toggle('hidden') === false;
+      if (nowOpen) expandedPathSteps.add(key); else expandedPathSteps.delete(key);
+      row.querySelector('.path-chevron').textContent = nowOpen ? 'expand_less' : 'expand_more';
+    });
+
+    wrapper.appendChild(row);
+    wrapper.appendChild(panel);
+    list.appendChild(wrapper);
+  });
+
+  card.appendChild(list);
+  return card;
 }
 
 function renderTheoryTab(container, theoryTopics, onTheoryTopicClick, initialTopicId) {

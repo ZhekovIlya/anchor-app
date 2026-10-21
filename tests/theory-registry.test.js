@@ -11,12 +11,12 @@ import {
 } from '../src/core/theory-registry.js';
 
 describe('Theory Registry validation', () => {
-  test('registers exactly 30 unique theory topics', () => {
+  test('registers exactly 32 unique theory topics', () => {
     const topics = getAllTheoryTopics();
-    assert.strictEqual(topics.length, 30, 'Expected exactly 30 theory modules');
+    assert.strictEqual(topics.length, 32, 'Expected exactly 32 theory modules');
     
     const ids = new Set(topics.map(t => t.id));
-    assert.strictEqual(ids.size, 30, 'Topic IDs must all be unique');
+    assert.strictEqual(ids.size, 32, 'Topic IDs must all be unique');
   });
 
   test('every topic belongs to a valid category in THEORY_CATEGORIES', () => {
@@ -40,7 +40,7 @@ describe('Theory Registry validation', () => {
     assert.strictEqual(grouped.length, 6);
     
     const totalGrouped = grouped.reduce((sum, g) => sum + g.topics.length, 0);
-    assert.strictEqual(totalGrouped, 30, 'Grouped total must equal 30 topics');
+    assert.strictEqual(totalGrouped, 32, 'Grouped total must equal 32 topics');
   });
 
   test('getTheoryTopicById resolves by direct ID and sourceId', () => {
@@ -76,6 +76,6 @@ describe('Theory Registry validation', () => {
     assert.strictEqual(emptyMatches.length, 0);
 
     const allMatches = searchTheoryTopics('');
-    assert.strictEqual(allMatches.length, 30);
+    assert.strictEqual(allMatches.length, 32);
   });
 });

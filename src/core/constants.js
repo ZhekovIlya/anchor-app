@@ -76,6 +76,10 @@ export const DRILL_MODE = {
   WORD: 'word',
 };
 
+/** Completion thresholds for 'mastered' status (lesson vs. exam — see LESSONS_LEARNED) */
+export const LESSON_MASTERED_THRESHOLD = 3;
+export const EXAM_MASTERED_THRESHOLD = 5;
+
 /** Maximum mistakes allowed before an exam is failed */
 export const EXAM_MAX_MISTAKES = 5;
 

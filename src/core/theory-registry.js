@@ -1,7 +1,7 @@
 // ========================
 // THEORY REGISTRY
 // ========================
-// Unified catalog of all 30 theory modules across Standalone, Sentences, and Word Drills.
+// Unified catalog of all 32 theory modules across Standalone, Sentences, and Word Drills.
 // Pure logic — Node.js compatible, DOM-free.
 
 import week1Data from '../../data/sentences/week_1.js';
@@ -36,6 +36,8 @@ import wordsTiempo from '../../data/words/tiempo_frecuencia.js';
 import wordsDirecciones from '../../data/words/direcciones.js';
 import wordsProfesiones from '../../data/words/profesiones.js';
 import wordsGustos from '../../data/words/gustos.js';
+import wordsRestaurante from '../../data/words/restaurante.js';
+import wordsConectores from '../../data/words/conectores.js';
 
 export const THEORY_CATEGORIES = [
   {
@@ -93,7 +95,7 @@ export const POPULAR_TAGS = [
 ];
 
 /**
- * Raw definition table mapping all 30 theory modules with category metadata.
+ * Raw definition table mapping all 32 theory modules with category metadata.
  */
 const THEORY_DEFINITIONS = [
   // --- 1. FUNDAMENTOS ---
@@ -385,6 +387,26 @@ const THEORY_DEFINITIONS = [
     tags: ['vocabulario', 'colores', 'concordancia', 'adjetivos'],
     getData: () => wordsColors.theory
   },
+  {
+    id: 'words_restaurante_theory',
+    source: 'words',
+    sourceId: 'words_restaurante',
+    sourceLabel: 'Vocabulario',
+    category: 'vocabulario',
+    icon: 'restaurant',
+    tags: ['vocabulario', 'restaurante', 'comida', 'propina', 'pedir'],
+    getData: () => wordsRestaurante.theory
+  },
+  {
+    id: 'words_conectores_theory',
+    source: 'words',
+    sourceId: 'words_conectores',
+    sourceLabel: 'Vocabulario',
+    category: 'vocabulario',
+    icon: 'forum',
+    tags: ['vocabulario', 'conectores', 'si-sí', 'soler', 'regresar-volver'],
+    getData: () => wordsConectores.theory
+  },
 
   // --- 6. REGIONAL E INMERSIÓN ---
   {
@@ -410,7 +432,7 @@ const THEORY_DEFINITIONS = [
 ];
 
 /**
- * Hydrates all 30 theory topics into standardized objects.
+ * Hydrates all 32 theory topics into standardized objects.
  * @returns {Array<Object>}
  */
 export function getAllTheoryTopics() {

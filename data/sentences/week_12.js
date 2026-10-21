@@ -93,7 +93,36 @@ const week12Lessons = [
     ],
   },
   { id: "w12_m2", tab: "problemas", exam: true, mini: true, title: "Mini-examen: Problemas" },
-  { id: "w12_exam", exam: true, title: "Examen de la Semana 12" },
+  // ═══════════════════════════════════════════════════════
+  // TAB 3: RESTAURANTE
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "w12_l7",
+    tab: "restaurante",
+    title: "Entrar y Pedir",
+    phrases: [
+      { ru: "Мы входим в ресторан и просим столик.", uk: "Ми заходимо до ресторану і просимо столик.", es: "Entramos al restaurante y pedimos la mesa." },
+      { ru: "Перед едой официант приносит столовые приборы.", uk: "Перед їжею офіціант приносить столові прибори.", es: "Antes de comer, el camarero trae los cubiertos." },
+      { ru: "Чтобы вытереть рот, мы используем салфетку.", uk: "Щоб витерти рот, ми використовуємо серветку.", es: "Para limpiar la boca usamos la servilleta." },
+      { ru: "Перед основным блюдом мы заказываем закуски.", uk: "Перед основною стравою ми замовляємо закуски.", es: "Antes del plato principal pedimos los entrantes." },
+      { ru: "Сначала мы едим первое блюдо.", uk: "Спочатку ми їмо першу страву.", es: "Primero comemos el primer plato." },
+      { ru: "После первого блюда мы едим второе.", uk: "Після першої страви ми їмо другу.", es: "Después del primer plato comemos el segundo plato." }
+    ],
+  },
+  {
+    id: "w12_l8",
+    tab: "restaurante",
+    title: "Postre, Cuenta y Propina",
+    phrases: [
+      { ru: "После второго блюда мы заказываем десерт.", uk: "Після другої страви ми замовляємо десерт.", es: "Después del segundo plato pedimos el postre." },
+      { ru: "В конце обеда мы просим счёт.", uk: "Наприкінці обіду ми просимо рахунок.", es: "Al final de la comida pedimos la cuenta." },
+      { ru: "После оплаты мы оставляем чаевые, если мы довольны.", uk: "Після оплати ми залишаємо чайові, якщо ми задоволені.", es: "Después de pagar, dejamos la propina si estamos contentos." },
+      { ru: "Мы оставляем чаевые, если нам понравилось обслуживание.", uk: "Ми залишаємо чайові, якщо нам сподобалося обслуговування.", es: "Dejamos la propina si nos gustó el servicio." },
+      { ru: "На завтрашний вечер мы делаем бронь.", uk: "На завтрашній вечір ми робимо бронювання.", es: "Para mañana por la noche hacemos la reserva." },
+      { ru: "Мы заказываем комплексный обед, чтобы сэкономить.", uk: "Ми замовляємо комплексний обід, щоб заощадити.", es: "Pedimos el menú del día para ahorrar." }
+    ],
+  },
+  { id: "w12_m3", tab: "restaurante", exam: true, mini: true, title: "Mini-examen: Restaurante" },  { id: "w12_exam", exam: true, title: "Examen de la Semana 12" },
 ];
 
 export default {
@@ -166,7 +195,8 @@ export default {
   },
   tabs: [
     { id: 'reserva', label: 'Reserva' },
-    { id: 'problemas', label: 'Problemas y Recepción' }
+    { id: 'problemas', label: 'Problemas y Recepción' },
+    { id: 'restaurante', label: 'Restaurante' }
   ],
   lessons: week12Lessons
 };

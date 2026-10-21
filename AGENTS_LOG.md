@@ -1,5 +1,59 @@
 # AGENTS LOG
 
+## Current Task: Past Tense Path and Restaurant Vocab (Guided Learning Route & New Vocabulary)
+
+### **[DEV] (The Builder):**
+- Created task branch `task/past-tense-path-and-restaurant-vocab`.
+- Implemented `src/core/learning-paths.js` (DOM-free core module) defining `LEARNING_PATHS` with ordered guided steps for Pretérito Indefinido:
+  - Step 1: Week 5 -AR (`w5_l1`..`w5_l7`, `w5_exam_ar`)
+  - Step 2: Week 5 -ER/-IR (`w5_l8`..`w5_l14`, `w5_exam_erir`)
+  - Step 3: Week 5 Repaso (`w5_l15`..`w5_l20`, `w5_exam_review`)
+  - Step 4: Week 6 Ayer en Barcelona (`w6_l7`..`w6_l13`, `w6_exam_past`)
+  - Step 5: Todas las personas regular (`w6_l13b`, `w11_l1`..`w11_l3`, `w11_m1`)
+  - Step 6: Verbos irregulares (`w11_l4`..`w11_l6`, `w11_m2`)
+  - Step 7: Contar y biografía (`w7_l12`, `w14_l1`..`w14_l6`, `w14_m1`, `w14_m2`)
+- Exported `getPathProgress(path, completionsMap)` calculating step and overall progress and resolving `next` lesson using existing thresholds (`LESSON_MASTERED_THRESHOLD = 3`, `EXAM_MASTERED_THRESHOLD = 5`).
+- Centralized `LESSON_MASTERED_THRESHOLD` and `EXAM_MASTERED_THRESHOLD` in `src/core/constants.js` and re-exported from `dashboard.js`.
+- Added "Domina el Pasado" card at top of dashboard with overall progress bar, step progress bars, intuitive icons (`check_circle`, `workspace_premium`, `radio_button_unchecked`), collapsible step accordion, and primary "Siguiente lección →" CTA directly launching the next uncompleted lesson into `drillView`.
+- Created word topic `data/words/restaurante.js` (`words_restaurante`) with 2 lessons of exactly 12 words, RU/UK translations, and theory table "Orden de la comida".
+- Created word topic `data/words/conectores.js` (`words_conectores`) with 2 lessons of exactly 12 words, incorporating required corrections (`llena de gente`, `conocer la ciudad`, `pasear`, `si` vs `sí`, `soler` conjugation, `regresar` vs `volver`).
+- Added tab `{ id: 'restaurante', label: 'Restaurante' }` to `data/sentences/week_12.js` with 2 lessons × 6 phrases (`w12_l7`, `w12_l8`) and mini-exam `w12_m3`, strictly present/past tense without subjunctive.
+- Registered all new modules in `src/core/data-loader.js` and `src/core/theory-registry.js`.
+
+### **[AQA] (Technical QA):**
+- Added automated unit test suite `tests/learning-paths.test.js` validating:
+  - Every `lessonId` across all path steps resolves in `loadAllData().sentences`.
+  - No duplicate lesson IDs inside paths.
+  - Threshold calculation (3 completions for regular lessons, 5 for exams).
+  - Next lesson selection logic when empty, partially completed, or fully mastered.
+- Added test assertions in `tests/validate-data.test.js` verifying:
+  - Every lesson tab is declared in topic `tabs` array.
+  - `week_12.js` restaurante lessons have exactly 6 phrases each with valid `uk` translations.
+  - Global lesson ID uniqueness across all sentence and word files.
+- Updated `tests/theory-registry.test.js` for the 32 cataloged theory modules.
+- Executed full test suite (`npm test`): 39/39 tests passing across 11 suites with 0 failures.
+- Headless browser verification with Playwright: verified path card rendering, accordion toggle, "Siguiente lección →" drill launch and return, word topic cards, and theory article view.
+
+### **[QA] (Product QA):**
+- Verified exact 12-word sizing for word topics and 6-phrase sizing for sentence lessons.
+- Verified semantic accuracy of RU and UK translations for restaurant vocabulary and connectors.
+- Verified grammar purity: excluded subjunctive expressions (e.g. `cuando llegue`), strictly maintaining present/past indicative.
+- Verified 80/20 curriculum principles and smooth pedagogical progression from basic past -AR/-ER/-IR through mixed person forms and irregulars up to autobiographical narrative application.
+
+### **Status:**
+- [X] Task branch created (`task/past-tense-path-and-restaurant-vocab`).
+- [X] Task A implemented (Learning path core logic, UI card, unit tests).
+- [X] Task B implemented (`data/words/restaurante.js`).
+- [X] Task C implemented (`data/words/conectores.js`).
+- [X] Task D implemented (`week_12.js` restaurante tab).
+- [X] All tests passing (`npm test`: 39/39).
+- [X] Browser verification completed, dev server terminated.
+- [X] Rules updated in `LESSONS_LEARNED.md`.
+- [X] Agent log updated.
+
+---
+
+
 ## Current Task: Fix Drill Input Line Missing Spaces (P0)
 
 ### **[DEV] (The Builder):**
@@ -801,16 +855,16 @@
 - [X] Verified tests run and pass.
 - [X] Committed to `task/cannot-speak`.
 
- # #   C u r r e n t   T a s k :   B u g f i x   P u n c t u a t i o n   m a t c h i n g   d u r i n g   d r i l l s 
- -   B r a n c h   \ 	 a s k / p u n c t u a t i o n - f i x \   c r e a t e d . 
- -   [ X ]   U p d a t e d   \ L E S S O N S _ L E A R N E D . m d \   t o   e s t a b l i s h   r u l e   o n   p u n c t u a t i o n   s t r i p p i n g . 
- -   [ X ]   U p d a t e d   \ s r c / w e b / d r i l l - u i . j s \   \ c l e a n W o r d \   t o   s t r i p   p u n c t u a t i o n   v i a   \ / [ ^ \ p { L } \ p { N } \ s ] / g u \ . 
- -   [ X ]   U p d a t e d   \ s r c / c o r e / e n g i n e . j s \   \ c h e c k A n s w e r \   t o   s t r i p   p u n c t u a t i o n   f o r   e x a c t   m a t c h   c o m p a r i s o n s . 
- -   * * [ D E V ] : * *   U s e d   u n i c o d e   p r o p e r t y   e s c a p e s   t o   e n s u r e   p u n c t u a t i o n   l i k e   \ ¿ \ ,   \ ¡ \ ,   \ & \ ,   a n d   \ , \   a r e   s t r i p p e d   w i t h o u t   a f f e c t i n g   a c c e n t e d   c h a r a c t e r s . 
- -   * * [ A Q A ] : * *   C h e c k e d   \ c l e a n W o r d \   a n d   \ c h e c k A n s w e r \ .   V a l i d a t e d   t h a t   \ d i s t \   c h e c k i n g   f o r   t y p o s   p r e s e r v e s   e x a c t   m i s m a t c h   c h e c k i n g . 
- -   * * [ Q A ] : * *   C o n f i r m e d   t h i s   r e s o l v e s   t h e   s p e e c h   r e c o g n i t i o n   b u g s   a n d   t h e   ¿ C ó m o   s e   l l a m a   e s o   q u e . . . ?   b u g   w i t h o u t   a f f e c t i n g   S p a n i s h   g r a m m a r   c h e c k s . 
-  
- - Updated speech validation in drill-ui.js, audition-ui.js, and read-aloud-ui.js to not fail on first error and allow 60% accuracy threshold for progressing.
+## Current Task: Bugfix Punctuation matching during drills
+- Branch \	ask/punctuation-fix\ created.
+- [X] Updated \LESSONS_LEARNED.md\ to establish rule on punctuation stripping.
+- [X] Updated \src/web/drill-ui.js\ \cleanWord\ to strip punctuation via \/[^\p{L}\p{N}\s]/gu\.
+- [X] Updated \src/core/engine.js\ \checkAnswer\ to strip punctuation for exact match comparisons.
+- **[DEV]:** Used unicode property escapes to ensure punctuation like \¿\, \¡\, \& \, and \,\ are stripped without affecting accented characters.
+- **[AQA]:** Checked \cleanWord\ and \checkAnswer\. Validated that \dist\ checking for typos preserves exact mismatch checking.
+- **[QA]:** Confirmed this resolves the speech recognition bugs and the ¿Cómo se llama eso que...? bug without affecting Spanish grammar checks.
+
+- Updated speech validation in drill-ui.js, audition-ui.js, and read-aloud-ui.js to not fail on first error and allow 60% accuracy threshold for progressing.
 - Updated 'Type Instead' fallback in drill-ui.js to prepopulate inputField with the user's spoken transcript.
 
 
@@ -827,8 +881,8 @@
 **[AQA]:** Verified: 12 words in lesson, correct { ru, uk, es } shape, theory sections all typed correctly, subtitle present, import added to data-loader. All 10 automated tests pass.
 **[QA]:** Pedagogically sound for RU/UK speakers. Contextual hints in translations prevent the classic qué/cuál confusion. All 4 cuánto gender/number forms drilled. por qué includes reminder about porque answer form. Cheat sheet callout aids retention.
 **Status:** ? Committed to branch. Awaiting user review/testing before merge.
-` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
- 
+`n## Task: Fix Opacity and Messages`n**[DEV]:** Fixed opacity issue and updated Practice Mistakes UI message. Committed to branch and merged to main.`n**[AQA]:** Verified code changes are clean.`n**[QA]:** Confirmed UX improvements for feedback match specifications.
+
 **Status:** ? Committed to branch. Awaiting user review/testing before merge.
 ` n # #   T a s k :   F i x   O p a c i t y   a n d   M e s s a g e s ` n * * [ D E V ] : * *   F i x e d   o p a c i t y   i s s u e   a n d   u p d a t e d   P r a c t i c e   M i s t a k e s   U I   m e s s a g e .   C o m m i t t e d   t o   b r a n c h   a n d   m e r g e d   t o   m a i n . ` n * * [ A Q A ] : * *   V e r i f i e d   c o d e   c h a n g e s   a r e   c l e a n . ` n * * [ Q A ] : * *   C o n f i r m e d   U X   i m p r o v e m e n t s   f o r   f e e d b a c k   m a t c h   s p e c i f i c a t i o n s .  
  

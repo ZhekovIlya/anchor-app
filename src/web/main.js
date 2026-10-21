@@ -145,6 +145,7 @@ function initDashboard() {
     onTopicClick,
     onReviewClick,
     onMistakesClick,
+    onPathLessonClick,
     onTheoryTopicClick,
     onWordTopicClick,
     onWordReviewClick,
@@ -168,6 +169,7 @@ function openTheoryInLedger(topicOrTheoryId) {
     onTopicClick,
     onReviewClick,
     onMistakesClick,
+    onPathLessonClick,
     onTheoryTopicClick,
     onWordTopicClick,
     onWordReviewClick,
@@ -225,6 +227,27 @@ function onLessonClick(lesson) {
   const drillPhrases = isExam ? buildExamPhrases(activeTopic, lesson) : lesson.phrases;
 
   startDrill(elements, drillPhrases, activeTopic, lesson, isExam, false, srsSentences, returnToActiveTopic, isTabExam, DRILL_MODE.SENTENCE, gamification, getSessionPace());
+}
+
+/**
+ * Launch a lesson from a Learning Path card (e.g. "Siguiente lección →").
+ * Resolves the owning week topic so exam pools (buildExamPhrases) and the drill
+ * context work exactly like a normal launch, but returns to the dashboard afterwards.
+ */
+function onPathLessonClick(lessonId) {
+  const topic = data.sentences.find(t => t.lessons.some(l => l.id === lessonId));
+  if (!topic) return;
+  const lesson = topic.lessons.find(l => l.id === lessonId);
+
+  activeTopic = topic;
+  activeMode = 'sentences';
+  setActiveHomeTab('sentences');
+
+  const isExam = !!lesson.exam;
+  const isTabExam = isExam && !!lesson.tab;
+  const drillPhrases = isExam ? buildExamPhrases(topic, lesson) : lesson.phrases;
+
+  startDrill(elements, drillPhrases, topic, lesson, isExam, false, srsSentences, initDashboard, isTabExam, DRILL_MODE.SENTENCE, gamification, getSessionPace());
 }
 
 function onReviewClick() {

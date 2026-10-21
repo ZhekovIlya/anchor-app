@@ -39,6 +39,8 @@ import wordsTiempo from '../../data/words/tiempo_frecuencia.js';
 import wordsDirecciones from '../../data/words/direcciones.js';
 import wordsProfesiones from '../../data/words/profesiones.js';
 import wordsGustos from '../../data/words/gustos.js';
+import wordsRestaurante from '../../data/words/restaurante.js';
+import wordsConectores from '../../data/words/conectores.js';
 
 import readAloudData from '../../data/read_aloud.js';
 
@@ -59,7 +61,7 @@ export function loadAllData() {
   const words = hydrateWordTopics([
     wordsNumbers, wordsTime, wordsWeather, wordsColors,
     wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,
-    wordsProfesiones, wordsGustos
+    wordsProfesiones, wordsGustos, wordsRestaurante, wordsConectores
   ]);
 
   return { sentences, theory, words, readAloud: readAloudData };

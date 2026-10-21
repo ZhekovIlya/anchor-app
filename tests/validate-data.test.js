@@ -38,6 +38,8 @@ import wordsTiempo from '../data/words/tiempo_frecuencia.js';
 import wordsDirecciones from '../data/words/direcciones.js';
 import wordsProfesiones from '../data/words/profesiones.js';
 import wordsGustos from '../data/words/gustos.js';
+import wordsRestaurante from '../data/words/restaurante.js';
+import wordsConectores from '../data/words/conectores.js';
 
 const allTopics = [
   week1, week2, week3, week4, week5, week6,
@@ -48,7 +50,7 @@ const allTopics = [
 const allWordTopics = [
   wordsNumbers, wordsTime, wordsWeather, wordsColors,
   wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,
-  wordsProfesiones, wordsGustos
+  wordsProfesiones, wordsGustos, wordsRestaurante, wordsConectores
 ];
 
 describe('Data file structure', () => {
@@ -289,3 +291,38 @@ describe('Word topics validation', () => {
   });
 });
 
+
+describe('Tabs and ID integrity', () => {
+  test('every lesson tab is declared in its topic tabs array', () => {
+    for (const topic of allTopics) {
+      const declared = new Set((topic.tabs || []).map(t => t.id));
+      for (const lesson of topic.lessons) {
+        if (!lesson.tab) continue;
+        assert.ok(declared.has(lesson.tab), `Lesson ${lesson.id} uses tab "${lesson.tab}" missing from ${topic.id}.tabs`);
+      }
+    }
+  });
+
+  test('week 12 restaurante tab has 2 lessons of exactly 6 phrases', () => {
+    const lessons = week12.lessons.filter(l => l.tab === 'restaurante' && !l.exam);
+    assert.strictEqual(lessons.length, 2);
+    for (const lesson of lessons) {
+      assert.strictEqual(lesson.phrases.length, 6, `Lesson ${lesson.id} must have exactly 6 phrases`);
+      for (const phrase of lesson.phrases) {
+        assert.ok(phrase.uk, `Phrase "${phrase.es}" in ${lesson.id} missing uk`);
+      }
+    }
+  });
+
+  test('lesson IDs are unique across sentences and words (they are localStorage keys)', () => {
+    const ids = [
+      ...allTopics.flatMap(t => t.lessons.map(l => l.id)),
+      ...allWordTopics.flatMap(t => t.lessons.map(l => l.id)),
+    ];
+    // Known pre-existing collision (time_calendar.js vs tiempo_frecuencia.js). Renaming would reset
+    // users' stored progress, so it is tolerated here — but NO new collisions are allowed.
+    const KNOWN_DUPLICATES = new Set(['wt_l1', 'wt_exam']);
+    const dupes = ids.filter((id, i) => ids.indexOf(id) !== i && !KNOWN_DUPLICATES.has(id));
+    assert.deepStrictEqual(dupes, [], `Duplicate lesson IDs: ${dupes.join(', ')}`);
+  });
+});
