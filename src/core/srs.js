@@ -3,6 +3,8 @@
 // ========================
 // Pure logic — no DOM, no browser APIs.
 // Accepts a storage adapter: { load(key), save(key, data) }
+// Every write stamps `updatedAt` so entries can be merged across devices
+// (last-writer-wins, see sync-merge.js).
 
 import { BUCKET_INTERVALS } from './constants.js';
 
@@ -33,10 +35,12 @@ export function createSRS(storage, storageKey) {
       const data = loadData();
       const entry = data[phraseId] || { bucket: 0, dueDate: 0 };
       const newBucket = Math.min(entry.bucket + 1, BUCKET_INTERVALS.length - 1);
+      const now = Date.now();
       data[phraseId] = {
         bucket: newBucket,
-        dueDate: Date.now() + BUCKET_INTERVALS[newBucket],
+        dueDate: now + BUCKET_INTERVALS[newBucket],
         isMistake: false,
+        updatedAt: now,
       };
       saveData(data);
     },
@@ -46,10 +50,12 @@ export function createSRS(storage, storageKey) {
      */
     demote(phraseId) {
       const data = loadData();
+      const now = Date.now();
       data[phraseId] = {
         bucket: 0,
-        dueDate: Date.now() + BUCKET_INTERVALS[0],
+        dueDate: now + BUCKET_INTERVALS[0],
         isMistake: true,
+        updatedAt: now,
       };
       saveData(data);
     },
@@ -60,9 +66,11 @@ export function createSRS(storage, storageKey) {
     registerNew(phraseId) {
       const data = loadData();
       if (!data[phraseId]) {
+        const now = Date.now();
         data[phraseId] = {
           bucket: 0,
-          dueDate: Date.now() + BUCKET_INTERVALS[1], // due in 1 day
+          dueDate: now + BUCKET_INTERVALS[1], // due in 1 day
+          updatedAt: now,
         };
         saveData(data);
       }

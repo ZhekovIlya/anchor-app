@@ -11,6 +11,10 @@ export default {
   server: {
     port: 3000,
     open: true,
+    // /api/* is served by scripts/dev-api.js (npm run dev:api)
+    proxy: {
+      '/api': 'http://127.0.0.1:3001',
+    },
   },
   build: {
     outDir: 'dist',

@@ -1013,3 +1013,30 @@
 
 **Status:** ✅ Committed to branch `task/week-11-preterite-paradigm-and-renumbering`. Awaiting user review/testing before merge.
 
+
+---
+
+## Task: Telegram Reels Bot + Two-Way Progress Sync (2026-11-01 → 2026-11-02)
+**Branch:** task/telegram-reels-bot
+
+**[DEV]:**
+- Interactive session (M1–M2, 3.1–3.2): CRDT progress merge (`src/core/sync-merge.js`), doc storage adapter, `wt_*`/`wtf_*` id fix with web migration, DST-safe streak, Redis/memory store, Telegram link auth, `/api/sync` + `/api/link`, Bot API client, reels queue.
+- Night run (3.3–5.4, unattended):
+  - `server/reels.js` — reels session state machine (claim-then-update, stale-tap guard via session id + position), HTML card with `<tg-spoiler>`, summary and empty states.
+  - `server/bot.js` + `server/api-telegram.js` + `api/telegram.js` — command/deep-link/callback router (`/start`, `/reels`, `/learn`, `/topics`, `/progress`, `/settings`, `/link`, `/disconnect`, `/help`), webhook secret check, allowlist on every entry point.
+  - `server/tts.js` — 🔊 via Google Translate TTS, `sendVoice` → `sendAudio` fallback, `file_id` cache, graceful "Audio unavailable".
+  - `server/api-cron-nudge.js` + `api/cron-nudge.js` + `vercel.json` cron (17:00 UTC) — daily "N words due" nudge, once per day per user.
+  - `src/core/sync-local.js` + `src/web/sync-client.js` — local doc collection, XP G-counter bookkeeping, merge-on-apply, triggers (start, hidden/visible tab, 5 min, drill end, Sync now); `src/web/telegram-sync-ui.js` + Settings modal "Telegram Sync" section (deep link + code + polling, status, disconnect).
+  - `scripts/dev-api.js` (local API on 127.0.0.1:3001, `--poll` bot mode, `.env.local`), Vite `/api` proxy, `.env.example`, env files git-ignored; `scripts/telegram-setup.js`; `docs/telegram-bot/SETUP.md` runbook.
+
+**[AQA]:**
+- `npm test`: **181 tests, 0 failures** (node:test). New suites: reels, bot flows, tts, cron-nudge, sync-client, telegram-sync-ui, dev-api, telegram-setup, setup-doc, e2e-flow, security.
+- `tests/e2e-flow.test.js` runs link → web sync up → reels know/again → web sync down → `/disconnect` in-process through the real HTTP handlers with a memory store and a fake Telegram.
+- Self-review (5.4) recorded in PLAN.md §4 with the hardening it produced (early `Content-Length` 413, `t.me`-only deep links, dev API on localhost).
+- No real Telegram/Upstash/Vercel calls were made; no runtime dependencies added; no secrets written.
+
+**[QA]:**
+- `npm run build` passes (service worker stamped). Settings → Telegram Sync section not yet checked visually in a browser.
+- Manual smoke test against a real bot is pending the user's setup (SETUP.md §9).
+
+**Status:** ✅ Committed to branch `task/telegram-reels-bot` (not pushed). Awaiting user setup, review and testing before merge.

@@ -13,6 +13,7 @@ import { incrementCompletion, getCompletionCount, localStorageAdapter } from './
 import { XP_REWARDS } from '../core/gamification.js';
 import { launchConfetti, renderEndScreenXP, showLevelUpNotification, celebrateStreakMilestone } from './gamification-ui.js';
 import { flagPhrase, getFlaggedCount } from '../core/flag-store.js';
+import { notifyProgressChanged } from './sync-client.js';
 
 let activeEngine = null;
 let isHandlingFeedback = false;
@@ -575,6 +576,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
           const xpContainer = document.getElementById('endScreenXPContainer');
           if (xpContainer) xpContainer.classList.add('hidden');
         }
+
+        // Telegram sync picks the new completion/XP up shortly (no-op if not linked)
+        notifyProgressChanged();
       },
     },
   });

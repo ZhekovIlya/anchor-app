@@ -74,7 +74,7 @@ export default {
     ]
   },
   lessons: [
-    { id: "wt_l1", title: "Time & Frequency", words: [
+    { id: "wtf_l1", title: "Time & Frequency", words: [
       { ru: "иногда", uk: "інколи", es: "a veces" },
       { ru: "раз", uk: "раз", es: "la vez" },
       { ru: "в другие разы", uk: "інші рази", es: "otras veces" },
@@ -88,6 +88,6 @@ export default {
       { ru: "половина", uk: "половина", es: "y media" },
       { ru: "ровно", uk: "рівно", es: "en punto" },
     ]},
-    { id: "wt_exam", title: "🏆 Tiempo Exam", exam: true },
+    { id: "wtf_exam", title: "🏆 Tiempo Exam", exam: true },
   ],
 };

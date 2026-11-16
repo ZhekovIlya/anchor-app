@@ -80,8 +80,10 @@ export function createGamification(storageAdapter, storageKey = GAMIFICATION_KEY
    */
   function isConsecutiveDay(dateA, dateB) {
     if (!dateA || !dateB) return false;
-    const a = new Date(dateA + 'T00:00:00');
-    const b = new Date(dateB + 'T00:00:00');
+    // Dates are UTC days (toISOString) — parse as UTC so DST shifts can't make
+    // a day 23h or 25h long and break the streak.
+    const a = new Date(dateA + 'T00:00:00Z');
+    const b = new Date(dateB + 'T00:00:00Z');
     const diffMs = b.getTime() - a.getTime();
     const diffDays = diffMs / (1000 * 60 * 60 * 24);
     return diffDays === 1;
@@ -239,8 +241,8 @@ export function createGamification(storageAdapter, storageKey = GAMIFICATION_KEY
       if (!state.streak.lastActiveDate) return false;
 
       const today = getTodayString();
-      const last = new Date(state.streak.lastActiveDate + 'T00:00:00');
-      const now = new Date(today + 'T00:00:00');
+      const last = new Date(state.streak.lastActiveDate + 'T00:00:00Z');
+      const now = new Date(today + 'T00:00:00Z');
       const diffDays = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
       return diffDays >= 3;
     },

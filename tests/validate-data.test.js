@@ -319,10 +319,9 @@ describe('Tabs and ID integrity', () => {
       ...allTopics.flatMap(t => t.lessons.map(l => l.id)),
       ...allWordTopics.flatMap(t => t.lessons.map(l => l.id)),
     ];
-    // Known pre-existing collision (time_calendar.js vs tiempo_frecuencia.js). Renaming would reset
-    // users' stored progress, so it is tolerated here — but NO new collisions are allowed.
-    const KNOWN_DUPLICATES = new Set(['wt_l1', 'wt_exam']);
-    const dupes = ids.filter((id, i) => ids.indexOf(id) !== i && !KNOWN_DUPLICATES.has(id));
+    // The old time_calendar.js vs tiempo_frecuencia.js collision (wt_l1 / wt_exam) was fixed by
+    // renaming Tiempo to wtf_*; src/core/id-migrations.js carries stored progress over.
+    const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
     assert.deepStrictEqual(dupes, [], `Duplicate lesson IDs: ${dupes.join(', ')}`);
   });
 });

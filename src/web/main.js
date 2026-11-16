@@ -20,6 +20,10 @@ import { createGamification } from '../core/gamification.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
 import { checkAndShowReengagement } from './re-engagement.js';
 import { exportFlaggedItems, getFlaggedCount } from '../core/flag-store.js';
+import { collectLessonIds } from '../core/sync-local.js';
+import { createSyncClient } from './sync-client.js';
+import { initTelegramSyncSection } from './telegram-sync-ui.js';
+import { LESSON_ID_RENAMES, copyRenamedSrsEntries } from '../core/id-migrations.js';
 
 // ========================
 // SEED (dev preview only)
@@ -49,6 +53,27 @@ function migrateSrsData() {
 }
 
 migrateSrsData();
+
+// Tiempo's lessons were renamed wt_* → wtf_* (they collided with Time & Calendar).
+// Copy progress stored under the old ids once; both topics keep it.
+const LESSON_ID_MIGRATION_FLAG = 'anchor_migration_wtf_v1';
+
+function migrateRenamedLessonIds() {
+  if (localStorage.getItem(LESSON_ID_MIGRATION_FLAG)) return;
+  try {
+    const { pool, changed } = copyRenamedSrsEntries(localStorageAdapter.load(SRS_KEY_WORDS));
+    if (changed) localStorageAdapter.save(SRS_KEY_WORDS, pool);
+    for (const { from, to } of LESSON_ID_RENAMES) {
+      const count = localStorage.getItem(from);
+      if (count !== null && localStorage.getItem(to) === null) localStorage.setItem(to, count);
+    }
+    localStorage.setItem(LESSON_ID_MIGRATION_FLAG, 'true');
+  } catch (e) {
+    // Silent migration — no user-facing error
+  }
+}
+
+migrateRenamedLessonIds();
 
 // ========================
 // APP STATE
@@ -356,6 +381,7 @@ function onAuditionsTabClick(container, gamification) {
 function openSettingsModal() {
   elements.settingsModal.style.display = 'flex';
   elements.settingsModal.classList.remove('hidden');
+  telegramSyncSection.render();
   requestAnimationFrame(() => {
     elements.settingsModal.classList.remove('opacity-0');
     elements.settingsModal.classList.add('opacity-100');
@@ -576,3 +602,24 @@ if (exportFlagBtn) {
 // Expose refreshFlaggedCount so drill-ui can call it after flagging
 window.__anchorRefreshFlagCount = refreshFlaggedCount;
 refreshFlaggedCount();
+
+// ========================
+// TELEGRAM PROGRESS SYNC
+// ========================
+// Inactive until this browser is linked to the Telegram bot.
+
+function onSyncedChanges() {
+  // Header XP/streak can update anywhere; the dashboard only while it is on
+  // screen (renderDashboard switches views, which would interrupt a drill).
+  updateGamificationDisplay(gamification.getStats());
+  if (!elements.dashboardView.classList.contains('hidden')) initDashboard();
+}
+
+const syncClient = createSyncClient({
+  storage: localStorage,
+  lessonIds: collectLessonIds(data),
+  onChange: onSyncedChanges,
+  onStatus: () => telegramSyncSection.render(),
+});
+const telegramSyncSection = initTelegramSyncSection(document.getElementById('telegramSyncSection'), syncClient);
+syncClient.startAutoSync();

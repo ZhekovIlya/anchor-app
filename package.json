@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "network": "vite --host",
+    "dev:api": "node scripts/dev-api.js",
+    "dev:bot": "node scripts/dev-api.js --poll",
+    "telegram:setup": "node scripts/telegram-setup.js",
     "build": "vite build",
     "postbuild": "node scripts/stamp-sw.js",
     "preview": "vite preview",
