@@ -5,10 +5,16 @@
 //   - Week 1: Mastered (exam completed 5× means gold status)
 //   - Week 2: Completed (all lessons done once means green status)
 //
-// Runs only in Vite's dev mode (import.meta.env.DEV) and only once per
-// browser session via the DEMO_SEEDED guard flag.
+// Opt-in: runs only in Vite's dev mode, only when the URL has ?demo=1, only
+// once per browser (DEMO_SEEDED flag) and never when this browser is linked to
+// Telegram (`anchor_sync_auth`) — sync merges counters with max(), so fake
+// completions would be pushed to the real account and could not be undone.
+//
+// The app stores a lesson's completion count under the bare lesson id
+// (see collectLessonIds / sync-local.js).
 
-const DEMO_SEEDED_FLAG = 'anchor_demo_seeded_v3';
+const DEMO_SEEDED_FLAG = 'anchor_demo_seeded_v4';
+const SYNC_AUTH_KEY = 'anchor_sync_auth';
 
 const WEEK_1_MASTERED_LESSON_IDS = [
   'w1_l1', 'w1_l2a', 'w1_l2b', 'w1_l3', 'w1_l3b', 'w1_l4', 'w1_l7',
@@ -24,26 +30,28 @@ const WEEK_2_ALL_LESSON_IDS = [
 ];
 const COMPLETED_COMPLETIONS = 1;
 
-function completionKey(lessonId) {
-  return `completion_count_${lessonId}`;
+/** Every lesson id the seed writes (exported so a test can check they exist). */
+export const DEMO_SEED_LESSON_IDS = [
+  ...WEEK_1_MASTERED_LESSON_IDS,
+  WEEK_1_EXAM_ID,
+  ...WEEK_2_ALL_LESSON_IDS,
+];
+
+/** Pure decision: should the seed run for this URL search string / storage? */
+export function shouldSeed(search, storage) {
+  if (!new URLSearchParams(search || '').has('demo')) return false;
+  if (storage.getItem(SYNC_AUTH_KEY) !== null) return false;
+  return storage.getItem(DEMO_SEEDED_FLAG) !== 'true';
 }
 
-function seedWeek1Mastered() {
-  WEEK_1_MASTERED_LESSON_IDS.forEach(id => {
-    localStorage.setItem(completionKey(id), String(MASTERED_COMPLETIONS));
-  });
-  localStorage.setItem(completionKey(WEEK_1_EXAM_ID), String(EXAM_MASTERED_COMPLETIONS));
-}
-
-function seedWeek2Completed() {
-  WEEK_2_ALL_LESSON_IDS.forEach(id => {
-    localStorage.setItem(completionKey(id), String(COMPLETED_COMPLETIONS));
-  });
+export function seedDemoData(storage) {
+  WEEK_1_MASTERED_LESSON_IDS.forEach(id => storage.setItem(id, String(MASTERED_COMPLETIONS)));
+  storage.setItem(WEEK_1_EXAM_ID, String(EXAM_MASTERED_COMPLETIONS));
+  WEEK_2_ALL_LESSON_IDS.forEach(id => storage.setItem(id, String(COMPLETED_COMPLETIONS)));
+  storage.setItem(DEMO_SEEDED_FLAG, 'true');
 }
 
 export function seedDemoDataOnce() {
-  if (localStorage.getItem(DEMO_SEEDED_FLAG) === 'true') return;
-  seedWeek1Mastered();
-  seedWeek2Completed();
-  localStorage.setItem(DEMO_SEEDED_FLAG, 'true');
+  if (!shouldSeed(window.location.search, localStorage)) return;
+  seedDemoData(localStorage);
 }

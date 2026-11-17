@@ -480,27 +480,6 @@ function updateReader(readerPane, sidebar) {
 }
 
 /**
- * Backward compatibility helpers for deep-links
- */
-export function renderTheoryArticle(elements, topic, onBack) {
-  const resolved = getTheoryTopicById(topic.id || topic);
-  if (resolved) {
-    currentActiveTopicId = resolved.id;
-    currentExpandedCategories.add(resolved.category);
-  }
-  if (onBack) onBack();
-}
-
-export function renderWordTheoryArticle(elements, theory, onBack) {
-  const resolved = getTheoryTopicById(theory.id || theory);
-  if (resolved) {
-    currentActiveTopicId = resolved.id;
-    currentExpandedCategories.add(resolved.category);
-  }
-  if (onBack) onBack();
-}
-
-/**
  * HTML Escape Helper
  */
 function escapeHtml(str) {

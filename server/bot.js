@@ -12,21 +12,21 @@ import { isAllowed, getLinkCode, claimLinkCode, revokeAllTokens, isValidLinkCode
 import { loadProgress } from './progress.js';
 import { escapeHtml, isNotModified } from './telegram.js';
 import {
-  startReels, applyReelAction, attachMessages, parseReelCallback, renderCard, renderSummary, renderEmpty, countDue,
+  startReels, applyReelAction, answerTyped, attachMessages, parseReelCallback, renderCard, renderSummary, renderEmpty, countDue,
 } from './reels.js';
 
 export const USERS_KEY = 'anchor:users';
 export const settingsKey = (tgId) => `anchor:u:${tgId}:settings`;
-export const DEFAULT_SETTINGS = { lang: 'ru', size: 12, nudge: true };
+export const DEFAULT_SETTINGS = { lang: 'ru', size: 12, nudge: true, typing: true };
 export const SESSION_SIZES = [8, 12, 20];
 
 const HELP_TEXT = [
   '🇪🇸 <b>Anchor reels</b> — learn the app\'s words one card at a time.',
   '',
-  '/reels — start a session (due reviews first, then new words)',
+  '/reels — start a quiz session (due reviews first, then new words): choose or type the answer',
   '/topics — practise one topic',
   '/progress — streak, XP and words per topic',
-  '/settings — translation language, session size, daily reminder',
+  '/settings — translation language, session size, typing cards, daily reminder',
   '/link &lt;code&gt; — connect a browser (the app shows the code)',
   '/disconnect — log out every connected browser',
   '/help — this message',
@@ -60,12 +60,13 @@ async function saveSettings(store, tgId, patch) {
  * @returns {Object|null} settings patch
  */
 export function parseSettingsCallback(data) {
-  const match = /^s:(lang|size|nudge):(\w+)$/.exec(String(data || ''));
+  const match = /^s:(lang|size|nudge|typing):(\w+)$/.exec(String(data || ''));
   if (!match) return null;
   const [, field, value] = match;
   if (field === 'lang') return ['ru', 'uk'].includes(value) ? { lang: value } : null;
   if (field === 'size') return SESSION_SIZES.includes(Number(value)) ? { size: Number(value) } : null;
-  return ['on', 'off'].includes(value) ? { nudge: value === 'on' } : null;
+  if (!['on', 'off'].includes(value)) return null;
+  return field === 'typing' ? { typing: value === 'on' } : { nudge: value === 'on' };
 }
 
 function renderSettings(settings) {
@@ -76,6 +77,7 @@ function renderSettings(settings) {
       '',
       `Translation: ${settings.lang === 'uk' ? '🇺🇦 Українська' : '🇷🇺 Русский'}`,
       `Cards per session: ${settings.size}`,
+      `Typing cards: ${settings.typing ? 'on' : 'off'}`,
       `Daily reminder: ${settings.nudge ? 'on' : 'off'}`,
     ].join('\n'),
     reply_markup: {
@@ -85,6 +87,10 @@ function renderSettings(settings) {
           { text: mark(settings.lang === 'uk', '🇺🇦 UK'), callback_data: 's:lang:uk' },
         ],
         SESSION_SIZES.map((size) => ({ text: mark(settings.size === size, String(size)), callback_data: `s:size:${size}` })),
+        [
+          { text: mark(settings.typing, '⌨️ Typing on'), callback_data: 's:typing:on' },
+          { text: mark(!settings.typing, '⌨️ Typing off'), callback_data: 's:typing:off' },
+        ],
         [
           { text: mark(settings.nudge, '🔔 On'), callback_data: 's:nudge:on' },
           { text: mark(!settings.nudge, '🔕 Off'), callback_data: 's:nudge:off' },
@@ -154,6 +160,7 @@ function renderTopics(progress, index, now) {
  * @param {Object} context.telegram - createTelegramClient()
  * @param {Function} context.now
  * @param {Object} [context.index] - word index (defaults to the app's words)
+ * @param {Function} [context.random] - random source for distractors (tests)
  * @param {Function} [context.onAudio] - ({ tgId, chatId, session, card, text, callbackId }) => Promise, handles 🔊 (server/tts.js)
  * @returns {{ handleUpdate(update): Promise<void> }}
  */
@@ -185,7 +192,9 @@ export function createBot(context) {
   async function sendNewSession(tgId, chatId, topicId = null) {
     const settings = await getSettings(store, tgId);
     const words = index();
-    const session = await startReels(store, tgId, { index: words, now: now(), size: settings.size, topicId });
+    const session = await startReels(store, tgId, {
+      index: words, now: now(), size: settings.size, topicId, lang: settings.lang, typing: settings.typing, random: context.random,
+    });
     if (session.queue.length === 0) {
       const topicTitle = topicId ? (words.byId[words.order.find((id) => words.byId[id].topicId === topicId)] || {}).topicTitle : null;
       return sendView(chatId, renderEmpty({ topicTitle }));
@@ -219,7 +228,12 @@ export function createBot(context) {
     const tgId = String(from.id);
     const parsed = parseCommand(message.text);
     if (!parsed) {
-      await telegram.sendMessage(chatId, 'Send /reels to start, or /help for all commands.');
+      const answer = await answerTyped(store, tgId, message.text, { index: index() });
+      if (!answer.active) {
+        await telegram.sendMessage(chatId, 'Send /reels to start, or /help for all commands.');
+        return;
+      }
+      if (!answer.stale) await showResult(tgId, chatId, answer);
       return;
     }
     const { command, arg } = parsed;
@@ -270,6 +284,21 @@ export function createBot(context) {
     }
   }
 
+  /** Show the card (or summary) a transition led to, in the session's message. */
+  async function showResult(tgId, chatId, result, messageId = result.session.messageId) {
+    await deleteQuietly(chatId, result.staleAudioMessageId);
+    const words = index();
+    const view = result.finished
+      ? renderSummary(result.session, result.progress, words, now())
+      : renderCard(result.session, words, await getSettings(store, tgId));
+    if (messageId) {
+      await edit(chatId, messageId, view);
+      return;
+    }
+    const sent = await sendView(chatId, view);
+    await attachMessages(store, tgId, result.session.sid, { messageId: sent.message_id });
+  }
+
   async function handleReelTap(query, tgId, tap) {
     const chatId = query.message.chat.id;
     const result = await applyReelAction(store, tgId, tap);
@@ -287,16 +316,7 @@ export function createBot(context) {
       return;
     }
     await telegram.answerCallbackQuery(query.id);
-    const words = index();
-    if (tap.action === 'reveal') {
-      if (result.changed) await edit(chatId, query.message.message_id, renderCard(result.session, words, await getSettings(store, tgId)));
-      return;
-    }
-    await deleteQuietly(chatId, result.staleAudioMessageId);
-    const view = result.finished
-      ? renderSummary(result.session, result.progress, words, now())
-      : renderCard(result.session, words, await getSettings(store, tgId));
-    await edit(chatId, query.message.message_id, view);
+    if (result.changed) await showResult(tgId, chatId, result, query.message.message_id);
   }
 
   async function handleLinkTap(query, tgId, code, approve) {

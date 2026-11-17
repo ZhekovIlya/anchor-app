@@ -107,7 +107,7 @@ export default {
       { ru: "минута", uk: "хвилина", es: "minuto" },
       { ru: "утро", uk: "ранок", es: "mañana" },
       { ru: "полдень", uk: "полудень", es: "mediodía" },
-      { ru: "вечер", uk: "вечір", es: "tarde" },
+      { ru: "день после полудня / вечер", uk: "пообіддя / вечір", es: "tarde" },
       { ru: "ночь", uk: "ніч", es: "noche" },
       { ru: "полночь", uk: "північ", es: "medianoche" },
       { ru: "сейчас", uk: "зараз", es: "ahora" },

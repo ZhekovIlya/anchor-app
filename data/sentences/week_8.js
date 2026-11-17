@@ -105,9 +105,9 @@ const week8Lessons = [
       { ru: "Ничего себе, ты не готова выходить?", uk: "Оце так, ти не готова виходити?", es: "¡Qué fuerte! ¿No estás lista para salir?" },
       { ru: "Конечно, мы идем вместе на уроки английского.", uk: "Звісно, ми йдемо разом на уроки англійської.", es: "Claro, vamos juntos a las clases de inglés." },
       { ru: "Зависит от обстоятельств, честно говоря, я хочу быть с тобой.", uk: "Залежить від обставин, чесно кажучи, я хочу бути з тобою.", es: "Depende, la verdad quiero estar contigo." },
-      { ru: "Как жаль, ты никогда не ужинаешь со мной ровно в это время.", uk: "Як шкода, ти ніколи не вечеряєш зі мною рівно в цей час.", es: "Qué pena, nunca cenas conmigo en punto." },
+      { ru: "Как жаль, ты никогда не ужинаешь со мной ровно в девять.", uk: "Як шкода, ти ніколи не вечеряєш зі мною рівно о дев'ятій.", es: "Qué pena, nunca cenas conmigo a las nueve en punto." },
       { ru: "Слава богу, что у тебя всегда хорошая погода.", uk: "Слава богу, що в тебе завжди хороша погода.", es: "Menos mal que siempre tienes buen tiempo." },
-      { ru: "Я очень рад видеть тебя в половину.", uk: "Я дуже радий бачити тебе о половині.", es: "Me alegro un montón de verte a las y media." }
+      { ru: "Я очень рад видеть тебя в половине девятого.", uk: "Я дуже радий бачити тебе о пів на дев'яту.", es: "Me alegro un montón de verte a las ocho y media." }
     ],
   },
   { id: "w8_m3", tab: "expresiones", exam: true, mini: true, title: "Mini-examen: Expresiones" },

@@ -74,7 +74,8 @@ export function createDrillEngine(options) {
   const copyThreshold = isWordMode ? COPY_STAGE_THRESHOLDS.word : COPY_STAGE_THRESHOLDS.sentence;
 
   function getStage() {
-    return !isExam && streak < copyThreshold;
+    // Reviews are recall: the answer is never shown (copy stage = first-time lessons only)
+    return !isExam && !isReview && streak < copyThreshold;
   }
 
   function pickNextPhrase() {
@@ -82,7 +83,15 @@ export function createDrillEngine(options) {
       currentPhrase = failedPhrases.shift();
     } else {
       if (drawingDeck.length === 0) {
-        drawingDeck = [...phrases].sort(() => Math.random() - 0.5);
+        drawingDeck = shuffle([...phrases]);
+        // Never show the same phrase twice in a row across a deck refill
+        const last = drawingDeck.length - 1;
+        if (currentPhrase && drawingDeck.length >= 2 && drawingDeck[last].es === currentPhrase.es) {
+          const swapIdx = drawingDeck.findIndex(p => p.es !== currentPhrase.es);
+          if (swapIdx !== -1) {
+            [drawingDeck[last], drawingDeck[swapIdx]] = [drawingDeck[swapIdx], drawingDeck[last]];
+          }
+        }
       }
       currentPhrase = drawingDeck.pop();
     }
@@ -109,14 +118,17 @@ export function createDrillEngine(options) {
     }
 
     // Recall Stage: Mix of typing, multiple choice, word order, and listening
+    // MC needs 3 distinct distractors; word order needs at least 3 words — otherwise TYPE.
+    const canMC = countDistinctDistractors(currentPhrase) >= 3;
+    const canWO = currentPhrase.es.split(' ').filter(Boolean).length >= 3;
     const rand = Math.random();
     if (rand < 0.15) {
       currentInteractionMode = 'LISTENING';
       currentQuestionData = null;
-    } else if (rand < 0.35) {
+    } else if (rand < 0.35 && canWO) {
       currentInteractionMode = 'WORD_ORDER';
       currentQuestionData = generateWOData(currentPhrase);
-    } else if (rand < 0.5) {
+    } else if (rand >= 0.35 && rand < 0.5 && canMC) {
       currentInteractionMode = 'MC';
       currentQuestionData = generateMCData(currentPhrase);
     } else {
@@ -125,24 +137,14 @@ export function createDrillEngine(options) {
     }
   }
 
+  function countDistinctDistractors(correctPhrase) {
+    return new Set(phrases.map(p => p.es).filter(es => es !== correctPhrase.es)).size;
+  }
+
   function generateMCData(correctPhrase) {
-    const candidates = phrases.filter(p => p.es !== correctPhrase.es).map(p => p.es);
-    const unique = [...new Set(candidates)];
+    const unique = [...new Set(phrases.map(p => p.es).filter(es => es !== correctPhrase.es))];
     shuffle(unique);
-    const distractors = unique.slice(0, 3);
-    while (distractors.length < 3) {
-      if (candidates.length > 0) {
-        const pick = candidates[Math.floor(Math.random() * candidates.length)];
-        if (distractors.length === 0 || distractors[distractors.length - 1] !== pick) {
-          distractors.push(pick);
-        } else {
-          distractors.push(pick);
-        }
-      } else {
-        distractors.push(correctPhrase.es + '?');
-      }
-    }
-    const options = [correctPhrase.es, ...distractors];
+    const options = [correctPhrase.es, ...unique.slice(0, 3)];
     shuffle(options);
     return {
       options,

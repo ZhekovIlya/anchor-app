@@ -3,10 +3,13 @@
 // ========================
 // Renders the list of texts and the active reading view with gamification.
 
-import { SpeechRecognitionService } from '../core/speech-recognition.js';
+import { SpeechRecognitionService } from './speech-recognition.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
 import { speakAnswer, getPromptLang } from './speech.js';
 import { localStorageAdapter } from './storage.js';
+import { notifyProgressChanged } from './sync-client.js';
+
+const IS_DEV = !!(import.meta.env && import.meta.env.DEV);
 
 let activeParagraph = null;
 let wordObjects = [];
@@ -152,9 +155,9 @@ function renderReadingView() {
       <button id="raSkipBtn" class="bg-amber-500 text-white px-6 py-3 rounded-xl font-label font-bold text-lg hover:bg-amber-600 transition-all shadow-sm flex items-center gap-2 hidden">
         <span class="material-symbols-outlined">skip_next</span> Skip Word
       </button>
-      <button id="raMockBtn" class="bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-200 px-6 py-3 rounded-xl font-label font-bold text-lg hover:bg-surface-container-high transition-all shadow-sm flex items-center gap-2">
+      ${IS_DEV ? `<button id="raMockBtn" class="bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-200 px-6 py-3 rounded-xl font-label font-bold text-lg hover:bg-surface-container-high transition-all shadow-sm flex items-center gap-2">
         <span class="material-symbols-outlined">bug_report</span> Mock Speech
-      </button>
+      </button>` : ''}
     </div>
     
     <div id="raStatus" class="mt-4 text-center font-label text-sm text-on-surface-variant dark:text-stone-400 hidden">
@@ -268,7 +271,7 @@ function renderReadingView() {
     }
   };
 
-  mockBtn.onclick = () => {
+  if (mockBtn) mockBtn.onclick = () => {
     if (!speechService.isRecording) {
       speechService.start(true);
       startBtn.disabled = true;
@@ -396,9 +399,12 @@ function finishReading() {
   const xpAwarded = readCount === 0 ? 0 : Math.max(5, Math.round((readCount / 2))); // 1 XP per 2 words, min 5 if > 0
   if (currentGamification) {
     currentGamification.addXP(xpAwarded);
+    if (readCount > 0) currentGamification.recordActivity();
     updateGamificationDisplay(currentGamification.getStats());
   }
   
+  if (readCount > 0) notifyProgressChanged();
+
   // Save Progress
   const history = localStorageAdapter.load('anchor_read_progress') || {};
   if (!history[activeParagraph.id]) history[activeParagraph.id] = { maxScore: 0, perfectCount: 0 };

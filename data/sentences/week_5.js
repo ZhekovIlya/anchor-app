@@ -270,10 +270,10 @@ const week5Lessons = [
     phrases: [
       { ru: "Он лаял в парке вчера", uk: "Він гавкав у парку вчора", es: "Él ladró en el parque ayer" },
       { ru: "Она не кусала", uk: "Вона не кусала", es: "Ella no mordió" },
-      { ru: "Я помыл собаку после парка", uk: "Я помив собаку після парку", es: "Yo lavé el perro del parque" },
+      { ru: "Я помыл собаку после парка", uk: "Я помив собаку після парку", es: "Yo lavé el perro después del parque" },
       { ru: "Он лаял и кусал вчера", uk: "Він гавкав і кусав вчора", es: "Él ladró y mordió ayer" },
       { ru: "Она не лаяла в парке", uk: "Вона не гавкала в парку", es: "Ella no ladró en el parque" },
-      { ru: "Я высушил лапы после парка", uk: "Я висушив лапи після парку", es: "Yo sequé las patas del parque" },
+      { ru: "Я высушил лапы после парка", uk: "Я висушив лапи після парку", es: "Yo sequé las patas después del parque" },
     ],
   },
   {

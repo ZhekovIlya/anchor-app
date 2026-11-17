@@ -4,6 +4,8 @@
 // Pure logic — no DOM, no browser APIs.
 // Accepts a storage adapter: { load(key), save(key, data) }
 
+import { utcDayString } from './dates.js';
+
 export const XP_REWARDS = {
   lesson: 25,
   exam: 50,
@@ -69,7 +71,7 @@ export function createGamification(storageAdapter, storageKey = GAMIFICATION_KEY
   }
 
   function getTodayString() {
-    return new Date().toISOString().split('T')[0];
+    return utcDayString(new Date());
   }
 
   /**

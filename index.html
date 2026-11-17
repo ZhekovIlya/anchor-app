@@ -4,6 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spanish Anchor</title>
+  <meta name="description" content="Learn Spanish with active recall: type translations from Russian or Ukrainian prompts, review with spaced repetition." />
+  <meta name="theme-color" content="#10b981" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Anchor" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -41,6 +50,9 @@
 </head>
 <body class="bg-surface dark:bg-stone-900 text-on-surface dark:text-stone-100 font-body min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container relative transition-colors duration-300">
 
+  <!-- Confetti Container (fixed overlay, pointer-events-none) -->
+  <div id="confettiContainer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
   <!-- TopAppBar -->
   <header class="bg-surface/80 dark:bg-stone-900/80 backdrop-blur-md sticky w-full top-0 z-40 transition-colors duration-300 border-b dark:border-stone-850">
     <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
@@ -48,10 +60,18 @@
         Spanish Anchor
       </div>
       <div class="flex items-center gap-4">
-        <button id="profileBtn" class="text-on-surface-variant dark:text-stone-300 font-bold hover:bg-surface-variant dark:hover:bg-stone-800 p-2 rounded-lg transition-all duration-300 flex items-center justify-center">
+        <!-- Gamification Stats -->
+        <div id="gamifBar" class="hidden sm:flex items-center gap-3 font-label text-sm font-bold tracking-wide">
+          <span id="gamifStreak" class="text-on-surface-variant dark:text-stone-400 transition-colors duration-300" title="Daily streak">🔥 0</span>
+          <span class="text-outline-variant dark:text-stone-700">·</span>
+          <span id="gamifXP" class="text-primary dark:text-emerald-400 transition-colors duration-300">0 XP</span>
+          <span class="text-outline-variant dark:text-stone-700">·</span>
+          <span id="gamifLevel" class="text-on-surface-variant dark:text-stone-400 transition-colors duration-300">Principiante</span>
+        </div>
+        <button id="profileBtn" aria-label="Profile and stats" class="text-on-surface-variant dark:text-stone-300 font-bold hover:bg-surface-variant dark:hover:bg-stone-800 p-2 rounded-lg transition-all duration-300 flex items-center justify-center">
           <span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 0;">account_circle</span>
         </button>
-        <button id="settingsBtn" class="text-primary dark:text-emerald-400 font-bold hover:bg-surface-variant dark:hover:bg-stone-800 p-2 rounded-lg transition-all duration-300 flex items-center justify-center">
+        <button id="settingsBtn" aria-label="Settings" class="text-primary dark:text-emerald-400 font-bold hover:bg-surface-variant dark:hover:bg-stone-800 p-2 rounded-lg transition-all duration-300 flex items-center justify-center">
           <span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 0;">settings</span>
         </button>
       </div>
@@ -103,7 +123,7 @@
   <!-- LESSONS VIEW -->
   <main id="lessonsView" class="hidden flex-grow w-full max-w-3xl mx-auto px-6 py-12 flex-col gap-10 transition-colors duration-300">
     <div class="flex items-center gap-4 border-b border-surface-container-highest dark:border-stone-800 pb-4">
-      <button id="backToDashboardBtn" class="p-2 hover:bg-surface-container-low dark:hover:bg-stone-800 rounded-full transition-colors duration-300 flex items-center justify-center text-on-surface-variant dark:text-stone-300">
+      <button id="backToDashboardBtn" aria-label="Back to dashboard" class="p-2 hover:bg-surface-container-low dark:hover:bg-stone-800 rounded-full transition-colors duration-300 flex items-center justify-center text-on-surface-variant dark:text-stone-300">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <h2 id="lessonsViewTitle" class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100">Topic Title</h2>
@@ -159,7 +179,7 @@
       <div id="speechResultArea" class="w-full min-h-[56px] flex flex-wrap gap-2 items-center justify-center p-4 rounded-xl border-2 border-dashed border-outline-variant/30 dark:border-stone-700 bg-surface-container-lowest dark:bg-stone-850 transition-all duration-200">
         <span class="text-on-surface-variant/40 dark:text-stone-600 font-body text-sm italic select-none">Tap the mic and speak the phrase aloud</span>
       </div>
-      <button id="speechMicBtn" class="w-16 h-16 rounded-full bg-primary dark:bg-emerald-600 text-on-primary dark:text-emerald-50 shadow-md flex items-center justify-center hover:scale-105 transition-transform duration-200">
+      <button id="speechMicBtn" aria-label="Record answer" class="w-16 h-16 rounded-full bg-primary dark:bg-emerald-600 text-on-primary dark:text-emerald-50 shadow-md flex items-center justify-center hover:scale-105 transition-transform duration-200">
         <span class="material-symbols-outlined text-3xl">mic</span>
       </button>
       <button id="speechRetryBtn" class="hidden px-6 py-2 rounded-xl font-label font-bold text-sm uppercase tracking-wider bg-surface-variant dark:bg-stone-800 text-on-surface dark:text-stone-300 hover:opacity-90 transition-all">
@@ -217,10 +237,10 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 id="feedbackBarTitle" class="font-headline text-xl font-bold"></h3>
-              <button id="feedbackBarReplayBtn" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors">
+              <button id="feedbackBarReplayBtn" aria-label="Replay audio" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors">
                 <span class="material-symbols-outlined text-lg opacity-70">volume_up</span>
               </button>
-              <button id="feedbackBarFlagBtn" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors" title="Flag wrong translation">
+              <button id="feedbackBarFlagBtn" aria-label="Flag wrong translation" class="hidden w-8 h-8 rounded-full flex items-center justify-center bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 transition-colors" title="Flag wrong translation">
                 &#x1F6A9;
               </button>
             </div>
@@ -256,7 +276,7 @@
     <div id="drillLegendPanel" class="bg-white dark:bg-stone-850 border border-black/5 dark:border-stone-700/50 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto p-6 transition-all duration-300 animate-[slideUp_0.2s_ease-out]">
       <div class="flex justify-between items-center mb-5">
         <h3 class="font-headline text-xl font-bold text-on-surface dark:text-stone-100">Drill Guide</h3>
-        <button id="drillLegendClose" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-stone-800 transition-all duration-300">
+        <button id="drillLegendClose" aria-label="Close guide" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-variant dark:hover:bg-stone-800 transition-all duration-300">
           <span class="material-symbols-outlined text-on-surface-variant dark:text-stone-400">close</span>
         </button>
       </div>
@@ -293,6 +313,10 @@
             <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-base mt-0.5 flex-shrink-0">visibility_off</span>
             <span><strong>Recall phase (13–24):</strong> Ghost text is hidden. Translate from memory to prove mastery.</span>
           </div>
+          <div class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-primary dark:text-emerald-400 text-base mt-0.5 flex-shrink-0">replay</span>
+            <span><strong>Reviews:</strong> always recall, never ghost text. Use Reveal Answer if you are stuck.</span>
+          </div>
         </div>
       </div>
 
@@ -326,6 +350,11 @@
          <div id="endScreenProgressBar" class="bg-primary dark:bg-emerald-600 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
        </div>
     </div>
+    <!-- Gamification XP Gain (end screen) -->
+    <div id="endScreenXPContainer" class="hidden flex flex-col items-center gap-1 mt-2 transition-all duration-500">
+      <span id="endScreenXPValue" class="font-mono text-2xl font-bold text-primary dark:text-emerald-400 transition-colors duration-300">0 XP</span>
+      <span id="endScreenLevelLabel" class="font-label text-sm text-on-surface-variant dark:text-stone-400 uppercase tracking-wider transition-colors duration-300">Principiante</span>
+    </div>
     <div class="flex flex-col sm:flex-row gap-4 mt-8">
       <button id="restartBtn" class="px-8 py-4 bg-surface-container-high dark:bg-stone-800 text-on-surface dark:text-stone-200 rounded-xl text-xl font-label font-bold hover:bg-surface-variant dark:hover:bg-stone-750 transition-colors duration-300">
         Repeat Lesson
@@ -336,39 +365,6 @@
     </div>
   </main>
 
-  <!-- THEORY ARTICLE VIEW -->
-  <main id="theoryArticleView" class="hidden flex-grow w-full max-w-3xl mx-auto px-6 py-12 flex-col gap-6 transition-colors duration-300">
-    <div class="flex items-center gap-4 border-b border-surface-container-highest dark:border-stone-800 pb-4">
-      <button id="backToTheoryBtn" class="p-2 hover:bg-surface-container-low dark:hover:bg-stone-800 rounded-full transition-colors duration-300 flex items-center justify-center text-on-surface-variant dark:text-stone-300">
-        <span class="material-symbols-outlined">arrow_back</span>
-      </button>
-      <h2 id="theoryArticleTitle" class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100">Theory</h2>
-    </div>
-    <article id="theoryArticleContent" class="pb-16">
-      <!-- Rich content injected via theory-viewer.js -->
-    </article>
-  </main>
-
-  <!-- Theory Modal -->
-  <div id="theoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/60 dark:bg-black/70 backdrop-blur-sm transition-all duration-300" style="display: none;">
-    <div class="relative z-50 w-full max-w-2xl bg-white dark:bg-stone-850 rounded-2xl shadow-2xl border border-black/5 dark:border-stone-700/50 flex flex-col overflow-hidden max-h-[92vh]">
-      <!-- Modal Header -->
-      <div class="px-6 py-4 bg-surface-container-low dark:bg-stone-900 border-b border-outline-variant/30 dark:border-stone-800 flex justify-between items-center shrink-0">
-        <div class="flex flex-col">
-          <h2 id="theoryModalTitle" class="font-headline text-lg font-semibold text-on-surface dark:text-stone-100">Grammar Cheat Sheet</h2>
-          <p id="theoryModalSubtitle" class="font-body text-xs text-on-surface-variant dark:text-stone-400 mt-0.5">Patterns &amp; building blocks</p>
-        </div>
-        <button id="closeTheoryModalBtn" class="text-on-surface-variant dark:text-stone-400 hover:text-primary dark:hover:text-emerald-400 transition-colors duration-300 flex items-center justify-center p-2 -mr-2 cursor-pointer">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <!-- Modal Body -->
-      <div class="overflow-y-auto bg-white dark:bg-stone-850 flex items-center justify-center p-4">
-        <img id="theoryModalImage" src="" alt="Grammar theory infographic" class="w-full h-auto rounded-lg border border-outline-variant/20 dark:border-stone-800" />
-      </div>
-    </div>
-  </div>
-
   <!-- Settings Modal -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 dark:bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-200 transition-colors duration-300" style="display: none;">
     <div class="relative z-50 w-full max-w-xl bg-white dark:bg-stone-850 rounded-2xl shadow-2xl border border-black/5 dark:border-stone-700/50 flex flex-col overflow-hidden max-h-[90vh] transition-colors duration-300">
@@ -376,7 +372,7 @@
       <!-- Modal Header -->
       <div class="px-8 py-6 bg-surface-container-low dark:bg-stone-900 border-b border-outline-variant/30 dark:border-stone-800 flex justify-between items-center shrink-0 transition-colors duration-300">
         <h2 class="font-headline text-xl font-semibold text-on-surface dark:text-stone-100 transition-colors duration-300">Settings</h2>
-        <button id="closeSettingsModalBtn" class="text-on-surface-variant dark:text-stone-400 hover:text-primary dark:hover:text-emerald-400 transition-colors duration-300 flex items-center justify-center p-2 -mr-2 cursor-pointer">
+        <button id="closeSettingsModalBtn" aria-label="Close settings" class="text-on-surface-variant dark:text-stone-400 hover:text-primary dark:hover:text-emerald-400 transition-colors duration-300 flex items-center justify-center p-2 -mr-2 cursor-pointer">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
@@ -400,13 +396,30 @@
 
         <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
 
+        <!-- Prompt Language Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300" for="promptLangSelect">Prompt Language</label>
+          <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Language of the phrases you translate into Spanish.</p>
+          <div class="relative">
+            <select id="promptLangSelect" class="w-full appearance-none bg-white dark:bg-stone-900 border border-outline-variant/40 dark:border-stone-800 text-on-surface dark:text-stone-100 font-body py-3 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 transition-all duration-300 cursor-pointer hover:bg-surface-container-low dark:hover:bg-stone-750">
+              <option value="ru">Русский</option>
+              <option value="uk">Українська</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant dark:text-stone-400">
+              <span class="material-symbols-outlined text-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
+
         <!-- Prompt Voice Setting -->
         <div class="flex flex-col gap-2">
           <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300" for="promptVoiceSelect">Prompt Voice</label>
           <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Select the voice for translating prompts.</p>
           <div class="relative">
             <select id="promptVoiceSelect" class="w-full appearance-none bg-white dark:bg-stone-900 border border-outline-variant/40 dark:border-stone-800 text-on-surface dark:text-stone-100 font-body py-3 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-emerald-500 transition-all duration-300 cursor-pointer hover:bg-surface-container-low dark:hover:bg-stone-750">
-              <option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Russian Voice (ru-RU)</option>
+              <option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default voice</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant dark:text-stone-400">
               <span class="material-symbols-outlined text-sm">expand_more</span>
@@ -479,6 +492,18 @@
 
         <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
 
+        <!-- Haptic Feedback Setting -->
+        <div class="flex flex-col gap-2">
+          <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300" for="hapticToggle">Haptic Feedback</label>
+          <p class="font-body text-sm text-on-surface-variant/80 dark:text-stone-400 mb-1 transition-colors duration-300">Short vibration on correct and wrong answers (phones only).</p>
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="hapticToggle" checked class="w-5 h-5 accent-primary dark:accent-emerald-500 rounded border-outline-variant/40 dark:border-stone-800 cursor-pointer" />
+            <label for="hapticToggle" class="font-body text-sm text-on-surface dark:text-stone-100 select-none cursor-pointer">Vibrate on feedback</label>
+          </div>
+        </div>
+
+        <div class="h-px w-full bg-surface-variant dark:bg-stone-800"></div>
+
         <!-- Disable Speech Drills Setting -->
         <div class="flex flex-col gap-2">
           <label class="font-label text-sm font-semibold tracking-wide text-on-surface-variant dark:text-stone-300 uppercase transition-colors duration-300" for="disableSpeechToggle">Disable Speech Drills</label>
@@ -534,7 +559,7 @@
         <h3 class="font-headline text-2xl font-bold text-on-surface dark:text-stone-100 flex items-center gap-2">
           <span class="material-symbols-outlined text-primary dark:text-emerald-400">account_circle</span> User Profile
         </h3>
-        <button id="closeProfileBtn" class="p-2 text-on-surface-variant hover:text-on-surface dark:text-stone-400 dark:hover:text-stone-200 bg-surface-container-lowest dark:bg-stone-800 rounded-full transition-colors flex items-center justify-center">
+        <button id="closeProfileBtn" aria-label="Close profile" class="p-2 text-on-surface-variant hover:text-on-surface dark:text-stone-400 dark:hover:text-stone-200 bg-surface-container-lowest dark:bg-stone-800 rounded-full transition-colors flex items-center justify-center">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>

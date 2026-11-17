@@ -329,7 +329,7 @@ const week7Lessons = [
     phrases: [
       { ru: "Медсестра всегда приходит в восемь", uk: "Медсестра завжди приходить о восьмій", es: "La enfermera llega siempre a las ocho" },
       { ru: "У него болезнь, ему нужно в больницу", uk: "У нього хвороба, йому треба до лікарні", es: "Él tiene una enfermedad, tiene que ir al hospital" },
-      { ru: "Какие у вас те же проблемы?", uk: "Які у вас ті самі проблеми?", es: "¿Cuáles son los mismos problemas?" },
+      { ru: "Какие проблемы те же самые?", uk: "Які проблеми ті самі?", es: "¿Cuáles son los mismos problemas?" },
       { ru: "Я только что пришёл, встретимся тут или в баре?", uk: "Я щойно прийшов, зустрінемося тут чи в барі?", es: "Acabo de llegar, ¿quedamos aquí o en el bar?" },
       { ru: "В аптеке есть медсестра", uk: "В аптеці є медсестра", es: "Hay una enfermera en la farmacia" },
       { ru: "Мне нужно прийти до девяти", uk: "Мені треба прийти до дев'ятої", es: "Tengo que llegar antes de las nueve" },

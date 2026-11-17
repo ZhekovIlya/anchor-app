@@ -209,6 +209,7 @@ Also fixed in M1: `gamification.js isConsecutiveDay` parsed the UTC date strings
 - `src/dev/seed-demo-data.js` writes completion counters under `completion_count_<id>`, but the app reads plain `<lessonId>` keys, so the dev seed's completions never show. Pre-existing and unrelated to this feature; not changed.
 
 ## 6. Status / handoff
+- 2026-11-16 — **reels v2 (quiz cards)** replaces the Reveal/Know/Again flow described in §2 and in the 3.3–3.4 notes below: study → re-test, choose/type cards graded by the bot, no `<tg-spoiler>`. Spec and decisions: [QUIZ-PLAN.md](QUIZ-PLAN.md). `r:v|k|g` callbacks and v1 sessions are tolerated as stale.
 - 2026-11-02 night run — **checklist complete (3.3 → 5.4)**, 181 tests green, `npm run build` passes. Nothing pushed or deployed.
   **What you need to do** (all in [SETUP.md](SETUP.md)): create the bot(s) in BotFather, add Upstash Redis via the Vercel Marketplace,
   set the env vars in Vercel, push the branch for a preview, run `npm run telegram:setup` against it, link the app in Settings → Telegram Sync,

@@ -1,0 +1,8 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "anchor-web", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "--port", "3000", "--strictPort", "--no-open"], "port": 3000 },
+    { "name": "anchor-api", "runtimeExecutable": "node", "runtimeArgs": ["scripts/dev-api.js"], "port": 3001 },
+    { "name": "anchor-preview", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "preview", "--port", "4173", "--strictPort"], "port": 4173 }
+  ]
+}

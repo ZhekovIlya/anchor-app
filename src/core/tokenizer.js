@@ -21,6 +21,17 @@ const NOUN_LIKE_TYPES = new Set(['object', 'article']);
 const VERB_PRECURSOR_TYPES = new Set(['subject', 'negation', 'adverb', 'question']);
 
 /**
+ * Normalise a raw word for vocabulary lookup: strips sentence punctuation, quotes,
+ * brackets, dashes and the ellipsis character, then lowercases. Token text keeps the original.
+ *
+ * @param {string} word
+ * @returns {string}
+ */
+export function normalizeWord(word) {
+  return word.replace(/[¿?¡!,.:;…"“”«»()—–]/g, '').toLowerCase();
+}
+
+/**
  * Tokenize a Spanish sentence into an array of { text, type } objects.
  *
  * @param {string} esString — The full Spanish sentence (e.g. "Yo lavo las patas")
@@ -38,7 +49,7 @@ export function tokenize(esString) {
     }
 
     const word = words[i];
-    const clean = word.replace(/[¿?¡!,.:;]/g, '').toLowerCase();
+    const clean = normalizeWord(word);
     let type = vocabulary[clean] || 'object';
 
     // Positional disambiguation for verb/adjective homonyms

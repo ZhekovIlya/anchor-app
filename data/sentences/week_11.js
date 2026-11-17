@@ -20,7 +20,7 @@ const week11Lessons = [
       { ru: "Мои друзья купили билеты на поезд на прошлой неделе.", uk: "Мої друзі купили квитки на потяг минулого тижня.", es: "Mis amigos compraron billetes de tren la semana pasada." },
       { ru: "Они поели в ресторане в центре вчера вечером.", uk: "Вони поїли в ресторані в центрі вчора ввечері.", es: "Ellas comieron en un restaurante del centro anoche." },
       { ru: "Туристы прожили один год в Барселоне.", uk: "Туристи прожили один рік у Барселоні.", es: "Los turistas vivieron un año en Barcelona." },
-      { ru: "Вы прибыли вовремя на станцию?", uk: "Ви прибули вчасно на станцію?", es: "¿Ustedes llegaron a tiempo a la estación?" },
+      { ru: "Вы (вежливо, мн.ч.) прибыли вовремя на станцию?", uk: "Ви (ввічливо, мн.) прибули вчасно на станцію?", es: "¿Ustedes llegaron a tiempo a la estación?" },
       { ru: "Они открыли дверь ключом.", uk: "Вони відкрили двері ключем.", es: "Ellos abrieron la puerta con la llave." }
     ],
   },
@@ -78,7 +78,7 @@ const week11Lessons = [
       { ru: "Она сделала очень вкусный яблочный пирог.", uk: "Вона зробила дуже смачний яблучний пиріг.", es: "Ella hizo una tarta de manzana muy rica." },
       { ru: "Я не смог хорошо поспать из-за шума на улице.", uk: "Я не зміг добре поспати через шум на вулиці.", es: "No pude dormir bien por el ruido de la calle." },
       { ru: "Ты смог поговорить с администратором отеля?", uk: "Ти зміг поговорити з адміністратором готелю?", es: "¿Pudiste hablar con el recepcionista del hotel?" },
-      { ru: "Он не смог прийти на урок, потому что был уставшим.", uk: "Він не зміг прийти на урок, тому що був втомленим.", es: "Él no pudo venir a la clase porque estuvo cansado." }
+      { ru: "Он не смог прийти на урок, потому что болел.", uk: "Він не зміг прийти на урок, тому що хворів.", es: "Él no pudo venir a la clase porque estuvo enfermo." }
     ],
   },
   {

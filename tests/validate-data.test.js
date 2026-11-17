@@ -2,56 +2,19 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { tokenize } from '../src/core/tokenizer.js';
 
-// Import sentence data modules
-import week1 from '../data/sentences/week_1.js';
-import week2 from '../data/sentences/week_2.js';
-import week3 from '../data/sentences/week_3.js';
-import week4 from '../data/sentences/week_4.js';
-import week5 from '../data/sentences/week_5.js';
-import week6 from '../data/sentences/week_6.js';
-import week7 from '../data/sentences/week7.js';
-import week8 from '../data/sentences/week_8.js';
-import week9 from '../data/sentences/week_9.js';
-import week10 from '../data/sentences/week_10.js';
-import week11 from '../data/sentences/week_11.js';
-import week12 from '../data/sentences/week_12.js';
-import week13 from '../data/sentences/week_13.js';
-import week14 from '../data/sentences/week_14.js';
-import topicsCore from '../data/sentences/topics_core.js';
+import { readdirSync } from 'node:fs';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { join, dirname } from 'node:path';
+import { loadAllData } from '../src/core/data-loader.js';
+import { getAllTheoryTopics } from '../src/core/theory-registry.js';
 
-// Import standalone theory modules
-import theoryVerbs from '../data/theory/verbs_and_irregulars.js';
-import theoryIrregularFull from '../data/theory/verbs_irregular_full.js';
-import theoryReflexiveSpecial from '../data/theory/verbs_reflexive_special.js';
-import theoryDemonstratives from '../data/theory/demonstrative_pronouns.js';
-import theoryBridge from '../data/theory/the_bridge.js';
-import theoryCatalan from '../data/theory/catalan_vs_castellano.js';
-
-// Import word data modules
-import wordsNumbers from '../data/words/numbers.js';
-import wordsTime from '../data/words/time_calendar.js';
-import wordsWeather from '../data/words/weather.js';
-import wordsColors from '../data/words/colors.js';
-import wordsQuestionWords from '../data/words/question_words.js';
-import wordsRutina from '../data/words/rutina.js';
-import wordsTiempo from '../data/words/tiempo_frecuencia.js';
-import wordsDirecciones from '../data/words/direcciones.js';
-import wordsProfesiones from '../data/words/profesiones.js';
-import wordsGustos from '../data/words/gustos.js';
-import wordsRestaurante from '../data/words/restaurante.js';
-import wordsConectores from '../data/words/conectores.js';
-
-const allTopics = [
-  week1, week2, week3, week4, week5, week6,
-  week7, week8, week9, week10, week11, week12,
-  week13, week14, topicsCore
-];
-
-const allWordTopics = [
-  wordsNumbers, wordsTime, wordsWeather, wordsColors,
-  wordsQuestionWords, wordsRutina, wordsTiempo, wordsDirecciones,
-  wordsProfesiones, wordsGustos, wordsRestaurante, wordsConectores
-];
+// Validate exactly what the app loads (not a hand-written import list).
+const loaded = loadAllData();
+const allTopics = loaded.sentences;
+const allWordTopics = loaded.words;
+const activeTopics = allTopics.filter(t => !t.legacy);
+const week6 = allTopics.find(t => t.id === 'week_6') || allTopics.find(t => /6/.test(t.id));
+const week12 = allTopics.find(t => t.id === 'week_12') || allTopics.find(t => /12/.test(t.id));
 
 describe('Data file structure', () => {
   test('each topic has required fields', () => {
@@ -89,34 +52,34 @@ describe('Phrase validation', () => {
     }
   });
 
-  test('non-exam lessons have exactly 6 phrases', () => {
-    const exceptions = [];
-
-    for (const topic of allTopics) {
+  test('non-legacy sentence lessons have exactly 6 phrases', () => {
+    const bad = [];
+    for (const topic of activeTopics) {
       for (const lesson of topic.lessons) {
         if (lesson.exam) continue;
-        if (lesson.phrases.length !== 6) {
-          // Some lessons (like estar él/ella) have 8 phrases — this is intentional
-          if (lesson.phrases.length > 6) {
-            // Allow oversized lessons but flag them
-            console.log(`  ℹ️ ${lesson.id} has ${lesson.phrases.length} phrases (>6, intentional?)`);
-          } else {
-            exceptions.push(`${lesson.id}: ${lesson.phrases.length} phrases`);
+        if (lesson.phrases.length !== 6) bad.push(`${lesson.id}: ${lesson.phrases.length}`);
+      }
+    }
+    assert.deepStrictEqual(bad, [], `Lessons without exactly 6 phrases: ${bad.join(', ')}`);
+  });
+
+  test('every non-legacy phrase has ru, uk and es', () => {
+    const bad = [];
+    for (const topic of activeTopics) {
+      for (const lesson of topic.lessons) {
+        if (lesson.exam) continue;
+        for (const [i, phrase] of lesson.phrases.entries()) {
+          for (const f of ['ru', 'uk', 'es']) {
+            if (!phrase[f] || typeof phrase[f] !== 'string') bad.push(`${lesson.id}[${i}] missing ${f}`);
           }
         }
       }
     }
-
-    if (exceptions.length > 0) {
-      console.log(`  ⚠️ Under-sized lessons: ${exceptions.join(', ')}`);
-    }
+    assert.deepStrictEqual(bad, [], bad.join(', '));
   });
 
-  test('week 6 lessons have exactly 6 phrases', () => {
-    for (const lesson of week6.lessons) {
-      if (lesson.exam) continue;
-      assert.strictEqual(lesson.phrases.length, 6, `Lesson ${lesson.id} must have exactly 6 phrases, got ${lesson.phrases.length}`);
-    }
+  test('legacy topics are flagged and have no uk requirement', () => {
+    assert.ok(allTopics.some(t => t.legacy), 'expected at least one legacy topic');
   });
 });
 
@@ -124,8 +87,7 @@ describe('Theory schema validation', () => {
   const allTheoryContainers = [
     ...allTopics.filter(t => t.theory).map(t => ({ id: t.id, theory: t.theory })),
     ...allWordTopics.filter(w => w.theory).map(w => ({ id: w.id, theory: w.theory })),
-    ...[theoryVerbs, theoryIrregularFull, theoryReflexiveSpecial, theoryDemonstratives, theoryBridge, theoryCatalan]
-      .map(th => ({ id: th.id, theory: th })),
+    ...loaded.theory.map(th => ({ id: th.id, theory: th })),
   ];
 
   const VALID_SECTION_TYPES = new Set(['heading', 'paragraph', 'callout', 'table', 'image', 'video']);
@@ -323,5 +285,39 @@ describe('Tabs and ID integrity', () => {
     // renaming Tiempo to wtf_*; src/core/id-migrations.js carries stored progress over.
     const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
     assert.deepStrictEqual(dupes, [], `Duplicate lesson IDs: ${dupes.join(', ')}`);
+  });
+});
+
+describe('Data file discovery (a file added to data/ must be registered)', () => {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'data');
+  const listFiles = (sub) => readdirSync(join(root, sub)).filter(f => f.endsWith('.js')).sort();
+  const load = async (sub, f) => (await import(pathToFileURL(join(root, sub, f)).href)).default;
+
+  test('every data/sentences/*.js is loaded by loadAllData()', async () => {
+    const missing = [];
+    for (const f of listFiles('sentences')) {
+      const mod = await load('sentences', f);
+      if (!allTopics.includes(mod)) missing.push(`sentences/${f}`);
+    }
+    assert.deepStrictEqual(missing, [], `Not registered in src/core/data-loader.js: ${missing.join(', ')}`);
+  });
+
+  test('every data/words/*.js is loaded by loadAllData()', async () => {
+    const missing = [];
+    for (const f of listFiles('words')) {
+      const mod = await load('words', f);
+      if (!allWordTopics.includes(mod)) missing.push(`words/${f}`);
+    }
+    assert.deepStrictEqual(missing, [], `Not registered in src/core/data-loader.js: ${missing.join(', ')}`);
+  });
+
+  test('every data/theory/*.js is in the theory registry', async () => {
+    const registry = getAllTheoryTopics();
+    const missing = [];
+    for (const f of listFiles('theory')) {
+      const mod = await load('theory', f);
+      if (!registry.some(t => t.sections === mod.sections)) missing.push(`theory/${f}`);
+    }
+    assert.deepStrictEqual(missing, [], `Not registered in src/core/theory-registry.js: ${missing.join(', ')}`);
   });
 });

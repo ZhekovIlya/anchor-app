@@ -1,7 +1,16 @@
 import tailwindcss from '@tailwindcss/vite';
 import { execSync } from 'child_process';
 
-const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+// Outside a git checkout (e.g. a source tarball) fall back to Vercel's SHA, then 'dev'.
+function getRevision() {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || 'dev';
+  } catch {
+    return (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || 'dev';
+  }
+}
+
+const commitHash = getRevision();
 
 export default {
   plugins: [tailwindcss()],

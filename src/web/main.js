@@ -10,11 +10,10 @@ import { loadAllData, buildPhraseBank, buildWordBank } from '../core/data-loader
 import { localStorageAdapter } from './storage.js';
 import { renderDashboard, renderLessonsView, renderWordLessonsView, setActiveHomeTab } from './dashboard.js';
 import { startDrill } from './drill-ui.js';
-import { renderTheoryArticle, renderWordTheoryArticle } from './theory-viewer.js';
-import { renderReadAloudList, startReadAloud } from './read-aloud-ui.js';
+import { renderReadAloudList } from './read-aloud-ui.js';
 import { renderAuditionsTab } from './audition-ui.js';
 import { renderStatsTab } from './stats-dashboard.js';
-import { initVoiceSelector, initPromptVoiceSelector, initSpeedSelector } from './speech.js';
+import { initVoiceSelector, initPromptVoiceSelector, initPromptLangSelector, initSpeedSelector } from './speech.js';
 import { seedDemoDataOnce } from '../dev/seed-demo-data.js';
 import { createGamification } from '../core/gamification.js';
 import { updateGamificationDisplay } from './gamification-ui.js';
@@ -29,6 +28,7 @@ import { LESSON_ID_RENAMES, copyRenamedSrsEntries } from '../core/id-migrations.
 // SEED (dev preview only)
 // ========================
 
+// Opt-in: open the app with ?demo=1. Never touches a Telegram-linked browser.
 if (import.meta.env.DEV) {
   seedDemoDataOnce();
 }
@@ -121,6 +121,7 @@ const elements = {
   successLoader: document.getElementById('successLoader'),
   spanishVoiceSelect: document.getElementById('spanishVoiceSelect'),
   promptVoiceSelect: document.getElementById('promptVoiceSelect'),
+  promptLangSelect: document.getElementById('promptLangSelect'),
 
   // Drill Legend
   drillInfoBtn: document.getElementById('drillInfoBtn'),
@@ -144,18 +145,6 @@ const elements = {
   closeProfileBtn: document.getElementById('closeProfileBtn'),
   profileStatsContainer: document.getElementById('profileStatsContainer'),
 
-  // Theory Modal (legacy — for sentence week theory images)
-  theoryModal: document.getElementById('theoryModal'),
-  theoryModalTitle: document.getElementById('theoryModalTitle'),
-  theoryModalSubtitle: document.getElementById('theoryModalSubtitle'),
-  theoryModalImage: document.getElementById('theoryModalImage'),
-  closeTheoryModalBtn: document.getElementById('closeTheoryModalBtn'),
-
-  // Theory Article View (new — for standalone theory & word theory)
-  theoryArticleView: document.getElementById('theoryArticleView'),
-  theoryArticleTitle: document.getElementById('theoryArticleTitle'),
-  theoryArticleContent: document.getElementById('theoryArticleContent'),
-  backToTheoryBtn: document.getElementById('backToTheoryBtn'),
 };
 
 // ========================
@@ -165,6 +154,7 @@ const elements = {
 function initDashboard() {
   activeTopic = null;
   activeMode = null;
+  updateGamificationDisplay(gamification.getStats());
 
   renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
     onTopicClick,
@@ -190,6 +180,7 @@ function onTopicClick(topic) {
 
 function openTheoryInLedger(topicOrTheoryId) {
   setActiveHomeTab('theory');
+  updateGamificationDisplay(gamification.getStats());
   renderDashboard(elements, data, srsSentences, srsWords, phraseBank, wordBank, {
     onTopicClick,
     onReviewClick,
@@ -449,20 +440,6 @@ elements.drillLegendOverlay.addEventListener('click', (e) => {
 });
 
 // ========================
-// THEORY MODAL (legacy — sentence week images)
-// ========================
-
-function closeTheoryModal() {
-  elements.theoryModal.style.display = 'none';
-  elements.theoryModal.classList.add('hidden');
-}
-
-elements.closeTheoryModalBtn.addEventListener('click', closeTheoryModal);
-elements.theoryModal.addEventListener('click', (e) => {
-  if (e.target === elements.theoryModal) closeTheoryModal();
-});
-
-// ========================
 // PROFILE MODAL
 // ========================
 
@@ -493,6 +470,7 @@ elements.profileModal.addEventListener('click', (e) => {
 // ========================
 
 initVoiceSelector(elements.spanishVoiceSelect);
+initPromptLangSelector(elements.promptLangSelect, elements.promptVoiceSelect);
 initPromptVoiceSelector(elements.promptVoiceSelect);
 initSpeedSelector(elements.spanishSpeedRange, elements.spanishSpeedValue);
 
@@ -518,7 +496,7 @@ if (elements.disableSpeechToggle) {
   elements.disableSpeechToggle.checked = savedDisableSpeech;
 }
 
-initDashboard();
+initDashboard(); // also refreshes the XP/streak header
 
 // Re-engagement check for returning users
 checkAndShowReengagement(
@@ -532,7 +510,7 @@ checkAndShowReengagement(
     const duePhrases = srsSentences.getDuePhrases(phraseBank).slice(0, 20);
     if (duePhrases.length > 0) {
       const reviewLesson = { id: 'refresher_review', title: 'Quick Refresher', exam: false };
-      startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE, gamification);
+      startDrill(elements, duePhrases, null, reviewLesson, false, true, srsSentences, initDashboard, false, DRILL_MODE.SENTENCE, gamification, getSessionPace());
     } else {
       initDashboard();
     }
@@ -623,3 +601,16 @@ const syncClient = createSyncClient({
 });
 const telegramSyncSection = initTelegramSyncSection(document.getElementById('telegramSyncSection'), syncClient);
 syncClient.startAutoSync();
+
+// ========================
+// SERVICE WORKER (production builds only)
+// ========================
+// public/sw.js never touches /api/*, non-GET or cross-origin requests.
+
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Offline support is optional — ignore registration failures.
+    });
+  });
+}

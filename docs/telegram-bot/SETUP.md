@@ -80,11 +80,14 @@ Re-run it whenever the URL or the secret changes (e.g. after moving from preview
 
 ## 9. Smoke test
 - [ ] `/start` → help text with **▶️ Start reels**.
-- [ ] `/reels` → one card; **👁 Reveal** shows RU + UK; **🔊 Audio** sends a voice message; **❌ Again** brings the word back 3 cards later; **✅ Know** advances; the same message is edited each time.
-- [ ] Finish a session → summary with counts, streak, XP (+15).
+- [ ] `/reels` on a fresh account → a **study** card (word + RU + UK); **Got it ➡️** shows the next word; 3 cards later the first word returns as a **question** with 4 translation buttons. The same message is edited each time, and **no translation is ever hidden behind a spoiler**.
+- [ ] Tap a wrong option → `❌ …` / `✅ answer`, **🔊 Audio** plays the word, **Next ➡️** continues; the word comes back 3 cards later. Tap a right option → the next card appears at once with a `✅ word — translation` line on top.
+- [ ] After a few sessions (or seed buckets in the app): a bucket-2 word shows the translation with a 2×2 grid of Spanish words; a bucket ≥ 3 word shows **Type it in Spanish**. Send the word as a normal message → the card is edited to the result; **💡 Hint** shows `l_ c_____`; **🤷 Don't know** shows the answer. A typo (`la cuentas`) is accepted as "almost".
+- [ ] Open the same card on two devices / tap an old card after starting a new session → "This card is no longer active", nothing changes.
+- [ ] Finish a session → summary `✅ n correct · ❌ n to repeat · accuracy n %`, streak, XP (+15), and the list of words to repeat.
 - [ ] In the app: **Settings → Sync now** → dashboard/XP reflect the bot session.
 - [ ] Do a lesson in the app, close the tab, then `/progress` in the bot shows it.
-- [ ] `/settings` → switch to 🇺🇦 → next card's spoiler is Ukrainian.
+- [ ] `/settings` → switch to 🇺🇦 → the next session's options and receipts are Ukrainian; **Typing off** → no "type it" cards (choose Spanish instead).
 - [ ] From another Telegram account (not on the allowlist): the bot answers with that id only.
 - [ ] `curl -X POST https://<deployment>/api/telegram` → `401` (no secret).
 

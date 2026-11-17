@@ -35,12 +35,15 @@ export function getSpanishVoices() {
 }
 
 /**
- * Get all prompt language voices (Russian + Ukrainian).
+ * Get prompt language voices. With a lang code ('ru' | 'uk') only voices of
+ * that language; without one, Russian + Ukrainian.
  */
-export function getPromptVoices() {
+export function getPromptVoices(lang) {
   if (!('speechSynthesis' in window)) return [];
   return window.speechSynthesis.getVoices().filter(voice =>
-    voice.lang.startsWith('ru') || voice.lang.startsWith('uk')
+    lang
+      ? voice.lang.startsWith(lang)
+      : voice.lang.startsWith('ru') || voice.lang.startsWith('uk')
   );
 }
 
@@ -48,7 +51,7 @@ export function getPromptVoices() {
  * Get the currently selected prompt language code ('ru' or 'uk').
  */
 export function getPromptLang() {
-  return localStorage.getItem(SELECTED_PROMPT_LANG_KEY) || 'ru';
+  return localStorage.getItem(SELECTED_PROMPT_LANG_KEY) === 'uk' ? 'uk' : 'ru';
 }
 
 /**
@@ -65,9 +68,10 @@ export function speakPrompt(text) {
   const selectedUri = localStorage.getItem(SELECTED_PROMPT_VOICE_KEY);
   const lang = getPromptLang();
 
+  // The saved voice is used only if it speaks the chosen prompt language.
   if (selectedUri) {
     const voice = voices.find(v => v.voiceURI === selectedUri);
-    if (voice) utterance.voice = voice;
+    if (voice && voice.lang.startsWith(lang)) utterance.voice = voice;
   }
 
   // Fallback lang from selected language setting
@@ -209,23 +213,57 @@ export function initSpeedSelector(rangeElement, labelElement) {
   });
 }
 
+const PROMPT_LANG_CHANGED_EVENT = 'anchor:prompt-lang-changed';
+
 /**
- * Initialize the Prompt voice selector (Russian / Ukrainian).
- * Populates voices grouped by locale and persists both the voice URI and the lang code.
+ * Initialize the Prompt language select (ru / uk). Stored under
+ * anchor_prompt_lang; the prompt-voice list is rebuilt when it changes.
+ */
+export function initPromptLangSelector(langSelect, voiceSelect) {
+  if (!langSelect) return;
+  langSelect.value = getPromptLang();
+
+  langSelect.addEventListener('change', () => {
+    const lang = langSelect.value === 'uk' ? 'uk' : 'ru';
+    localStorage.setItem(SELECTED_PROMPT_LANG_KEY, lang);
+
+    // Forget a saved voice that does not speak the new language.
+    const uri = localStorage.getItem(SELECTED_PROMPT_VOICE_KEY);
+    if (uri && 'speechSynthesis' in window) {
+      const voice = window.speechSynthesis.getVoices().find(v => v.voiceURI === uri);
+      if (!voice || !voice.lang.startsWith(lang)) localStorage.removeItem(SELECTED_PROMPT_VOICE_KEY);
+    }
+
+    window.dispatchEvent(new Event(PROMPT_LANG_CHANGED_EVENT));
+    speakPrompt(lang === 'uk' ? 'Привіт, як справи?' : 'Привет, как дела?');
+  });
+}
+
+/**
+ * Initialize the Prompt voice selector. Lists only voices of the chosen prompt
+ * language (see initPromptLangSelector) and persists the voice URI. Choosing a
+ * voice does not change the language.
  */
 export function initPromptVoiceSelector(selectElement) {
-  if (!('speechSynthesis' in window)) return;
+  if (!selectElement || !('speechSynthesis' in window)) return;
 
   const populate = () => {
-    const voices = getPromptVoices();
+    const lang = getPromptLang();
+    const voices = getPromptVoices(lang);
     const currentUri = localStorage.getItem(SELECTED_PROMPT_VOICE_KEY);
+    const label = lang === 'uk' ? 'Default Ukrainian voice' : 'Default Russian voice';
 
-    selectElement.innerHTML = '<option value="" class="bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100">Default Prompt Voice</option>';
+    selectElement.innerHTML = '';
+    const def = document.createElement('option');
+    def.value = '';
+    def.className = 'bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100';
+    def.textContent = voices.length ? label : `${label} (no installed voice found)`;
+    selectElement.appendChild(def);
+
     voices.forEach(voice => {
       const option = document.createElement('option');
       option.value = voice.voiceURI;
       option.className = 'bg-white dark:bg-stone-900 text-on-surface dark:text-stone-100';
-      option.dataset.lang = voice.lang.startsWith('uk') ? 'uk' : 'ru';
       option.textContent = `${voice.name} (${voice.lang})`;
       if (voice.voiceURI === currentUri) option.selected = true;
       selectElement.appendChild(option);
@@ -233,6 +271,7 @@ export function initPromptVoiceSelector(selectElement) {
   };
 
   populate();
+  window.addEventListener(PROMPT_LANG_CHANGED_EVENT, populate);
   if (speechSynthesis.onvoiceschanged !== undefined) {
     const prev = speechSynthesis.onvoiceschanged;
     speechSynthesis.onvoiceschanged = () => {
@@ -242,12 +281,7 @@ export function initPromptVoiceSelector(selectElement) {
   }
 
   selectElement.addEventListener('change', (e) => {
-    const selected = selectElement.options[selectElement.selectedIndex];
-    const lang = selected.dataset.lang || 'ru';
     localStorage.setItem(SELECTED_PROMPT_VOICE_KEY, e.target.value);
-    localStorage.setItem(SELECTED_PROMPT_LANG_KEY, lang);
-    // Speak a quick test in the new language
-    const testText = lang === 'uk' ? 'Привіт, як справи?' : 'Привет, как дела?';
-    speakPrompt(testText);
+    speakPrompt(getPromptLang() === 'uk' ? 'Привіт, як справи?' : 'Привет, как дела?');
   });
 }

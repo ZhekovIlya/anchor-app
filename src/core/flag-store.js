@@ -18,7 +18,7 @@ const FLAG_KEY = 'anchor_flagged_items';
  * @param {string} [item.lessonId]   - Lesson ID for traceability
  */
 export function flagPhrase(storage, item) {
-  const existing = storage.load(FLAG_KEY) || [];
+  const existing = getFlaggedItems(storage).slice();
   const entry = {
     ...item,
     flaggedAt: new Date().toISOString(),
@@ -35,7 +35,9 @@ export function flagPhrase(storage, item) {
  * @returns {Array}
  */
 export function getFlaggedItems(storage) {
-  return storage.load(FLAG_KEY) || [];
+  // The web adapter returns {} for a missing key — anything but an array is an empty list.
+  const stored = storage.load(FLAG_KEY);
+  return Array.isArray(stored) ? stored : [];
 }
 
 /**

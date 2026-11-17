@@ -6,7 +6,7 @@
 
 import { COLOR_MAP, DRILL_MODE, EXAM_MAX_MISTAKES } from '../core/constants.js';
 import { createDrillEngine } from '../core/engine.js';
-import { SpeechRecognitionService } from '../core/speech-recognition.js';
+import { SpeechRecognitionService } from './speech-recognition.js';
 import { cancelSpeech, speakPrompt, speakAnswer, getPromptLang, speakSlowly } from './speech.js';
 import { showOnly, EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from './dashboard.js';
 import { incrementCompletion, getCompletionCount, localStorageAdapter } from './storage.js';
@@ -17,17 +17,65 @@ import { notifyProgressChanged } from './sync-client.js';
 
 let activeEngine = null;
 let isHandlingFeedback = false;
-let boundKeydownHandler = null;
-let boundVisibilityHandler = null;
 let speechService = null;
+let cancelFeedbackEnter = null;   // detaches the active Enter-to-continue listener
+let speechAdvanceTimer = null;    // pending "auto-advance after correct speech" timer
+let drillSession = 0;             // bumped on every start/quit so stale callbacks can bail out
 let lastSpokenTranscript = '';
 let cumulativeSpokenWords = new Set();
+
+const esc = (str) => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * Arm an "Enter = continue" listener on `doc` for the wrong-answer bar.
+ * The listener is attached only after the current event has finished (so the Enter that
+ * opened the bar cannot dismiss it), ignores key repeat and Enter typed inside the
+ * flag-correction panel. Returns an idempotent cancel function.
+ */
+export function armEnterToContinue(doc, onContinue, schedule = (fn) => setTimeout(fn, 0), unschedule = (id) => clearTimeout(id)) {
+  let attached = false;
+  let cancelled = false;
+  const handler = (e) => {
+    if (e.key !== 'Enter' || e.repeat) return;
+    const t = e.target;
+    if (t && typeof t.closest === 'function' && t.closest('#feedbackBarFlagPanel')) return;
+    e.preventDefault();
+    cancel();
+    onContinue();
+  };
+  const timerId = schedule(() => {
+    if (cancelled) return;
+    attached = true;
+    doc.addEventListener('keydown', handler);
+  });
+  function cancel() {
+    cancelled = true;
+    if (!attached) unschedule(timerId);
+    if (attached) {
+      attached = false;
+      doc.removeEventListener('keydown', handler);
+    }
+  }
+  return cancel;
+}
+
+/** Stop everything a running drill may still do later (listeners, timers, audio, mic). */
+function teardownDrill() {
+  drillSession++;
+  if (cancelFeedbackEnter) { cancelFeedbackEnter(); cancelFeedbackEnter = null; }
+  if (speechAdvanceTimer) { clearTimeout(speechAdvanceTimer); speechAdvanceTimer = null; }
+  try { cancelSpeech(); } catch (e) {}
+  try { if (speechService && speechService.isRecording) speechService.stop(); } catch (e) {}
+  isHandlingFeedback = false;
+}
 
 function cleanWord(word) {
   return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\p{L}\p{N}\s]/gu, '').toLowerCase().trim();
 }
 
 export function startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam = false, mode = DRILL_MODE.SENTENCE, gamification = null, sessionPace = 1) {
+  teardownDrill(); // a new drill invalidates anything the previous one left behind
+  const mySession = drillSession;
   const {
     drillView, lessonsView, endScreen, dashboardView,
     russianPrompt, ghostText,
@@ -81,6 +129,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       } catch (e) {}
     }
 
+    if (cancelFeedbackEnter) { cancelFeedbackEnter(); cancelFeedbackEnter = null; }
     isHandlingFeedback = true;
     feedbackBar.classList.remove('hidden');
     void feedbackBar.offsetWidth; // force reflow
@@ -90,6 +139,8 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     triggerHaptic(isCorrect ? 'success' : 'error');
 
     const handleContinue = () => {
+      if (cancelFeedbackEnter) { cancelFeedbackEnter(); cancelFeedbackEnter = null; }
+      if (mySession !== drillSession) return; // drill was quit / replaced meanwhile
       feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
       feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
       isHandlingFeedback = false;
@@ -209,17 +260,9 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       }
 
       // Allow enter key or click
-      const enterHandler = (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          document.removeEventListener('keydown', enterHandler);
-          handleContinue();
-        }
-      };
-      document.addEventListener('keydown', enterHandler);
+      cancelFeedbackEnter = armEnterToContinue(document, handleContinue);
 
       feedbackBarBtn.onclick = () => {
-        document.removeEventListener('keydown', enterHandler);
         handleContinue();
       };
     }
@@ -589,7 +632,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
     if (state.interactionMode !== 'TYPE' && state.interactionMode !== 'LISTENING') return;
 
     if (isWordMode) {
-      fakeInput.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${inputField.value}</span>`;
+      renderWordFakeInput(fakeInput, inputField.value);
     } else {
       renderFakeInput(fakeInput, inputField.value, state.currentPhrase);
     }
@@ -620,7 +663,7 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
       if (correct) {
         // If typo is true, we could optionally show a warning, but for now we just accept it
         if (typo && !isWordMode) {
-          fakeInput.innerHTML = `<span class="text-[#ca8a04] dark:text-amber-400 transition-colors duration-300">${state.currentPhrase.es}</span>`;
+          fakeInput.innerHTML = `<span class="text-[#ca8a04] dark:text-amber-400 transition-colors duration-300">${esc(state.currentPhrase.es)}</span>`;
         }
         showFeedback(true, state.currentPhrase.es, () => {
           activeEngine.handleCorrect();
@@ -791,18 +834,24 @@ export function startDrill(elements, phrases, topic, lesson, isExam, isReview, s
 
   // Quit and End Handlers
   quitDrillBtn.onclick = () => {
+    teardownDrill();
     feedbackBar.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
     feedbackBar.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
     onQuit();
   };
   restartBtn.onclick = () => {
-    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode, gamification);
+    startDrill(elements, phrases, topic, lesson, isExam, isReview, srs, onQuit, isTabExam, mode, gamification, sessionPace);
   };
   dashboardReturnBtn.onclick = () => {
+    teardownDrill();
     onQuit();
   };
 
   activeEngine.start();
+}
+
+export function renderWordFakeInput(fakeInputEl, userInput) {
+  fakeInputEl.innerHTML = `<span class="text-primary dark:text-emerald-400 transition-colors duration-300">${esc(userInput)}</span>`;
 }
 
 export function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
@@ -812,7 +861,6 @@ export function renderFakeInput(fakeInputEl, userInput, currentPhrase) {
   }
 
   const isPunctuation = (ch) => /[^\p{L}\p{N}\s]/u.test(ch);
-  const esc = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   let html = '';
   let uIdx = 0;
 
@@ -922,8 +970,11 @@ function handleSpeechResult(transcript, targetPhraseEs, speechResultArea, speech
    
    if (allCorrect) {
      speechRetryBtn.classList.add('hidden');
-     setTimeout(() => {
-       if (activeEngine) activeEngine.handleCorrect();
+     if (speechAdvanceTimer) clearTimeout(speechAdvanceTimer);
+     const engineAtStart = activeEngine;
+     speechAdvanceTimer = setTimeout(() => {
+       speechAdvanceTimer = null;
+       if (engineAtStart && engineAtStart === activeEngine) engineAtStart.handleCorrect();
      }, 1000);
    } else {
      speechRetryBtn.classList.remove('hidden');

@@ -5,10 +5,9 @@
 // and in-topic lessons grids.
 
 import { getCompletionCount } from './storage.js';
-import { renderStatsTab } from './stats-dashboard.js';
-import { localStorageAdapter } from './storage.js';
 import { renderTheoryLedgerView } from './theory-viewer.js';
 import { EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD } from '../core/constants.js';
+import { getTopicStatus as computeTopicStatus, getLessonStatus as computeLessonStatus } from '../core/progress-status.js';
 import { LEARNING_PATHS, buildLessonIndex, getPathProgress } from '../core/learning-paths.js';
 
 let activeTab = null;
@@ -113,27 +112,26 @@ const LESSON_THEMES = {
 export { EXAM_MASTERED_THRESHOLD, LESSON_MASTERED_THRESHOLD };
 
 function getTopicStatus(topic) {
-  const lessons = topic.lessons;
-  const examLesson = lessons.find(l => l.exam);
-  const examCompletions = examLesson ? getCompletionCount(examLesson.id) : 0;
-  if (examCompletions >= EXAM_MASTERED_THRESHOLD) return 'mastered';
-
-  const total = lessons.length;
-  const completedCount = lessons.filter(l => getCompletionCount(l.id) >= 1).length;
-  if (total > 0 && completedCount === total) return 'completed';
-
-  const startedCount = lessons.filter(l => getCompletionCount(l.id) > 0).length;
-  if (startedCount > 0) return 'progress';
-
-  return 'new';
+  return computeTopicStatus(topic, getCompletionCount);
 }
 
 function getLessonStatus(lesson) {
-  const completions = getCompletionCount(lesson.id);
-  const threshold = lesson.exam ? EXAM_MASTERED_THRESHOLD : LESSON_MASTERED_THRESHOLD;
-  if (completions >= threshold) return 'mastered';
-  if (completions >= 1) return 'completed';
-  return 'new';
+  return computeLessonStatus(lesson, getCompletionCount);
+}
+
+/** Make a clickable card keyboard-operable (Enter / Space). */
+function makeActivatable(el, label, onActivate) {
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  if (label) el.setAttribute('aria-label', label);
+  el.addEventListener('click', onActivate);
+  el.addEventListener('keydown', (e) => {
+    if (e.target !== el) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onActivate();
+    }
+  });
 }
 
 function stripWeekPrefix(title) {
@@ -266,7 +264,7 @@ function renderSentencesTab(container, sentences, srs, phraseBank, onTopicClick,
     const topicBtn = document.createElement('div');
     topicBtn.className = theme.card;
     topicBtn.innerHTML = barHtml + leftCol + theme.rightCol(progressPercent);
-    topicBtn.addEventListener('click', () => onTopicClick(topic));
+    makeActivatable(topicBtn, `Week ${weekNumber}: ${cleanTitle}`, () => onTopicClick(topic));
     container.appendChild(topicBtn);
   });
 }
@@ -468,7 +466,7 @@ function renderWordsTab(container, wordTopics, srs, wordBank, onWordTopicClick, 
     const card = document.createElement('div');
     card.className = theme.card;
     card.innerHTML = barHtml + leftCol + theme.rightCol(progressPercent);
-    card.addEventListener('click', () => onWordTopicClick(topic));
+    makeActivatable(card, topic.title, () => onWordTopicClick(topic));
     container.appendChild(card);
   });
 }
@@ -638,7 +636,6 @@ export function showOnly(elements, viewName) {
     lessons: elements.lessonsView,
     drill: elements.drillView,
     end: elements.endScreen,
-    theoryArticle: elements.theoryArticleView,
   };
 
   for (const [name, el] of Object.entries(views)) {

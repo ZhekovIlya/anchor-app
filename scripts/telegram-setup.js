@@ -25,7 +25,7 @@ export const BOT_COMMANDS = [
   { command: 'help', description: 'What the bot can do' },
 ];
 
-export const BOT_DESCRIPTION = 'Learn the Anchor app\'s Spanish words as quick reels: one card, tap Know or Again. '
+export const BOT_DESCRIPTION = 'Learn the Anchor app\'s Spanish words as quick reels: one card, answer quiz cards. '
   + 'Progress, XP and streak sync with the web app.';
 export const BOT_SHORT_DESCRIPTION = 'Spanish vocabulary reels, synced with the Anchor app.';
 

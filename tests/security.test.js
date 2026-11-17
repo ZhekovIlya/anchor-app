@@ -80,7 +80,7 @@ describe('button data can only touch the tapping user\'s own state', () => {
   test('Bob replaying Alice\'s card buttons does nothing to Alice', async () => {
     const w = world();
     await w.say(ALICE, '/reels');
-    const know = w.telegram.last('sendMessage').reply_markup.inline_keyboard[1][1].callback_data;
+    const know = w.telegram.last('sendMessage').reply_markup.inline_keyboard[0][1].callback_data; // Got it
     await w.tap(BOB, know);
     assert.equal(w.telegram.last('answerCallbackQuery').text, 'This card is no longer active');
     assert.equal((await getSession(w.store, '111')).pos, 0);
@@ -92,7 +92,7 @@ describe('button data can only touch the tapping user\'s own state', () => {
     const w = world();
     await w.say(ALICE, '/reels');
     w.telegram.reset();
-    for (const data of ['r:k:../../x:0', 'r:k:AAAAAA:99999', 's:size:1000', 's:lang:<b>', 't:__proto__', 'lk:short', 'x'.repeat(300), '']) {
+    for (const data of ['r:k:../../x:0', 'r:s:AAAAAA:99999', 'q:AAAAAA:0:9', 'q:../../x:0:0', 's:size:1000', 's:lang:<b>', 't:__proto__', 'lk:short', 'x'.repeat(300), '']) {
       await w.tap(ALICE, data);
     }
     assert.ok(w.telegram.calls.every((c) => c.method === 'answerCallbackQuery'), 'only answers, no edits or sends');

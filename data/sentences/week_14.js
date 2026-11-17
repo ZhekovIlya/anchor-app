@@ -19,7 +19,7 @@ const week14Lessons = [
       { ru: "Я рос с бабушкой и дедушкой в деревне.", uk: "Я ріс з бабусею і дідусем у селі.", es: "Crecí con mis abuelos en el pueblo." },
       { ru: "Они росли вместе в одном и том же районе.", uk: "Вони росли разом в одному й тому ж районі.", es: "Ellos crecieron juntos en el mismo barrio." },
       { ru: "В десять лет моя семья переехала в Мадрид.", uk: "У десять років моя сім'я переїхала до Мадрида.", es: "A los diez años, mi familia se mudó a Madrid." },
-      { ru: "Мы переехали из дома три года назад.", uk: "Ми переїхали з будинку три роки тому.", es: "Nos mudamos de casa hace tres años." }
+      { ru: "Мы переехали (сменили жильё) три года назад.", uk: "Ми переїхали (змінили житло) три роки тому.", es: "Nos mudamos de casa hace tres años." }
     ],
   },
   {

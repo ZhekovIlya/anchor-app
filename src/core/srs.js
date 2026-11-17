@@ -86,7 +86,8 @@ export function createSRS(storage, storageKey) {
       const now = Date.now();
       const due = [];
       for (const [id, entry] of Object.entries(data)) {
-        if (entry.dueDate <= now && phraseBank[id]) {
+        // Mistakes are practised via "Practice Mistakes"; matches getDueCount
+        if (entry.dueDate <= now && phraseBank[id] && !entry.isMistake) {
           due.push(phraseBank[id]);
         }
       }

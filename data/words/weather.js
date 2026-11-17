@@ -27,9 +27,9 @@ export default {
       { ru: "облако", uk: "хмара", es: "nube" },
       { ru: "туман", uk: "туман", es: "niebla" },
       { ru: "гроза", uk: "гроза", es: "tormenta" },
-      { ru: "жарко", uk: "спекотно", es: "calor" },
-      { ru: "холодно", uk: "холодно", es: "frío" },
-      { ru: "тепло", uk: "тепло", es: "templado" },
+      { ru: "жара", uk: "спека", es: "calor" },
+      { ru: "холод", uk: "холод", es: "frío" },
+      { ru: "тёплый, умеренный", uk: "теплий, помірний", es: "templado" },
       { ru: "звезда", uk: "зірка", es: "estrella" },
     ]},
     { id: "ww_l2", title: "Weather States", words: [

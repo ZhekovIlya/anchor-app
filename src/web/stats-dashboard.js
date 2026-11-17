@@ -8,10 +8,8 @@
 
 import { getCompletionCount } from './storage.js';
 import { LEVEL_TIERS } from '../core/gamification.js';
-import { SRS_KEY_WORDS, SRS_KEY_SENTENCES } from '../core/constants.js';
-
-/** Matches the threshold in dashboard.js — duplicated here to avoid circular import */
-const LESSON_MASTERED_THRESHOLD = 3;
+import { SRS_KEY_WORDS, SRS_KEY_SENTENCES, LESSON_MASTERED_THRESHOLD } from '../core/constants.js';
+import { utcDayString, addUtcDays, utcWeekday } from '../core/dates.js';
 
 // ========================
 // DATA DERIVATION HELPERS
@@ -57,6 +55,7 @@ function getPhrasesEncountered(storageAdapter) {
 function getSentencesMastered(sentenceTopics) {
   let count = 0;
   for (const topic of sentenceTopics) {
+    if (topic.legacy) continue; // hidden on the dashboard, unreachable
     for (const lesson of topic.lessons) {
       if (lesson.exam) continue;
       if (getCompletionCount(lesson.id) >= LESSON_MASTERED_THRESHOLD) {
@@ -75,6 +74,7 @@ function getSentencesMastered(sentenceTopics) {
 function getTotalSentenceLessons(sentenceTopics) {
   let count = 0;
   for (const topic of sentenceTopics) {
+    if (topic.legacy) continue;
     for (const lesson of topic.lessons) {
       if (!lesson.exam) count++;
     }
@@ -84,24 +84,24 @@ function getTotalSentenceLessons(sentenceTopics) {
 
 /**
  * Build a 28-day (4-week) activity array from the activity log.
- * Each entry: { date: 'YYYY-MM-DD', dayOfWeek: 0-6, active: boolean }
+ * Days are UTC days — the same key gamification.recordActivity() writes — so the
+ * last cell is always "today" as the streak engine sees it.
+ * Each entry: { date: 'YYYY-MM-DD', dayOfWeek: 0-6 (0 = Sunday), active: boolean }
  * Ordered oldest → newest.
  * @param {Object} activityLog - { [dateString]: true }
+ * @param {Date} [now]
  * @returns {Array}
  */
-function buildActivityGrid(activityLog) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+export function buildActivityGrid(activityLog, now = new Date()) {
+  const today = utcDayString(now);
   const days = [];
 
   for (let i = 27; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split('T')[0];
+    const dateStr = addUtcDays(today, -i);
     days.push({
       date: dateStr,
-      dayOfWeek: d.getDay(),
-      active: !!activityLog[dateStr],
+      dayOfWeek: utcWeekday(dateStr),
+      active: !!(activityLog && activityLog[dateStr]),
     });
   }
   return days;
@@ -165,7 +165,7 @@ export function renderStatsTab(container, gamification, srsSentences, srsWords, 
   const dueSentences = srsSentences.getDueCount(phraseBank);
   const dueWords = srsWords.getDueCount(wordBank);
   const totalDue = dueSentences + dueWords;
-  const activityDays = buildActivityGrid(activityLog);
+  const activityDays = buildActivityGrid(activityLog, new Date());
 
   // Count active days in last 28
   const activeDaysCount = activityDays.filter(d => d.active).length;
@@ -314,7 +314,7 @@ export function renderStatsTab(container, gamification, srsSentences, srsWords, 
  * @returns {string}
  */
 function formatWeekLabel(dateStr, weekIndex) {
-  const d = new Date(dateStr + 'T00:00:00');
+  const d = new Date(dateStr + 'T00:00:00Z');
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[d.getMonth()]} ${d.getDate()}`;
+  return `${months[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }

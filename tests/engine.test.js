@@ -179,4 +179,129 @@ describe('Live typing assist punctuation tolerance', () => {
   });
 });
 
+// WP-A: reviews are recall, safe question types, deck order
+function makeEngine(phrases, extra = {}, seen = []) {
+  const callbacks = {
+    onStreakUpdate() {},
+    onRevealUpdate() {},
+    onNextPhrase(p) { seen.push(p); },
+    onCorrectAnswer(phrase, done) { done(); },
+    onComplete() {},
+  };
+  const srs = { promote() {}, demote() {}, registerNew() {} };
+  return createDrillEngine({ phrases, isExam: false, srs, callbacks, ...extra });
+}
+
+function makePhrases(n) {
+  const base = ['Yo hablo español', 'Tú comes pan', 'Ella bebe agua', 'Nosotros vivimos aquí', 'Ellos trabajan mucho', 'Vosotros leéis libros'];
+  return Array.from({ length: n }, (_, i) => ({ ru: 'x' + i, uk: 'x' + i, es: base[i], meta: { id: 'p' + i } }));
+}
+
+describe('Reviews never show the answer (A2)', () => {
+  for (const mode of ['sentence', 'word']) {
+    test(`isReview => no copy stage, no SPEECH (${mode})`, () => {
+      globalThis.window = { webkitSpeechRecognition: {} };
+      try {
+        for (let i = 0; i < 100; i++) {
+          const seen = [];
+          const engine = makeEngine(makePhrases(6), { isReview: true, mode, disableSpeech: false }, seen);
+          engine.start();
+          assert.strictEqual(seen[0].isCopyStage, false);
+          for (let k = 0; k < 5; k++) engine.handleCorrect();
+          for (const s of seen) {
+            assert.strictEqual(s.isCopyStage, false);
+            assert.notStrictEqual(s.interactionMode, 'SPEECH');
+          }
+        }
+      } finally {
+        delete globalThis.window;
+      }
+    });
+  }
+
+  test('first-time lessons still start in copy stage', () => {
+    const seen = [];
+    const engine = makeEngine(makePhrases(6), {}, seen);
+    engine.start();
+    assert.strictEqual(seen[0].isCopyStage, true);
+  });
+});
+
+describe('Question types never produce broken questions (A3)', () => {
+  for (const n of [1, 2, 3]) {
+    test(`${n}-phrase review never yields MC over 300 draws`, () => {
+      for (let i = 0; i < 300; i++) {
+        const seen = [];
+        const engine = makeEngine(makePhrases(n), { isReview: true }, seen);
+        engine.start();
+        for (let k = 0; k < 4; k++) engine.handleCorrect();
+        for (const s of seen) assert.notStrictEqual(s.interactionMode, 'MC');
+      }
+    });
+  }
+
+  test('MC with 4+ distinct phrases has 4 distinct options including the answer', () => {
+    let mcSeen = 0;
+    for (let i = 0; i < 400; i++) {
+      const seen = [];
+      const engine = makeEngine(makePhrases(6), { isReview: true }, seen);
+      engine.start();
+      for (let k = 0; k < 6; k++) engine.handleCorrect();
+      for (const s of seen) {
+        if (s.interactionMode !== 'MC') continue;
+        mcSeen++;
+        const { options, correctIndex } = s.questionData;
+        assert.strictEqual(options.length, 4);
+        assert.strictEqual(new Set(options).size, 4);
+        assert.strictEqual(options[correctIndex], s.phrase.es);
+      }
+    }
+    assert.ok(mcSeen > 0, 'MC should occur at least once');
+  });
+
+  test('duplicate es strings do not count as distinct distractors', () => {
+    const dup = [
+      { ru: 'a', uk: 'a', es: 'Hola amigo mío', meta: { id: 'a' } },
+      { ru: 'b', uk: 'b', es: 'Adiós amigo mío', meta: { id: 'b' } },
+      { ru: 'c', uk: 'c', es: 'Adiós amigo mío', meta: { id: 'c' } },
+      { ru: 'd', uk: 'd', es: 'Adiós amigo mío', meta: { id: 'd' } },
+    ];
+    for (let i = 0; i < 300; i++) {
+      const seen = [];
+      const engine = makeEngine(dup, { isReview: true }, seen);
+      engine.start();
+      for (let k = 0; k < 4; k++) engine.handleCorrect();
+      for (const s of seen) assert.notStrictEqual(s.interactionMode, 'MC');
+    }
+  });
+
+  test('phrases with fewer than 3 words never yield WORD_ORDER', () => {
+    const short = [
+      { ru: 'a', uk: 'a', es: 'Hola', meta: { id: 'a' } },
+      { ru: 'b', uk: 'b', es: 'Buenos días', meta: { id: 'b' } },
+    ];
+    for (let i = 0; i < 300; i++) {
+      const seen = [];
+      const engine = makeEngine(short, { isReview: true }, seen);
+      engine.start();
+      for (let k = 0; k < 2; k++) engine.handleCorrect();
+      for (const s of seen) assert.notStrictEqual(s.interactionMode, 'WORD_ORDER');
+    }
+  });
+});
+
+describe('Deck order (A7)', () => {
+  test('no phrase is shown twice in a row across deck refills', () => {
+    for (let i = 0; i < 100; i++) {
+      const seen = [];
+      const engine = makeEngine(makePhrases(2), { sessionPace: 5 }, seen);
+      engine.start();
+      for (let k = 0; k < 40; k++) engine.handleCorrect();
+      for (let j = 1; j < seen.length; j++) {
+        assert.notStrictEqual(seen[j].phrase.es, seen[j - 1].phrase.es);
+      }
+    }
+  });
+});
+
 

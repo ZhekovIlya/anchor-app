@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { createMemoryStore } from '../server/store.js';
 import { readConfig } from '../server/config.js';
 import { loadProgress } from '../server/progress.js';
+import { getSession } from '../server/reels.js';
 import { createLinkHandler } from '../server/api-link.js';
 import { createSyncHandler } from '../server/api-sync.js';
 import { createTelegramHandler } from '../server/api-telegram.js';
@@ -71,7 +72,7 @@ function button(view, label) {
   return found.callback_data;
 }
 
-test('link → web sync up → reels know/again → web sync down', async () => {
+test('link → web sync up → quiz reels → web sync down', async () => {
   const world = createWorld();
   const data = loadAllData();
   const storage = fakeLocalStorage();
@@ -106,24 +107,42 @@ test('link → web sync up → reels know/again → web sync down', async () => 
   assert.equal(remote.completions[firstLesson.id], 1);
   assert.equal(totalXP(remote), XP_REWARDS.lesson);
 
-  // ---- 3. a reels session in Telegram: new words continue where the app stopped
+  // ---- 3. a quiz session in Telegram: new words continue where the app stopped
   await world.say('/reels');
   const card = world.telegram.last('sendMessage');
   const messageId = card.sent_message_id;
   const secondLessonFirstWord = data.words[0].lessons[1].words[0];
   assert.ok(card.text.includes(secondLessonFirstWord.es), 'first new word after lesson 1');
-  assert.match(card.text, /1\/12 · /);
+  assert.match(card.text, /^🇪🇸 .*\n/s);
+  assert.ok(card.text.includes('1/12 · '));
+  assert.doesNotMatch(card.text, /tg-spoiler/);
 
-  await world.tap(button(card, 'Know'), messageId);   // word 1: known
-  const second = world.telegram.last('editMessageText');
-  await world.tap(button(second, 'Again'), messageId); // word 2: missed, comes back later
-  for (let guard = 0; guard < 30; guard++) {
-    const view = world.telegram.last('editMessageText');
-    if (/Session complete/.test(view.text)) break;
-    await world.tap(button(view, 'Know'), messageId);
+  const userId = String(ALICE.id);
+  const view = () => {
+    const edits = world.telegram.of('editMessageText').filter((e) => e.message_id === messageId);
+    return edits.length ? edits.at(-1) : card;
+  };
+  // 3 study cards ("Got it"), then the first word comes back as a question: miss it once
+  for (let i = 0; i < 3; i++) await world.tap(button(view(), 'Got it'), messageId);
+  let session = await getSession(world.store, userId);
+  assert.equal(session.queue[session.pos].id, secondLessonFirstWord.meta.id);
+  assert.equal(session.queue[session.pos].kind, 'tr');
+  const wrong = session.queue[session.pos].options.findIndex((id) => id !== secondLessonFirstWord.meta.id);
+  await world.tap(`q:${session.sid}:${session.pos}:${wrong}`, messageId);
+  assert.match(view().text, /❌/);
+  await world.tap(button(view(), 'Next'), messageId);
+
+  // everything else right: study → re-test, until the summary
+  for (let guard = 0; guard < 60 && !/Session complete/.test(view().text); guard++) {
+    session = await getSession(world.store, userId);
+    const current = session.queue[session.pos];
+    if (session.phase === 'feedback') await world.tap(button(view(), 'Next'), messageId);
+    else if (current.kind === 'study') await world.tap(button(view(), 'Got it'), messageId);
+    else await world.tap(`q:${session.sid}:${session.pos}:${current.options.indexOf(current.id)}`, messageId);
   }
-  const summary = world.telegram.last('editMessageText');
-  assert.match(summary.text, /✅ 12 known · ❌ 1 again/);
+  const summary = view();
+  assert.match(summary.text, /✅ 12 correct · ❌ 1 to repeat · accuracy 92 %/);
+  assert.ok(summary.text.includes(secondLessonFirstWord.es), 'the missed word is listed');
   assert.match(summary.text, new RegExp(`XP: ${XP_REWARDS.lesson + XP_REWARDS.review}`));
 
   remote = await loadProgress(world.store, String(ALICE.id));
@@ -136,8 +155,8 @@ test('link → web sync up → reels know/again → web sync down', async () => 
   assert.equal(webChanges, 1);
   const localWords = JSON.parse(storage.getItem(SRS_KEY_WORDS));
   assert.equal(Object.keys(localWords).length, firstLesson.words.length + 12);
-  const missedId = data.words[0].lessons[1].words[1].meta.id;
-  assert.equal(localWords[missedId].bucket, 1, 'missed, then known on the repeat → promoted once');
+  const missedId = secondLessonFirstWord.meta.id;
+  assert.equal(localWords[missedId].bucket, 1, 'missed in the re-test, right on the repeat → promoted once');
   assert.equal(localWords[missedId].isMistake, false);
   assert.equal(game.getStats().totalXP, XP_REWARDS.lesson + XP_REWARDS.review);
   assert.equal(game.getStreak().current, 1);

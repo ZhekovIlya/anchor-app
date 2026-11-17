@@ -132,7 +132,7 @@ describe('🔊 audio button', () => {
     const card = t.telegram.last('sendMessage');
     await t.tap(t.buttonOf(card, 'Audio'));
     const voiceId = (await getSession(t.store, '111')).audioMessageId;
-    await t.tap(t.buttonOf(card, 'Know'));
+    await t.tap(t.buttonOf(card, 'Got it'));
     assert.equal(t.telegram.last('deleteMessage').message_id, voiceId);
     assert.equal((await getSession(t.store, '111')).audioMessageId, null);
   });
@@ -163,7 +163,7 @@ describe('🔊 audio button', () => {
     assert.equal(t.telegram.last('answerCallbackQuery').text, AUDIO_UNAVAILABLE);
     assert.equal(t.telegram.of('answerCallbackQuery').length, 1);
     assert.equal(await t.store.getJSON(ttsCacheKey('el camarero')), null);
-    await t.tap(t.buttonOf(card, 'Know'));
+    await t.tap(t.buttonOf(card, 'Got it'));
     assert.match(t.telegram.last('editMessageText').text, /la cuenta/);
   });
 
@@ -173,7 +173,7 @@ describe('🔊 audio button', () => {
     const card = t.telegram.last('sendMessage');
     const session = await getSession(t.store, '111');
     const onAudio = createAudioHandler({ store: t.store, telegram: t.telegram, tts: t.tts });
-    await t.tap(t.buttonOf(card, 'Know')); // card advances before the audio is ready
+    await t.tap(t.buttonOf(card, 'Got it')); // card advances before the audio is ready
     await onAudio({ tgId: '111', chatId: 111, session, text: 'el camarero', callbackId: 'x' });
     const voice = t.telegram.last('sendVoice');
     assert.equal(t.telegram.last('deleteMessage').message_id, voice.sent_message_id);

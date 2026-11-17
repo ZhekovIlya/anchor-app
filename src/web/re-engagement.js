@@ -59,8 +59,12 @@ function showWelcomeBackOverlay({ daysAway, dueSentences, dueWords, totalDue, pr
   }
 
   // Build refresher button text
-  const refresherCount = Math.min(totalDue, 20);
-  const showRefresherBtn = totalDue > 0;
+  // The refresher drills sentence phrases only, capped at 20.
+  const refresherCount = Math.min(dueSentences, 20);
+  const showRefresherBtn = dueSentences > 0;
+  const wordsOnlyNote = (dueSentences === 0 && dueWords > 0)
+    ? `<p class="font-body text-sm text-on-surface-variant dark:text-stone-400 mb-2 transition-colors duration-300">Your words are ready in the Words tab.</p>`
+    : '';
 
   // Longest streak encouragement
   let streakEncouragement = '';
@@ -91,6 +95,7 @@ function showWelcomeBackOverlay({ daysAway, dueSentences, dueWords, totalDue, pr
       <!-- Due items -->
       ${dueItemsHtml ? `<div class="flex flex-col gap-2 mt-4 mb-6 w-full px-4">${dueItemsHtml}</div>` : '<div class="mb-6"></div>'}
 
+      ${wordsOnlyNote}
       <!-- Quick Refresher button -->
       ${showRefresherBtn ? `
         <button id="reengageRefresherBtn" class="w-full bg-primary dark:bg-emerald-600 text-on-primary rounded-xl px-6 py-3.5 font-label font-bold text-base tracking-wide shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 outline-none">

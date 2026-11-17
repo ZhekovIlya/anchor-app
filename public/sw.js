@@ -12,6 +12,9 @@ const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
 ];
 
 // ── Install: pre-cache the app shell ──────────────────────────────────
@@ -43,9 +46,14 @@ self.addEventListener('activate', (e) => {
 //     is always safe and dramatically faster.
 
 self.addEventListener('fetch', (e) => {
+  // Never intercept anything but same-origin GETs, and never the API: the
+  // Telegram link flow polls GET /api/link?code=… and must always hit the network.
   if (e.request.method !== 'GET') return;
 
   const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname === '/api' || url.pathname.startsWith('/api/')) return;
+
   const isNavigation =
     e.request.mode === 'navigate' ||
     url.pathname === '/' ||

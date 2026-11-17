@@ -98,7 +98,7 @@ export default {
       { ru: "левая сторона", uk: "ліва сторона", es: "la izquierda" },
       { ru: "правая сторона", uk: "права сторона", es: "la derecha" },
       { ru: "рядом с", uk: "поруч з", es: "junto a" },
-      { ru: "сбоку", uk: "поруч", es: "al lado" },
+      { ru: "рядом (наречие)", uk: "поруч (прислівник)", es: "al lado" },
       { ru: "напротив", uk: "навпроти", es: "enfrente" },
       { ru: "между", uk: "між", es: "entre" },
       { ru: "пересекать", uk: "переходити", es: "cruzar" },

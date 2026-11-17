@@ -7,3 +7,11 @@ dist/
 .env.*
 !.env.example
 .vercel/
+
+# Agent run-state (only .agents/rules/ is tracked)
+.agents/*
+!.agents/rules/
+
+# Personal Claude Code overrides (the rest of .claude/ is committed)
+.claude/settings.local.json
+CLAUDE.local.md
